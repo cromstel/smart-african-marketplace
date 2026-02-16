@@ -1,0 +1,102 @@
+@extends('admin.layout')
+
+@section('title', 'Edit Salon Service')
+@section('header', 'Edit Service: ' . $salonService->name)
+
+@section('content')
+<div class="max-w-4xl">
+    <form action="{{ route('admin.salon-services.update', $salonService) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        @csrf
+        @method('PUT')
+
+        <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
+            <h2 class="text-xl font-bold text-white mb-4">Service Information</h2>
+
+            <div class="space-y-4">
+                @if($salonService->image)
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Current Image</label>
+                        <img src="{{ Storage::url($salonService->image) }}" alt="{{ $salonService->name }}" 
+                             class="w-48 h-36 object-cover rounded border border-gray-600">
+                    </div>
+                @endif
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Service Name *</label>
+                    <input type="text" name="name" value="{{ old('name', $salonService->name) }}" required
+                           class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                    @error('name') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Description *</label>
+                    <textarea name="description" rows="5" required
+                              class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">{{ old('description', $salonService->description) }}</textarea>
+                    @error('description') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Category *</label>
+                        <select name="category_id" required class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $salonService->category_id) == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('category_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Price * ($)</label>
+                        <input type="number" name="price" value="{{ old('price', $salonService->price) }}" required min="0" step="0.01"
+                               class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                        @error('price') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Duration * (minutes)</label>
+                        <input type="number" name="duration_minutes" value="{{ old('duration_minutes', $salonService->duration_minutes) }}" required min="15" step="15"
+                               class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                        <p class="text-xs text-gray-500 mt-1">Minimum 15 minutes</p>
+                        @error('duration_minutes') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">
+                        {{ $salonService->image ? 'Replace Image' : 'Upload Image' }}
+                    </label>
+                    <input type="file" name="image" accept="image/*"
+                           class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                    <p class="text-xs text-gray-500 mt-1">
+                        @if($salonService->image)
+                            Leave empty to keep current image
+                        @else
+                            Recommended size: 800x600px (JPG, PNG, max 2MB)
+                        @endif
+                    </p>
+                    @error('image') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $salonService->is_active) ? 'checked' : '' }}
+                           class="w-4 h-4 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500">
+                    <label for="is_active" class="ml-2 text-sm text-gray-300">Active (available for booking)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-4">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium">
+                Update Service
+            </button>
+            <a href="{{ route('admin.salon-services.index') }}" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+@endsection

@@ -1,0 +1,119 @@
+# Laravel & PHP
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode
+
+# Laravel Specific
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
+storage/app/*
+!storage/app/.gitignore
+!storage/app/public
+storage/framework/cache/*
+!storage/framework/cache/.gitignore
+storage/framework/sessions/*
+!storage/framework/sessions/.gitignore
+storage/framework/testing/*
+!storage/framework/testing/.gitignore
+storage/framework/views/*
+!storage/framework/views/.gitignore
+storage/logs/*
+!storage/logs/.gitignore
+
+# Uploads
+/public/uploads/*
+!/public/uploads/.gitignore
+
+# Installer lock
+/.installed
+/install.lock
+
+# Testing
+/tests/coverage
+/.phpunit.cache
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDE
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Backup files
+*.bak
+*.backup
+*.orig
+*.rej
+
+# Composer
+composer.phar
+composer.lock
+
+# NPM/Yarn
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build artifacts
+/public/css
+/public/js
+/public/mix-manifest.json
+
+# Laravel Telescope
+/public/vendor/telescope
+
+# Laravel Debugbar
+/public/vendor/debugbar
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+/tmp
+/temp
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Documentation build
+/docs/_build
+
+# Deployment
+.deployment
+deploy.sh

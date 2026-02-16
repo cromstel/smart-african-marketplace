@@ -1,0 +1,8 @@
+{
+  "setup_script": "composer install && npm install && php artisan key:generate",
+  "dev_script": "php artisan serve",
+  "verification_script": "php vendor/bin/pint --test",
+  "copy_files": [
+    ".env"
+  ]
+}

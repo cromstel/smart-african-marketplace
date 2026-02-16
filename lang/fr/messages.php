@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'welcome' => 'Bienvenue sur African Market',
+    'shop' => 'Boutique',
+    'cart' => 'Panier',
+    'checkout' => 'Caisse',
+    'my_orders' => 'Mes commandes',
+    'my_account' => 'Mon compte',
+    'logout' => 'Déconnexion',
+    'login' => 'Connexion',
+    'register' => 'S\'inscrire',
+    'add_to_cart' => 'Ajouter au panier',
+    'view_cart' => 'Voir le panier',
+    'continue_shopping' => 'Continuer mes achats',
+    'total' => 'Total',
+    'subtotal' => 'Sous-total',
+    'shipping' => 'Livraison',
+    'tax' => 'Taxe',
+    'search_products' => 'Rechercher des produits',
+    'no_products_found' => 'Aucun produit trouvé',
+    'product_details' => 'Détails du produit',
+    'price' => 'Prix',
+    'quantity' => 'Quantité',
+    'in_stock' => 'En stock',
+    'out_of_stock' => 'Rupture de stock',
+];

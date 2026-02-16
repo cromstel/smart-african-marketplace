@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /vendor/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /orders/
+Disallow: /bookings/
+
+# Allow public pages
+Allow: /shop
+Allow: /salons
+
+# Sitemap
+Sitemap: {{ url('/sitemap.xml') }}
