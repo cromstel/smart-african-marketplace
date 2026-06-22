@@ -1017,7 +1017,7 @@
 
 ### FRONTEND DEVELOPMENT PLAN
 
-**Document Created**: `.zenflow/tasks/set-up-project-config-990f/FRONTEND_PLAN.md`
+**Document Created**: `.zenflow/tasks/set-up-project-config/FRONTEND_PLAN.md`
 
 **Planned Pages (24 total)**:
 1. Login/Register/Password Reset (COMPLETED - Modern UI)

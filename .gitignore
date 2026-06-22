@@ -136,3 +136,6 @@ deploy.sh
 /mobile/ios/**/build/
 /mobile/ios/**/xcuserdata/
 /mobile/ios/**/.swiftpm/
+
+# others
+/vulnerabilities-to-fix
