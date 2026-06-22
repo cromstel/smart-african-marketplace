@@ -15,7 +15,7 @@ class OrderPlaced extends Mailable
 
     public function __construct(public Order $order)
     {
-        $this->order->load(['items.product', 'billingAddress', 'shippingAddress', 'user']);
+        $this->order->load(['items.product', 'billingAddress', 'shippingAddress', 'user', 'group.orders.items.product']);
     }
 
     public function envelope(): Envelope

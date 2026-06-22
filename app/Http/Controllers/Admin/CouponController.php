@@ -10,19 +10,29 @@ class CouponController extends Controller
 {
     public function index()
     {
-        $coupons = Coupon::latest()->paginate(20);
+        $query = Coupon::query()->with('vendor');
 
-        return view('admin.coupons.index', compact('coupons'));
+        if (request()->filled('vendor_id')) {
+            $query->where('vendor_id', request()->vendor_id);
+        }
+
+        $coupons = $query->latest()->paginate(20)->withQueryString();
+        $vendors = \App\Models\Vendor::orderBy('business_name')->get();
+
+        return view('admin.coupons.index', compact('coupons', 'vendors'));
     }
 
     public function create()
     {
-        return view('admin.coupons.create');
+        $vendors = \App\Models\Vendor::orderBy('business_name')->get();
+
+        return view('admin.coupons.create', compact('vendors'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'vendor_id' => 'nullable|exists:vendors,id',
             'code' => 'required|string|max:50|unique:coupons,code',
             'type' => 'required|in:fixed,percentage',
             'value' => 'required|numeric|min:0',
@@ -47,12 +57,15 @@ class CouponController extends Controller
 
     public function edit(Coupon $coupon)
     {
-        return view('admin.coupons.edit', compact('coupon'));
+        $vendors = \App\Models\Vendor::orderBy('business_name')->get();
+
+        return view('admin.coupons.edit', compact('coupon', 'vendors'));
     }
 
     public function update(Request $request, Coupon $coupon)
     {
         $validated = $request->validate([
+            'vendor_id' => 'nullable|exists:vendors,id',
             'code' => 'required|string|max:50|unique:coupons,code,'.$coupon->id,
             'type' => 'required|in:fixed,percentage',
             'value' => 'required|numeric|min:0',

@@ -24,9 +24,9 @@
     <table class="min-w-full divide-y divide-gray-700">
         <thead class="bg-gray-900">
             <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">SKU</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Price</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Compare At</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Stock</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Attributes</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
@@ -37,13 +37,13 @@
             @forelse($variants as $variant)
                 <tr class="hover:bg-gray-750">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-white">{{ $variant->name }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-300 font-mono">{{ $variant->sku }}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">
                         ${{ number_format($variant->price, 2) }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        {{ $variant->compare_at_price ? '$'.number_format($variant->compare_at_price, 2) : 'N/A' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                         {{ $variant->stock_quantity }}
@@ -88,3 +88,4 @@
     </table>
 </div>
 @endsection
+

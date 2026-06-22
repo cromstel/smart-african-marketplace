@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-**African Market** is a comprehensive e-commerce platform designed to sell African food products, clothing, accessories, and provide salon booking services. The platform will be installable like WordPress, allowing easy deployment on any server with MySQL support.
+**African Market** is u
 
 ### Vision
 To create the premier online marketplace for authentic African products and services, accessible globally while maintaining cultural authenticity.
@@ -189,7 +189,7 @@ To create the premier online marketplace for authentic African products and serv
 
 ---
 
-## 3. Installer System (WordPress-Style)
+## 3. Installer System (CMS-style)
 
 ### 3.1 Installer Requirements
 - **Web-Based Setup Wizard**:
@@ -231,7 +231,7 @@ To create the premier online marketplace for authentic African products and serv
   - MVC architecture
   - Queue system for background jobs
   - File storage abstraction
-  - Perfect for WordPress-style deployment
+  - Perfect for CMS-style deployment
 - **Frontend Stack**: 
   - **Blade Templates** (Server-side rendering)
   - **Livewire** (Real-time reactive components)
@@ -329,7 +329,7 @@ african-market/
 │   ├── public/                # Static assets
 │   └── package.json
 │
-├── installer/                  # WordPress-style installer
+├── installer/                  # CMS-style installer
 │   ├── src/
 │   │   ├── components/        # Installer UI
 │   │   ├── steps/             # Installation steps
@@ -668,3 +668,4 @@ african-market/
 ---
 
 *This document is a living document and will be updated as the project evolves.*
+

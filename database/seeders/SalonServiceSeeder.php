@@ -3,91 +3,83 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\MediaFolder;
 use App\Models\SalonService;
+use App\Models\SalonServiceCategory;
 use App\Models\User;
+use App\Services\ImageOptimizationService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class SalonServiceSeeder extends Seeder
 {
     public function run(): void
     {
-        $salonOwner = User::where('role', 'salon_owner')->first();
+        $owners = User::whereIn('role', ['salon_owner', 'vendor'])->get();
 
-        if (! $salonOwner) {
+        if ($owners->isEmpty()) {
             return;
         }
 
         $salonCategories = Category::where('type', 'salon')->whereNotNull('parent_id')->get();
+        $serviceCategories = SalonServiceCategory::active()->get();
 
-        if ($salonCategories->isEmpty()) {
+        if ($salonCategories->isEmpty() || $serviceCategories->isEmpty()) {
             return;
         }
 
-        $services = [
-            [
-                'name' => 'Box Braids (Medium)',
-                'description' => 'Classic box braids with medium-sized sections. Includes hair washing, conditioning, and styling. Estimated time: 4-5 hours.',
-                'price' => 120.00,
-                'duration_minutes' => 300,
-            ],
-            [
-                'name' => 'Cornrows Styling',
-                'description' => 'Traditional cornrows in various patterns. Hair preparation and styling included. Estimated time: 2-3 hours.',
-                'price' => 80.00,
-                'duration_minutes' => 180,
-            ],
-            [
-                'name' => 'Loc Maintenance',
-                'description' => 'Complete loc maintenance including retwisting, washing, and conditioning. Estimated time: 2-3 hours.',
-                'price' => 90.00,
-                'duration_minutes' => 180,
-            ],
-            [
-                'name' => 'Sew-in Weave Installation',
-                'description' => 'Professional sew-in weave installation with cornrow base. Includes hair preparation. Estimated time: 3-4 hours.',
-                'price' => 150.00,
-                'duration_minutes' => 240,
-            ],
-            [
-                'name' => 'Ghana Weaving',
-                'description' => 'Intricate Ghana weaving styles with extensions. Includes hair preparation and styling. Estimated time: 3-4 hours.',
-                'price' => 100.00,
-                'duration_minutes' => 240,
-            ],
-            [
-                'name' => 'Natural Hair Treatment',
-                'description' => 'Deep conditioning treatment for natural hair including hot oil treatment and steam. Estimated time: 1-2 hours.',
-                'price' => 60.00,
-                'duration_minutes' => 120,
-            ],
-            [
-                'name' => 'Deluxe Manicure & Pedicure',
-                'description' => 'Complete nail care service including filing, buffing, cuticle care, massage, and polish. Estimated time: 1.5 hours.',
-                'price' => 70.00,
-                'duration_minutes' => 90,
-            ],
-            [
-                'name' => 'Senegalese Twists',
-                'description' => 'Beautiful Senegalese twists using quality hair extensions. Includes hair preparation. Estimated time: 4-5 hours.',
-                'price' => 130.00,
-                'duration_minutes' => 300,
-            ],
-        ];
+        $admin = User::where('email', 'admin@africanmarket.com')->first()
+            ?? User::where('role', 'admin')->first();
 
-        foreach ($services as $serviceData) {
-            $category = $salonCategories->random();
+        if ($admin) {
+            Auth::login($admin);
+        }
 
-            SalonService::create([
-                'user_id' => $salonOwner->id,
-                'category_id' => $category->id,
-                'name' => $serviceData['name'],
-                'slug' => Str::slug($serviceData['name']),
-                'description' => $serviceData['description'],
-                'price' => $serviceData['price'],
-                'duration_minutes' => $serviceData['duration_minutes'],
-                'is_active' => true,
-            ]);
+        $seedFolderId = MediaFolder::where('slug', 'seeded')->value('id');
+        $imageService = app(ImageOptimizationService::class);
+
+        foreach ($serviceCategories as $serviceCategory) {
+            for ($i = 1; $i <= 12; $i++) {
+                $owner = $owners->random();
+                $category = $salonCategories->random();
+                $name = $serviceCategory->name.' Service '.$i;
+                $slug = Str::slug($serviceCategory->slug.'-'.$i);
+
+                $service = SalonService::updateOrCreate(
+                    ['slug' => $slug],
+                    [
+                        'user_id' => $owner->id,
+                        'salon_category_id' => $serviceCategory->id,
+                        'category_id' => $category->id,
+                        'name' => $name,
+                        'description' => 'Sample service for '.$serviceCategory->name.'.',
+                        'price' => 40 + $i,
+                        'duration_minutes' => 60 + ($i * 5),
+                        'is_active' => true,
+                    ]
+                );
+
+                if (! $service->image) {
+                    $file = SeedImageHelper::makeImage($name, 800, 600);
+                    $result = $imageService->uploadAndOptimize(
+                        $file,
+                        'salon-services/'.$service->id,
+                        800,
+                        600,
+                        'salon_service',
+                        $service->id,
+                        true,
+                        $seedFolderId
+                    );
+                    $service->update(['image' => $result['original']]);
+                    @unlink($file->getRealPath());
+                }
+            }
+        }
+
+        if ($admin) {
+            Auth::logout();
         }
     }
 }

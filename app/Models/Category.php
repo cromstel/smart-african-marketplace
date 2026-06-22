@@ -16,6 +16,7 @@ class Category extends Model
         'slug',
         'description',
         'image',
+        'banner_image',
         'parent_id',
         'type',
         'sort_order',
@@ -47,6 +48,11 @@ class Category extends Model
         return $this->hasMany(SalonService::class);
     }
 
+    public function seoMeta()
+    {
+        return $this->morphOne(SeoMeta::class, 'model');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
@@ -70,5 +76,31 @@ class Category extends Model
     public function scopeParents($query)
     {
         return $query->whereNull('parent_id');
+    }
+
+    public function fullPath(): string
+    {
+        $segments = [$this->name];
+        $parent = $this->parent;
+
+        while ($parent) {
+            array_unshift($segments, $parent->name);
+            $parent = $parent->parent;
+        }
+
+        return implode(' > ', $segments);
+    }
+
+    public function isDescendantOf(int $categoryId): bool
+    {
+        $parent = $this->parent;
+        while ($parent) {
+            if ($parent->id === $categoryId) {
+                return true;
+            }
+            $parent = $parent->parent;
+        }
+
+        return false;
     }
 }

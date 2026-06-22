@@ -24,12 +24,18 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\SetLocale::class,
+            \App\Http\Middleware\CaptureCampaignContext::class,
+            \App\Http\Middleware\TrackUserBehavior::class,
+            \App\Http\Middleware\CompressResponse::class,
+            \App\Http\Middleware\MaintenanceMode::class,
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\CompressResponse::class,
         ],
     ];
 
@@ -47,5 +53,9 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         'vendor' => \App\Http\Middleware\EnsureUserIsVendor::class,
         'salon_owner' => \App\Http\Middleware\EnsureUserIsSalonOwner::class,
+        'subscription.limits' => \App\Http\Middleware\CheckSubscriptionLimits::class,
+        'module.access' => \App\Http\Middleware\EnsureModuleAccess::class,
+        'compress' => \App\Http\Middleware\CompressResponse::class,
+        'maintenance' => \App\Http\Middleware\MaintenanceMode::class,
     ];
 }

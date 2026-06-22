@@ -44,8 +44,8 @@ class Cart extends Model
 
     public function calculateTotals(): void
     {
-        $this->subtotal = $this->items->sum('subtotal');
-        $this->total = $this->subtotal + $this->tax + $this->shipping - $this->discount;
+        $this->subtotal = (float) $this->items()->sum('subtotal');
+        $this->total = max(0, (float) $this->subtotal + (float) $this->tax + (float) $this->shipping - (float) $this->discount);
         $this->save();
     }
 }

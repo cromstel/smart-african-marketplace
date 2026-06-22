@@ -3,12 +3,24 @@
 @section('title', 'My Orders')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-3xl font-bold text-white mb-8">My Orders</h1>
+<x-hero-section
+    pageIdentifier="orders"
+    fallbackTitle="My Orders"
+    fallbackSubtitle="Track and manage your orders"
+    fallbackImage="/images/hero-banner.avif"
+    :animated="true"
+/>
+
+<div class="container mx-auto px-4 py-8">
 
     @if($orders->count() > 0)
         <div class="space-y-4">
             @foreach($orders as $order)
+                @php
+                    $orderItems = $order->is_parent && $order->group
+                        ? $order->group->orders->where('is_parent', false)->flatMap->items
+                        : $order->items;
+                @endphp
                 <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
                     <div class="flex items-center justify-between mb-4">
                         <div>
@@ -50,17 +62,17 @@
                         </div>
 
                         <div class="mb-4">
-                            <p class="text-gray-400 text-sm mb-2">Items ({{ $order->items->count() }})</p>
+                            <p class="text-gray-400 text-sm mb-2">Items ({{ $orderItems->count() }})</p>
                             <div class="space-y-2">
-                                @foreach($order->items->take(3) as $item)
+                                @foreach($orderItems->take(3) as $item)
                                     <div class="flex items-center gap-3 text-sm">
                                         <span class="text-gray-400">{{ $item->quantity }}x</span>
                                         <span class="text-white">{{ $item->product_name }}</span>
                                         <span class="text-gray-400 ml-auto">${{ number_format($item->total, 2) }}</span>
                                     </div>
                                 @endforeach
-                                @if($order->items->count() > 3)
-                                    <p class="text-gray-400 text-sm">And {{ $order->items->count() - 3 }} more items...</p>
+                                @if($orderItems->count() > 3)
+                                    <p class="text-gray-400 text-sm">And {{ $orderItems->count() - 3 }} more items...</p>
                                 @endif
                             </div>
                         </div>
@@ -90,3 +102,4 @@
     @endif
 </div>
 @endsection
+

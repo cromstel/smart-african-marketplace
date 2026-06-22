@@ -23,7 +23,7 @@
 ## 1. Executive Summary
 
 ### Project Overview
-African Market is a comprehensive e-commerce platform specializing in African food products, clothing, and salon services. The platform will be developed as an installable application (similar to WordPress) with MySQL as the backend database.
+African Market is a comprehensive e-commerce platform specializing in African food products, clothing, and salon services. The platform will be developed as an installable application (similar to CMS) with MySQL as the backend database.
 
 ### Goals
 - **Primary**: Launch a functional MVP within 3-4 months
@@ -369,7 +369,7 @@ audit_logs (id, user_id, action, entity, changes, ...)
 - Create admin authentication
 
 **Week 3-4: Installer & Testing**
-- Build WordPress-style installer
+- Build CMS-style installer
 - Create system requirements checker
 - Implement database configuration wizard
 - Add admin account creation
@@ -384,7 +384,7 @@ audit_logs (id, user_id, action, entity, changes, ...)
 ✅ Checkout with Stripe payment  
 ✅ Order management  
 ✅ Basic admin panel  
-✅ WordPress-style installer  
+✅ CMS-style installer  
 ✅ Responsive design  
 ✅ Email notifications  
 
@@ -1189,3 +1189,4 @@ This plan is a living document and should be updated as the project evolves. Reg
 ---
 
 *For questions or updates to this plan, contact: [project-lead@africanmarket.com]*
+

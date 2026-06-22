@@ -1,0 +1,211 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Payout;
+use App\Models\Setting;
+use App\Models\Vendor;
+use App\Models\VendorBalance;
+use App\Models\VendorLedger;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class PayoutService
+{
+    public function process(Payout $payout): void
+    {
+        $payout->update(['status' => 'processing']);
+
+        if ($payout->method === 'stripe') {
+            $this->processStripe($payout);
+
+            return;
+        }
+
+        if ($payout->method === 'paystack') {
+            $this->processPaystack($payout);
+
+            return;
+        }
+
+        $this->markCompleted($payout, 'manual');
+    }
+
+    private function processStripe(Payout $payout): void
+    {
+        if (! Setting::get('stripe_enabled', false)) {
+            $this->fail($payout, 'Stripe payouts not enabled');
+
+            return;
+        }
+
+        $secret = Setting::get('stripe_secret_key');
+        if (! $secret) {
+            $this->fail($payout, 'Stripe key missing');
+
+            return;
+        }
+
+        $vendor = Vendor::find($payout->vendor_id);
+        if (! $vendor || ! $vendor->stripe_account_id) {
+            $this->fail($payout, 'Vendor Stripe account ID missing');
+
+            return;
+        }
+
+        try {
+            $currency = strtolower((string) Setting::get('stripe_payout_currency', 'usd'));
+            $amount = (int) round($payout->amount * 100);
+            $transfer = Http::withToken($secret)
+                ->asForm()
+                ->post('https://api.stripe.com/v1/transfers', [
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'destination' => $vendor->stripe_account_id,
+                    'transfer_group' => 'payout-'.$payout->id,
+                    'metadata[vendor_id]' => (string) $vendor->id,
+                    'metadata[payout_id]' => (string) $payout->id,
+                ])->throw()->json();
+
+            $payout->update([
+                'provider_ref' => $transfer['id'] ?? 'stripe-'.$payout->id,
+                'metadata' => array_merge($payout->metadata ?? [], [
+                    'stripe_transfer' => $transfer,
+                ]),
+            ]);
+
+            $this->markCompleted($payout, 'stripe');
+        } catch (\Throwable $e) {
+            Log::error('Stripe payout failed: '.$e->getMessage());
+            $this->fail($payout, $e->getMessage());
+        }
+    }
+
+    private function processPaystack(Payout $payout): void
+    {
+        if (! Setting::get('paystack_enabled', false)) {
+            $this->fail($payout, 'Paystack payouts not enabled');
+
+            return;
+        }
+
+        $secret = Setting::get('paystack_secret_key');
+        if (! $secret) {
+            $this->fail($payout, 'Paystack key missing');
+
+            return;
+        }
+
+        $vendor = Vendor::find($payout->vendor_id);
+        if (! $vendor) {
+            $this->fail($payout, 'Vendor not found');
+
+            return;
+        }
+
+        $bankCode = $payout->metadata['bank_code'] ?? $vendor->bank_code;
+        $bankAccount = $payout->metadata['bank_account_number'] ?? $vendor->bank_account_number;
+        $bankAccountName = $payout->metadata['bank_account_name'] ?? $vendor->bank_account_name;
+
+        if (! $bankCode || ! $bankAccount) {
+            $this->fail($payout, 'Vendor bank details missing');
+
+            return;
+        }
+
+        try {
+            $baseUrl = rtrim((string) config('payment.paystack.payment_url', 'https://api.paystack.co'), '/');
+            $recipientCode = $vendor->paystack_recipient_code;
+
+            if (! $recipientCode) {
+                $recipientResponse = Http::withToken($secret)->post($baseUrl.'/transferrecipient', [
+                    'type' => 'nuban',
+                    'name' => $bankAccountName ?: $vendor->business_name,
+                    'account_number' => $bankAccount,
+                    'bank_code' => $bankCode,
+                    'currency' => (string) Setting::get('paystack_payout_currency', 'NGN'),
+                ])->throw()->json();
+
+                if (! ($recipientResponse['status'] ?? false)) {
+                    $this->fail($payout, $recipientResponse['message'] ?? 'Paystack recipient creation failed');
+
+                    return;
+                }
+
+                $recipientCode = $recipientResponse['data']['recipient_code'] ?? null;
+                if (! $recipientCode) {
+                    $this->fail($payout, 'Paystack recipient code missing');
+
+                    return;
+                }
+
+                $vendor->update([
+                    'paystack_recipient_code' => $recipientCode,
+                    'bank_account_name' => $bankAccountName,
+                    'bank_account_number' => $bankAccount,
+                    'bank_code' => $bankCode,
+                ]);
+            }
+
+            $transferResponse = Http::withToken($secret)->post($baseUrl.'/transfer', [
+                'source' => 'balance',
+                'reason' => 'Vendor payout #'.$payout->id,
+                'amount' => (int) round($payout->amount * 100),
+                'recipient' => $recipientCode,
+                'currency' => (string) Setting::get('paystack_payout_currency', 'NGN'),
+            ])->throw()->json();
+
+            if (! ($transferResponse['status'] ?? false)) {
+                $this->fail($payout, $transferResponse['message'] ?? 'Paystack transfer failed');
+
+                return;
+            }
+
+            $providerRef = $transferResponse['data']['transfer_code'] ?? $transferResponse['data']['id'] ?? null;
+            $payout->update([
+                'provider_ref' => $providerRef ?: 'paystack-'.$payout->id,
+                'metadata' => array_merge($payout->metadata ?? [], [
+                    'paystack_transfer' => $transferResponse['data'] ?? $transferResponse,
+                ]),
+            ]);
+
+            $this->markCompleted($payout, 'paystack');
+        } catch (\Throwable $e) {
+            Log::error('Paystack payout failed: '.$e->getMessage());
+            $this->fail($payout, $e->getMessage());
+        }
+    }
+
+    private function markCompleted(Payout $payout, string $provider): void
+    {
+        $balance = VendorBalance::firstOrCreate(
+            ['vendor_id' => $payout->vendor_id],
+            ['available' => 0, 'pending' => 0, 'lifetime_earnings' => 0]
+        );
+
+        $balance->available = max(0, $balance->available - $payout->amount);
+        $balance->save();
+
+        VendorLedger::create([
+            'vendor_id' => $payout->vendor_id,
+            'order_id' => null,
+            'type' => 'debit_payout',
+            'amount' => $payout->amount,
+            'balance_after' => $balance->available,
+            'metadata' => ['provider' => $provider],
+        ]);
+
+        $payout->update([
+            'status' => 'completed',
+            'processed_at' => now(),
+        ]);
+    }
+
+    private function fail(Payout $payout, string $reason): void
+    {
+        $payout->update([
+            'status' => 'failed',
+            'metadata' => array_merge($payout->metadata ?? [], ['error' => $reason]),
+        ]);
+    }
+}

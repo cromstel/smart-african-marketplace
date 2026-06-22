@@ -1,0 +1,64 @@
+name: Security Audit
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly Monday 2AM UTC
+  push:
+    branches: [main, master, develop]
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package.json'
+      - 'package-lock.json'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  npm-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+      - name: Generate security report
+        run: |
+          npm audit --json > audit-report.json || true
+          echo "NPM audit complete"
+      - name: Upload audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: audit-report.json
+          retention-days: 30
+
+  composer-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+      - run: composer validate --strict
+      - name: Run composer audit
+        run: composer audit --format=github
+      - name: Check for outdated dependencies
+        run: |
+          composer outdated --direct > composer-outdated.txt || true
+          echo "Composer check complete"
+      - name: Upload composer audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: composer-audit-report
+          path: composer-outdated.txt
+          retention-days: 30

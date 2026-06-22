@@ -1,8 +1,17 @@
-@extends('layouts.app')
+@extends('layouts.shop')
 
 @section('title', 'Booking Details')
 
 @section('content')
+<x-hero-section
+    pageIdentifier="bookings"
+    fallbackTitle="Booking Details"
+    fallbackSubtitle="View your booking information"
+    fallbackImage="/images/booking-banner.avif"
+    headingTag="h2"
+    :animated="true"
+/>
+
 <div class="container mx-auto px-4 py-8">
     <div class="mb-6">
         <a href="{{ route('bookings.index') }}" class="text-indigo-400 hover:text-indigo-300 text-sm">
@@ -13,7 +22,7 @@
     <div class="max-w-4xl mx-auto">
         <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
             <div class="bg-gray-900 px-6 py-4 border-b border-gray-700">
-                <h1 class="text-2xl font-bold text-white">Booking Details</h1>
+                <h2 class="text-2xl font-bold text-white">Booking Details</h2>
                 <p class="text-gray-400 text-sm mt-1">Booking #{{ $booking->booking_number }}</p>
             </div>
 
@@ -34,13 +43,20 @@
                         </span>
                     </div>
                     @if(in_array($booking->status, ['pending', 'confirmed']))
-                        <form action="{{ route('bookings.cancel', $booking) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?')">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg">
-                                Cancel Booking
-                            </button>
-                        </form>
+                        <div class="flex flex-wrap gap-2">
+                            @if($booking->booking_date->isFuture())
+                                <a href="{{ route('bookings.reschedule', $booking) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
+                                    Reschedule
+                                </a>
+                            @endif
+                            <form action="{{ route('bookings.cancel', $booking) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?')">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg">
+                                    Cancel Booking
+                                </button>
+                            </form>
+                        </div>
                     @endif
                 </div>
 
@@ -49,7 +65,7 @@
                         <p class="text-gray-400 text-sm mb-2">Service</p>
                         <div class="flex items-start gap-3">
                             @if($booking->salonService->image)
-                                <img src="{{ Storage::url($booking->salonService->image) }}" alt="{{ $booking->salonService->name }}" 
+                                <img src="{{ '/storage/' . ltrim($booking->salonService->image ?? '', '/') }}" alt="{{ $booking->salonService->name }}" 
                                      class="w-20 h-20 object-cover rounded">
                             @endif
                             <div>
@@ -154,3 +170,4 @@
     </div>
 </div>
 @endsection
+

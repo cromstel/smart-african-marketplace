@@ -1,0 +1,76 @@
+<svg width="1200" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ea580c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="overlayGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bgGradient)"/>
+  <rect width="1200" height="400" fill="url(#overlayGradient)"/>
+  
+  <!-- Decorative Circles -->
+  <circle cx="100" cy="100" r="80" fill="#ffffff" opacity="0.05"/>
+  <circle cx="1100" cy="300" r="100" fill="#ffffff" opacity="0.05"/>
+  <circle cx="950" cy="80" r="60" fill="#ffffff" opacity="0.08"/>
+  
+  <!-- African Pattern Elements -->
+  <path d="M 50 350 L 80 320 L 110 350 Z" fill="#ffffff" opacity="0.1"/>
+  <path d="M 150 330 L 180 300 L 210 330 Z" fill="#ffffff" opacity="0.1"/>
+  <circle cx="250" cy="340" r="15" fill="#ffffff" opacity="0.1"/>
+  <circle cx="290" cy="340" r="15" fill="#ffffff" opacity="0.1"/>
+  
+  <path d="M 1090 80 L 1120 50 L 1150 80 Z" fill="#ffffff" opacity="0.1"/>
+  <path d="M 900 350 L 930 320 L 960 350 Z" fill="#ffffff" opacity="0.1"/>
+  <circle cx="1000" cy="340" r="15" fill="#ffffff" opacity="0.1"/>
+  
+  <!-- Main Content -->
+  <g filter="url(#shadow)">
+    <!-- Title -->
+    <text x="600" y="140" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff" text-anchor="middle">
+      African Market
+    </text>
+    
+    <!-- Tagline -->
+    <text x="600" y="190" font-family="Arial, sans-serif" font-size="28" fill="#ffffff" text-anchor="middle" opacity="0.95">
+      E-commerce Platform for African Products &amp; Services
+    </text>
+  </g>
+  
+  <!-- Feature Icons -->
+  <g transform="translate(300, 250)">
+    <!-- Food Icon -->
+    <rect x="0" y="0" width="120" height="90" rx="12" fill="#ffffff" opacity="0.15"/>
+    <text x="60" y="45" font-size="36" text-anchor="middle">🍲</text>
+    <text x="60" y="72" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Food</text>
+  </g>
+  
+  <g transform="translate(450, 250)">
+    <!-- Fashion Icon -->
+    <rect x="0" y="0" width="120" height="90" rx="12" fill="#ffffff" opacity="0.15"/>
+    <text x="60" y="45" font-size="36" text-anchor="middle">👗</text>
+    <text x="60" y="72" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Fashion</text>
+  </g>
+  
+  <g transform="translate(600, 250)">
+    <!-- Salon Icon -->
+    <rect x="0" y="0" width="120" height="90" rx="12" fill="#ffffff" opacity="0.15"/>
+    <text x="60" y="45" font-size="36" text-anchor="middle">💇</text>
+    <text x="60" y="72" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Salon</text>
+  </g>
+  
+  <g transform="translate(750, 250)">
+    <!-- Multi-vendor Icon -->
+    <rect x="0" y="0" width="120" height="90" rx="12" fill="#ffffff" opacity="0.15"/>
+    <text x="60" y="45" font-size="36" text-anchor="middle">🏪</text>
+    <text x="60" y="72" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Vendors</text>
+  </g>
+</svg>

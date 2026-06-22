@@ -37,7 +37,7 @@ class CartItem extends Model
 
     public function variant(): BelongsTo
     {
-        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+        return $this->belongsTo(ProductVariation::class, 'product_variant_id');
     }
 
     public function calculateSubtotal(): void

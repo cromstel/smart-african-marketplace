@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class="header">
-        <h1 style="margin: 0;">⚠️ Low Stock Alert</h1>
+        <h2 style="margin: 0;">⚠️ Low Stock Alert</h2>
         <p style="margin: 10px 0 0 0;">Inventory Attention Required</p>
     </div>
 
@@ -92,3 +92,4 @@
     </div>
 </body>
 </html>
+

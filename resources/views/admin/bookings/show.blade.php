@@ -65,7 +65,7 @@
         <h3 class="text-lg font-bold text-white mb-4">Service Details</h3>
         <div class="flex items-start gap-4">
             @if($booking->salonService->image)
-                <img src="{{ Storage::url($booking->salonService->image) }}" 
+                <img src="{{ '/storage/' . ltrim($booking->salonService->image ?? '', '/') }}" 
                      alt="{{ $booking->salonService->name }}" 
                      class="w-32 h-24 object-cover rounded">
             @endif
@@ -94,7 +94,23 @@
     @endif
 
     <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
-        <h3 class="text-lg font-bold text-white mb-4">Update Status</h3>
+        <div class="flex flex-wrap gap-3 justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-white">Update Status</h3>
+            <div class="flex gap-3">
+                <form action="{{ route('admin.bookings.force-confirm', $booking) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+                        Force Confirm
+                    </button>
+                </form>
+                <form action="{{ route('admin.bookings.resend-reminder', $booking) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm">
+                        Resend Reminder
+                    </button>
+                </form>
+            </div>
+        </div>
         <form action="{{ route('admin.bookings.update-status', $booking) }}" method="POST" class="space-y-4">
             @csrf
             @method('PUT')
@@ -147,6 +163,15 @@
                     </div>
                 </div>
             @endif
+            @if($booking->status === 'confirmed' && ! $booking->completed_at && ! $booking->cancelled_at)
+                <div class="flex items-start">
+                    <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                    <div>
+                        <p class="text-white text-sm">Confirmed</p>
+                        <p class="text-gray-400 text-xs">{{ $booking->updated_at->format('M d, Y g:i A') }}</p>
+                    </div>
+                </div>
+            @endif
             @if($booking->cancelled_at)
                 <div class="flex items-start">
                     <div class="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3"></div>
@@ -160,3 +185,4 @@
     </div>
 </div>
 @endsection
+

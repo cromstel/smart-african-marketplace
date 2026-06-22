@@ -24,4 +24,7 @@ return [
     'quantity' => 'Quantité',
     'in_stock' => 'En stock',
     'out_of_stock' => 'Rupture de stock',
+    'contact_success' => 'Merci pour votre message. Nous vous répondrons bientôt!',
+    'newsletter_subscribed' => 'Vous êtes maintenant abonné à notre newsletter!',
+    'newsletter_unsubscribed' => 'Vous vous êtes désabonné de notre newsletter.',
 ];

@@ -34,6 +34,20 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Scope</label>
+                    <select name="vendor_id" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                        <option value="">Global (all vendors)</option>
+                        @foreach($vendors as $vendor)
+                            <option value="{{ $vendor->id }}" {{ old('vendor_id') == $vendor->id ? 'selected' : '' }}>
+                                {{ $vendor->business_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Choose a vendor to scope this coupon to their products only.</p>
+                    @error('vendor_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         <span id="value-label">Value *</span>
                     </label>
@@ -155,3 +169,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+

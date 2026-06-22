@@ -3,8 +3,15 @@
 @section('title', 'Shopping Cart')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-3xl font-bold text-white mb-8">Shopping Cart</h1>
+<x-hero-section
+    pageIdentifier="cart"
+    fallbackTitle="Shopping Cart"
+    fallbackSubtitle="Review your items before checkout"
+    fallbackImage="/images/hero-banner.avif"
+    :animated="true"
+/>
+
+<div class="container mx-auto px-4 py-8">
 
     @if($cart->items->count() > 0)
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -20,9 +27,9 @@
                                                 $cartWebpPath = str_replace(pathinfo($item->product->featured_image, PATHINFO_EXTENSION), 'webp', $item->product->featured_image);
                                             @endphp
                                             @if(Storage::disk('public')->exists($cartWebpPath))
-                                                <source srcset="{{ asset('storage/' . $cartWebpPath) }}" type="image/webp">
+                                                <source srcset="{{ '/storage/' . ltrim($cartWebpPath ?? '', '/') }}" type="image/webp">
                                             @endif
-                                            <img src="{{ asset('storage/' . $item->product->featured_image) }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover rounded" loading="lazy">
+                                            <img src="{{ '/storage/' . ltrim($item->product->featured_image ?? '', '/') }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover rounded" loading="lazy">
                                         </picture>
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-500 text-xs">
@@ -33,7 +40,7 @@
 
                                 <div class="flex-1">
                                     <h3 class="text-lg font-semibold text-white">{{ $item->product->name }}</h3>
-                                    <p class="text-sm text-gray-400">{{ $item->product->category->name }}</p>
+                                    <p class="text-sm text-gray-400">{{ $item->product->category->name ?? 'Uncategorized' }}</p>
                                     @if($item->variant)
                                         <div class="mt-1">
                                             <span class="text-xs bg-indigo-900 text-indigo-300 px-2 py-1 rounded">{{ $item->variant->name }}</span>
@@ -82,17 +89,42 @@
                         </div>
                         <div class="flex justify-between text-gray-300">
                             <span>Tax</span>
-                            <span>${{ number_format($cart->tax, 2) }}</span>
+                            <span>${{ number_format($cart->tax ?? 0, 2) }}</span>
                         </div>
                         <div class="flex justify-between text-gray-300">
                             <span>Shipping</span>
-                            <span>${{ number_format($cart->shipping, 2) }}</span>
+                            <span>${{ number_format($cart->shipping ?? 0, 2) }}</span>
                         </div>
                         @if($cart->discount > 0)
                             <div class="flex justify-between text-green-400">
                                 <span>Discount</span>
                                 <span>-${{ number_format($cart->discount, 2) }}</span>
                             </div>
+                        @endif
+                    </div>
+
+                    <div class="border-t border-gray-700 pt-4 mb-4">
+                        @if($cart->coupon_code)
+                            <div class="mb-3 rounded-lg border border-green-600/40 bg-green-900/20 p-3">
+                                <p class="text-sm text-green-300">Coupon applied: <span class="font-semibold">{{ $cart->coupon_code }}</span></p>
+                            </div>
+                            <form action="{{ route('coupon.remove') }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium text-gray-200 hover:border-gray-500 hover:text-white">
+                                    Remove Coupon
+                                </button>
+                            </form>
+                        @else
+                            <form action="{{ route('coupon.apply') }}" method="POST" class="space-y-2">
+                                @csrf
+                                <label for="coupon-code" class="block text-sm font-medium text-gray-300">Coupon Code</label>
+                                <input id="coupon-code" type="text" name="code" placeholder="Enter coupon code"
+                                       class="w-full rounded-lg border border-gray-600 bg-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-indigo-500 focus:outline-none">
+                                <button type="submit" class="w-full rounded-lg border border-indigo-500 px-4 py-2 text-sm font-medium text-indigo-300 hover:bg-indigo-500/10">
+                                    Apply Coupon
+                                </button>
+                            </form>
                         @endif
                     </div>
 
@@ -127,3 +159,4 @@
     @endif
 </div>
 @endsection
+

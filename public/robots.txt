@@ -1,17 +1,44 @@
 User-agent: *
 Allow: /
 
-# Disallow admin and private areas
 Disallow: /admin/
 Disallow: /vendor/
 Disallow: /cart/
 Disallow: /checkout/
 Disallow: /orders/
 Disallow: /bookings/
+Disallow: /profile/
+Disallow: /dashboard/
+Disallow: /wishlist/
+Disallow: /payment/
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /password/
+Disallow: /email/
 
-# Allow public pages
 Allow: /shop
+Allow: /shop/*
 Allow: /salons
+Allow: /salons/*
+Allow: /blog
+Allow: /blog/*
+Allow: /about
+Allow: /contact
+Allow: /faq
 
-# Sitemap
+Crawl-delay: 1
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Yandex
+Allow: /
+Crawl-delay: 2
+
 Sitemap: {{ url('/sitemap.xml') }}

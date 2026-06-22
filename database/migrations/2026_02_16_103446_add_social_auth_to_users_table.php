@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -15,7 +16,9 @@ return new class extends Migration
             $table->string('provider')->nullable()->after('password');
             $table->string('provider_id')->nullable()->after('provider');
             $table->string('avatar')->nullable()->after('provider_id');
-            $table->string('password')->nullable()->change();
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->string('password')->nullable()->change();
+            }
         });
     }
 

@@ -5,7 +5,10 @@
 /public/storage
 /storage/*.key
 /vendor
+/issues-to-fix/
 .env
+.env.local
+.env.*.local
 .env.backup
 .env.production
 .phpunit.result.cache
@@ -44,6 +47,8 @@ storage/logs/*
 /install.lock
 
 # Testing
+/tests/
+/test/
 /tests/coverage
 /.phpunit.cache
 
@@ -74,13 +79,13 @@ Desktop.ini
 *.rej
 
 # Composer
-composer.phar
-composer.lock
+# composer.phar
+# Note: composer.lock is NOT ignored (can be tracked)
 
 # NPM/Yarn
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
+# Note: soketi/package-lock.json is NOT ignored (can be tracked)
 
 # Build artifacts
 /public/css
@@ -117,3 +122,17 @@ pnpm-lock.yaml
 # Deployment
 .deployment
 deploy.sh
+
+# Android (mobile)
+/mobile/android/.gradle/
+/mobile/android/local.properties
+/mobile/android/**/build/
+
+# iOS (mobile)
+/mobile/ios/**/*.xcodeproj/
+/mobile/ios/**/*.xcworkspace/
+/mobile/ios/**/DerivedData/
+/mobile/ios/**/.build/
+/mobile/ios/**/build/
+/mobile/ios/**/xcuserdata/
+/mobile/ios/**/.swiftpm/

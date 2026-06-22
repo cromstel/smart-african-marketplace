@@ -87,4 +87,37 @@ class LoyaltyPointsService
 
         return $totalExpired;
     }
+
+    public function getTierProgress(int $balance, array $tiers): array
+    {
+        $currentTier = $tiers[0];
+        $nextTier = null;
+
+        foreach ($tiers as $index => $tier) {
+            if ($balance >= (int) $tier['threshold']) {
+                $currentTier = $tier;
+                $nextTier = $tiers[$index + 1] ?? null;
+            }
+        }
+
+        if (! $nextTier) {
+            return [
+                'current' => $currentTier,
+                'next' => null,
+                'progress_percent' => 100,
+                'points_to_next' => 0,
+            ];
+        }
+
+        $range = max(1, (int) $nextTier['threshold'] - (int) $currentTier['threshold']);
+        $earnedInTier = max(0, $balance - (int) $currentTier['threshold']);
+        $progressPercent = min(100, round(($earnedInTier / $range) * 100, 1));
+
+        return [
+            'current' => $currentTier,
+            'next' => $nextTier,
+            'progress_percent' => $progressPercent,
+            'points_to_next' => max(0, (int) $nextTier['threshold'] - $balance),
+        ];
+    }
 }

@@ -1,0 +1,41 @@
+Module Name,Description,Available In
+Smart Booking System,Allow vendors to create bookable services and customizable bookings.,Business;Enterprise
+Smart Auction System,Enable auction-style products for vendors.,Business;Enterprise
+Paystack Module,Integrate Paystack payment gateway.,Professional;Business;Enterprise
+Vendor Support Module,In-dashboard communication between vendors and admins.,Starter;Professional;Business;Enterprise
+Seller Badge,Award achievement badges to vendors.,Professional;Business;Enterprise
+Stripe Express,Simplified Stripe Express onboarding for vendors.,Professional;Business;Enterprise
+Request for Quotation,Allow customers to request price quotes from vendors.,Business;Enterprise
+Report Abuse,Customers can report abusive products/vendors.,Professional;Business;Enterprise
+Stripe Connect,Full Stripe Connect marketplace payments and payouts.,Professional;Business;Enterprise
+Table Rate Shipping,Flexible vendor shipping rate configuration.,Professional;Business;Enterprise
+Product Advertising,Promoted listings and product boosting.,Business;Enterprise
+Minimum Maximum Order,Set order quantity and value restrictions.,Professional;Business;Enterprise
+Subscriptions (Vendor Packs),Recurring vendor subscription packs.,Professional;Business;Enterprise
+Product Subscription,Subscription-based products for customers.,Business;Enterprise
+Follow Store,Customers can follow vendor stores.,Professional;Business;Enterprise
+Geolocation,Location-based vendor/product discovery.,Business;Enterprise
+EU Compliance Fields,Required EU legal and VAT fields.,Starter;Professional;Business;Enterprise
+Delivery Time,Customer delivery date/time selection.,Starter;Professional;Business;Enterprise
+Product Addon,Extra product options and upsells.,Professional;Business;Enterprise
+Ajax Live Search,Instant advanced product search.,Professional;Business;Enterprise
+Color Scheme Customizer,Customize vendor dashboard colors.,Starter;Professional;Business;Enterprise
+Export Import,Vendor product import/export tools.,Business;Enterprise
+Live Chat,Real-time vendor-customer chat.,Business;Enterprise
+Product Enquiry,Contact vendors from product pages.,Business;Enterprise
+Return and Warranty Request,Vendor return and warranty workflows.,Professional;Business;Enterprise
+Seller Verification,Vendor identity verification tools.,Professional;Business;Enterprise
+ShipStation,Shipping and label management integration.,Business;Enterprise
+Single Product Multivendor,Multiple vendors sell same product.,Professional;Business;Enterprise
+Store Support,Frontend store support features.,Professional;Business;Enterprise
+Vendor Review,Customer reviews on store pages.,Professional;Business;Enterprise
+Vendor Staff Manager,Vendors can add staff accounts.,Business;Enterprise
+Vendor Vacation,Temporarily disable store/products.,Business;Enterprise
+Wholesale,Wholesale pricing capabilities.,Business;Enterprise
+Vendor Analytics,Vendor sales and performance dashboard.,Business;Enterprise
+Product Q&A,Public product questions and answers.,Business;Enterprise
+Smart Migrator Tool,Migrate from other multivendor site or plugins.,All
+Vendor Dashboard,Alternative vendor dashboard UI.,All
+Product Duplicator,Copy products between vendors.,All
+PDF Invoice,Automated multi-seller invoices.,All
+Coupons,Vendor-level coupon management.,All

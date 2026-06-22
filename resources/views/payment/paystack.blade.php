@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <h1 class="text-3xl font-bold text-white mb-8">Paystack Payment</h1>
+    <h2 class="text-3xl font-bold text-white mb-8">Paystack Payment</h2>
 
     <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 mb-6">
         <h2 class="text-xl font-bold text-white mb-4">Order Summary</h2>
@@ -66,3 +66,4 @@
     });
 </script>
 @endsection
+

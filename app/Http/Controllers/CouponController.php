@@ -26,18 +26,30 @@ class CouponController extends Controller
             return redirect()->back()->with('error', 'Invalid coupon code');
         }
 
-        $validation = $coupon->canBeUsedByUser(auth()->id(), $cart->subtotal);
+        $cartSubtotal = $cart->subtotal;
+        if ($coupon->vendor_id) {
+            $cartSubtotal = $cart->items
+                ->filter(fn ($item) => $item->product?->vendor_id === $coupon->vendor_id)
+                ->sum('subtotal');
+
+            if ($cartSubtotal <= 0) {
+                return redirect()->back()->with('error', 'This coupon is only valid for specific vendor products.');
+            }
+        }
+
+        $validation = $coupon->canBeUsedByUser(auth()->id(), $cartSubtotal);
 
         if (! $validation['valid']) {
             return redirect()->back()->with('error', $validation['message']);
         }
 
-        $discount = $coupon->calculateDiscount($cart->subtotal);
+        $discount = $coupon->calculateDiscount($cartSubtotal);
 
         $cart->update([
             'coupon_code' => $coupon->code,
             'discount' => $discount,
         ]);
+        $cart->calculateTotals();
 
         return redirect()->back()->with('success', 'Coupon applied! You saved $'.number_format($discount, 2));
     }
@@ -51,6 +63,7 @@ class CouponController extends Controller
                 'coupon_code' => null,
                 'discount' => 0,
             ]);
+            $cart->calculateTotals();
         }
 
         return redirect()->back()->with('success', 'Coupon removed');

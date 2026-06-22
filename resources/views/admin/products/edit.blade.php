@@ -22,12 +22,15 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Category *</label>
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-sm font-medium text-gray-300">Category *</label>
+                            <button type="button" id="add-product-category" class="text-xs px-2 py-1 rounded bg-indigo-600 text-white">+ Add</button>
+                        </div>
                         <select name="category_id" required class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
                             <option value="">Select Category</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
+                                    {{ $category->fullPath() }}
                                 </option>
                             @endforeach
                         </select>
@@ -36,7 +39,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">Vendor</label>
-                        <select name="vendor_id" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                        <select name="vendor_id" id="vendor_id" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
                             <option value="">No Vendor</option>
                             @foreach($vendors as $vendor)
                                 <option value="{{ $vendor->id }}" {{ old('vendor_id', $product->vendor_id) == $vendor->id ? 'selected' : '' }}>
@@ -45,6 +48,24 @@
                             @endforeach
                         </select>
                     </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Brand</label>
+                    <select name="brand_id" id="brand_id" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                        <option value="">No Brand</option>
+                        @foreach($brands as $brand)
+                            <option
+                                value="{{ $brand->id }}"
+                                data-vendor-id="{{ $brand->vendor_id ?? '' }}"
+                                {{ old('brand_id', $product->brand_id) == $brand->id ? 'selected' : '' }}
+                            >
+                                {{ $brand->name }}@if($brand->vendor) — {{ $brand->vendor->business_name }}@endif
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('brand_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    <p class="text-gray-400 text-xs mt-1">Vendor products can use global brands or their own vendor brands.</p>
                 </div>
 
                 <div>
@@ -121,7 +142,7 @@
                 <div class="grid grid-cols-4 gap-4 mb-4">
                     @foreach($product->images as $image)
                         <div class="relative group">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $image->alt_text }}" class="w-full h-32 object-cover rounded border {{ $image->is_primary ? 'border-indigo-500' : 'border-gray-600' }}">
+                            <img src="{{ '/storage/' . ltrim($image->image_path ?? '', '/') }}" alt="{{ $image->alt_text }}" class="w-full h-32 object-cover rounded border {{ $image->is_primary ? 'border-indigo-500' : 'border-gray-600' }}">
                             
                             @if($image->is_primary)
                                 <span class="absolute top-2 left-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded">Primary</span>
@@ -136,6 +157,14 @@
                                         </button>
                                     </form>
                                 @endif
+
+                                <form action="{{ route('admin.products.images.replace', $image) }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="file" name="image" id="replace-image-admin-{{ $image->id }}" class="hidden" accept="image/*" onchange="submitReplaceImage(this)">
+                                    <button type="button" onclick="openReplaceImage('replace-image-admin-{{ $image->id }}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-2 py-1 rounded">
+                                        Replace
+                                    </button>
+                                </form>
 
                                 <form action="{{ route('admin.products.images.delete', $image) }}" method="POST" onsubmit="return confirm('Delete this image?')">
                                     @csrf
@@ -188,4 +217,72 @@
         </div>
     </form>
 </div>
+<script>
+function openReplaceImage(inputId) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.click();
+    }
+}
+
+function submitReplaceImage(input) {
+    if (input.files && input.files.length > 0) {
+        input.form.submit();
+    }
+}
+
+document.getElementById('add-product-category')?.addEventListener('click', async () => {
+    const name = prompt('New category name');
+    if (!name) return;
+
+    const response = await fetch('{{ route('admin.categories.store') }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name })
+    });
+
+    if (!response.ok) {
+        alert('Could not create category.');
+        return;
+    }
+
+    const payload = await response.json();
+    const select = document.querySelector('select[name="category_id"]');
+    const option = document.createElement('option');
+    option.value = payload.id;
+    option.textContent = payload.path || payload.name;
+    option.selected = true;
+    select.appendChild(option);
+});
+
+function syncBrandOptions() {
+    const vendorSelect = document.getElementById('vendor_id');
+    const brandSelect = document.getElementById('brand_id');
+    if (!vendorSelect || !brandSelect) return;
+
+    const vendorId = vendorSelect.value;
+    Array.from(brandSelect.options).forEach((option) => {
+        if (option.value === '') {
+            option.hidden = false;
+            return;
+        }
+        const optionVendorId = option.dataset.vendorId || '';
+        const allowed = vendorId ? (optionVendorId === '' || optionVendorId === vendorId) : (optionVendorId === '');
+        option.hidden = !allowed;
+    });
+
+    const selected = brandSelect.selectedOptions[0];
+    if (selected && selected.hidden) {
+        brandSelect.value = '';
+    }
+}
+
+document.getElementById('vendor_id')?.addEventListener('change', syncBrandOptions);
+document.addEventListener('DOMContentLoaded', syncBrandOptions);
+</script>
 @endsection
+

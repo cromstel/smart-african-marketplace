@@ -3,12 +3,21 @@
 @section('title', 'Order #' . $order->order_number)
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<x-hero-section
+    pageIdentifier="orders"
+    fallbackTitle="Order Details"
+    fallbackSubtitle="View your order information"
+    fallbackImage="/images/hero-banner.avif"
+    headingTag="h2"
+    :animated="true"
+/>
+
+<div class="container mx-auto px-4 py-8">
     <div class="mb-6">
         <a href="{{ route('orders.index') }}" class="text-indigo-400 hover:text-indigo-300 mb-4 inline-block">
             ← Back to Orders
         </a>
-        <h1 class="text-3xl font-bold text-white">Order #{{ $order->order_number }}</h1>
+        <h2 class="text-3xl font-bold text-white">Order #{{ $order->order_number }}</h2>
         <p class="text-gray-400 mt-1">Placed on {{ $order->created_at->format('F d, Y \a\t g:i A') }}</p>
     </div>
 
@@ -49,27 +58,113 @@
                         </div>
                     @endif
                 </div>
+
+                @if($order->shipment)
+                    <div class="mt-6 pt-5 border-t border-gray-700">
+                        <h3 class="text-lg font-semibold text-white mb-3">Shipment Tracking</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="text-gray-400">Carrier</p>
+                                <p class="text-white">{{ $order->shipment->carrier ?: 'N/A' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">Tracking Number</p>
+                                <p class="text-white font-mono">{{ $order->shipment->tracking_number }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">Shipment Status</p>
+                                <p class="text-white">{{ ucwords(str_replace('_', ' ', $order->shipment->status)) }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">Estimated Delivery</p>
+                                <p class="text-white">{{ optional($order->shipment->estimated_delivery)->format('M d, Y') ?: 'N/A' }}</p>
+                            </div>
+                        </div>
+
+                        @if($order->shipment->carrier_url)
+                            <a href="{{ $order->shipment->carrier_url }}" target="_blank" rel="noopener noreferrer"
+                               class="inline-flex items-center mt-4 text-indigo-400 hover:text-indigo-300">
+                                Track on carrier website
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14"/>
+                                </svg>
+                            </a>
+                        @endif
+
+                        @if(is_array($order->shipment->tracking_history) && count($order->shipment->tracking_history) > 0)
+                            <div class="mt-4 space-y-3">
+                                @foreach(array_reverse($order->shipment->tracking_history) as $entry)
+                                    <div class="p-3 bg-gray-700/30 rounded-lg border border-gray-700">
+                                        <div class="flex items-center justify-between text-xs">
+                                            <span class="px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold">
+                                                {{ ucwords(str_replace('_', ' ', $entry['status'] ?? 'update')) }}
+                                            </span>
+                                            <span class="text-gray-400">
+                                                {{ \Illuminate\Support\Carbon::parse($entry['timestamp'] ?? now())->format('M d, Y H:i') }}
+                                            </span>
+                                        </div>
+                                        <p class="text-white text-sm mt-2">{{ $entry['location'] ?? 'Location unavailable' }}</p>
+                                        @if(!empty($entry['notes']))
+                                            <p class="text-gray-400 text-xs mt-1">{{ $entry['notes'] }}</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </div>
+
+            @php
+                $childOrders = $order->is_parent && $order->group ? $order->group->orders->where('is_parent', false) : collect();
+            @endphp
 
             <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
                 <h2 class="text-xl font-bold text-white mb-4">Order Items</h2>
                 <div class="space-y-4">
-                    @foreach($order->items as $item)
-                        <div class="flex items-center gap-4 pb-4 border-b border-gray-700 last:border-0 last:pb-0">
-                            <div class="w-20 h-20 bg-gray-700 rounded flex-shrink-0 flex items-center justify-center text-gray-500 text-xs">
-                                Product Image
+                    @if($childOrders->isNotEmpty())
+                        @foreach($childOrders as $child)
+                            <div class="border border-gray-700 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="text-white font-semibold">Vendor Order #{{ $child->order_number }}</div>
+                                    <div class="text-gray-400 text-sm">${{ number_format($child->total, 2) }}</div>
+                                </div>
+                                @foreach($child->items as $item)
+                                    <div class="flex items-center gap-4 pb-4 border-b border-gray-700 last:border-0 last:pb-0">
+                                        <div class="w-20 h-20 bg-gray-700 rounded flex-shrink-0 flex items-center justify-center text-gray-500 text-xs">
+                                            Product Image
+                                        </div>
+                                        <div class="flex-1">
+                                            <h3 class="text-white font-medium">{{ $item->product_name }}</h3>
+                                            <p class="text-gray-400 text-sm">SKU: {{ $item->product_sku }}</p>
+                                            <p class="text-gray-400 text-sm">Quantity: {{ $item->quantity }}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-white font-medium">${{ number_format($item->total, 2) }}</p>
+                                            <p class="text-gray-400 text-sm">${{ number_format($item->price, 2) }} each</p>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="flex-1">
-                                <h3 class="text-white font-medium">{{ $item->product_name }}</h3>
-                                <p class="text-gray-400 text-sm">SKU: {{ $item->product_sku }}</p>
-                                <p class="text-gray-400 text-sm">Quantity: {{ $item->quantity }}</p>
+                        @endforeach
+                    @else
+                        @foreach($order->items as $item)
+                            <div class="flex items-center gap-4 pb-4 border-b border-gray-700 last:border-0 last:pb-0">
+                                <div class="w-20 h-20 bg-gray-700 rounded flex-shrink-0 flex items-center justify-center text-gray-500 text-xs">
+                                    Product Image
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-white font-medium">{{ $item->product_name }}</h3>
+                                    <p class="text-gray-400 text-sm">SKU: {{ $item->product_sku }}</p>
+                                    <p class="text-gray-400 text-sm">Quantity: {{ $item->quantity }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-white font-medium">${{ number_format($item->total, 2) }}</p>
+                                    <p class="text-gray-400 text-sm">${{ number_format($item->price, 2) }} each</p>
+                                </div>
                             </div>
-                            <div class="text-right">
-                                <p class="text-white font-medium">${{ number_format($item->total, 2) }}</p>
-                                <p class="text-gray-400 text-sm">${{ number_format($item->price, 2) }} each</p>
-                            </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    @endif
                 </div>
             </div>
 
@@ -123,11 +218,11 @@
                     </div>
                     <div class="flex justify-between text-gray-300">
                         <span>Tax</span>
-                        <span>${{ number_format($order->tax, 2) }}</span>
+                        <span>${{ number_format($order->tax ?? 0, 2) }}</span>
                     </div>
                     <div class="flex justify-between text-gray-300">
                         <span>Shipping</span>
-                        <span>${{ number_format($order->shipping_cost, 2) }}</span>
+                        <span>${{ number_format($order->shipping_cost ?? 0, 2) }}</span>
                     </div>
                     @if($order->discount > 0)
                         <div class="flex justify-between text-green-400">
@@ -168,8 +263,18 @@
                         </div>
                     @endif
                 </div>
+
+                @if($order->payment_status === 'paid' && $order->status !== 'refunded')
+                    <form method="POST" action="{{ route('orders.refunds.store', $order) }}" class="mt-6 space-y-2">
+                        @csrf
+                        <label for="refund_reason" class="text-sm text-gray-400">Request Refund</label>
+                        <textarea id="refund_reason" name="reason" rows="2" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white" placeholder="Reason for refund"></textarea>
+                        <button type="submit" class="w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">Submit Refund Request</button>
+                    </form>
+                @endif
             </div>
         </div>
     </div>
 </div>
 @endsection
+

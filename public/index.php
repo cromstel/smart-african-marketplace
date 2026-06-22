@@ -1,7 +1,7 @@
 <?php
 
 /**
- * African Market - Laravel Entry Point
+ * Smart African Marketplace - Entry Point
  *
  * This is the entry point for all requests to the application.
  * It loads the Composer autoloader and boots the Laravel application.

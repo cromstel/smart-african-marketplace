@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialAuthController extends Controller
@@ -47,7 +46,7 @@ class SocialAuthController extends Controller
                     'provider' => $provider,
                     'provider_id' => $socialUser->getId(),
                     'avatar' => $socialUser->getAvatar(),
-                    'password' => Hash::make(uniqid()),
+                    'password' => uniqid(),
                     'role' => 'customer',
                     'email_verified_at' => now(),
                 ]);

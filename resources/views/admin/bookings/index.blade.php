@@ -5,16 +5,43 @@
 
 @section('content')
 <div class="mb-6">
-    <h3 class="text-2xl font-bold text-white">All Bookings</h3>
-    <p class="text-gray-400 mt-1">Manage salon service bookings and appointments</p>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h3 class="text-2xl font-bold text-white">All Bookings</h3>
+            <p class="text-gray-400 mt-1">Manage salon service bookings and appointments</p>
+        </div>
+        <a href="{{ route('admin.bookings.calendar') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
+            View Calendar
+        </a>
+    </div>
 </div>
 
 <div class="mb-6 bg-gray-800 rounded-lg border border-gray-700 p-4">
-    <form method="GET" class="flex gap-4">
-        <div class="flex-1">
+    <form method="GET" class="flex flex-wrap gap-4">
+        <div class="flex-1 min-w-[220px]">
             <input type="text" name="search" value="{{ request('search') }}" 
                    placeholder="Search by booking number, customer name, or email..."
                    class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+        </div>
+        <div>
+            <select name="vendor" class="bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                <option value="">All Vendors</option>
+                @foreach($vendors as $vendor)
+                    <option value="{{ $vendor->id }}" {{ request('vendor') == $vendor->id ? 'selected' : '' }}>
+                        {{ $vendor->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div>
+            <select name="service" class="bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                <option value="">All Services</option>
+                @foreach($services as $service)
+                    <option value="{{ $service->id }}" {{ request('service') == $service->id ? 'selected' : '' }}>
+                        {{ $service->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
         <div>
             <select name="status" class="bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
@@ -25,10 +52,18 @@
                 <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
             </select>
         </div>
+        <div>
+            <input type="date" name="date_from" value="{{ request('date_from') }}"
+                   class="bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+        </div>
+        <div>
+            <input type="date" name="date_to" value="{{ request('date_to') }}"
+                   class="bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+        </div>
         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
             Filter
         </button>
-        @if(request()->hasAny(['search', 'status']))
+        @if(request()->hasAny(['search', 'status', 'vendor', 'service', 'date_from', 'date_to']))
             <a href="{{ route('admin.bookings.index') }}" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
                 Clear
             </a>
@@ -107,3 +142,4 @@
     </div>
 @endif
 @endsection
+

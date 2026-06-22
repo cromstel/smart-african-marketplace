@@ -6,7 +6,9 @@ use App\Mail\OrderPlaced;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Setting;
+use App\Models\UserSubscription;
 use App\Services\LoyaltyPointsService;
+use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +22,7 @@ class WebhookController extends Controller
     {
         $payload = $request->getContent();
         $sigHeader = $request->header('Stripe-Signature');
-        $webhookSecret = Setting::get('stripe_webhook_secret');
+        $webhookSecret = Setting::getValue('stripe_webhook_secret');
 
         if (! $webhookSecret) {
             Log::error('Stripe webhook secret not configured');
@@ -58,6 +60,30 @@ class WebhookController extends Controller
                     $this->handleStripePaymentIntentFailed($event->data->object);
                     break;
 
+                case 'customer.subscription.created':
+                    $this->handleStripeSubscriptionCreated($event->data->object);
+                    break;
+
+                case 'customer.subscription.updated':
+                    $this->handleStripeSubscriptionUpdated($event->data->object);
+                    break;
+
+                case 'customer.subscription.deleted':
+                    $this->handleStripeSubscriptionDeleted($event->data->object);
+                    break;
+
+                case 'customer.subscription.trial_will_end':
+                    $this->handleStripeSubscriptionTrialWillEnd($event->data->object);
+                    break;
+
+                case 'invoice.payment_succeeded':
+                    $this->handleStripeInvoicePaymentSucceeded($event->data->object);
+                    break;
+
+                case 'invoice.payment_failed':
+                    $this->handleStripeInvoicePaymentFailed($event->data->object);
+                    break;
+
                 default:
                     Log::info('Stripe webhook unhandled event type: '.$event->type);
             }
@@ -72,7 +98,7 @@ class WebhookController extends Controller
 
     public function paystack(Request $request)
     {
-        $webhookSecret = Setting::get('paystack_secret_key');
+        $webhookSecret = Setting::getValue('paystack_secret_key');
 
         if (! $webhookSecret) {
             Log::error('Paystack webhook secret not configured');
@@ -84,7 +110,7 @@ class WebhookController extends Controller
         $payload = $request->getContent();
         $computedSignature = hash_hmac('sha512', $payload, $webhookSecret);
 
-        if ($signature !== $computedSignature) {
+        if (! hash_equals($computedSignature, (string) $signature)) {
             Log::error('Paystack webhook invalid signature');
 
             return response()->json(['error' => 'Invalid signature'], 400);
@@ -102,6 +128,14 @@ class WebhookController extends Controller
                     $this->handlePaystackChargeFailed($event['data']);
                     break;
 
+                case 'subscription.create':
+                    $this->handlePaystackSubscriptionCreate($event['data']);
+                    break;
+
+                case 'subscription.disable':
+                    $this->handlePaystackSubscriptionDisable($event['data']);
+                    break;
+
                 default:
                     Log::info('Paystack webhook unhandled event type: '.$event['event']);
             }
@@ -109,6 +143,85 @@ class WebhookController extends Controller
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             Log::error('Paystack webhook processing error: '.$e->getMessage());
+
+            return response()->json(['error' => 'Processing error'], 500);
+        }
+    }
+
+    public function momo(Request $request, string $provider)
+    {
+        $provider = strtolower(trim($provider));
+        if (! in_array($provider, ['mtn', 'mpesa'], true)) {
+            return response()->json(['error' => 'Unsupported provider'], 422);
+        }
+
+        $payload = $request->all();
+        $referenceId = (string) (
+            data_get($payload, 'reference_id')
+            ?? data_get($payload, 'externalId')
+            ?? data_get($payload, 'Body.stkCallback.CallbackMetadata.Item.0.Value')
+            ?? data_get($payload, 'CheckoutRequestID')
+            ?? data_get($payload, 'transaction_id')
+            ?? ''
+        );
+
+        if ($referenceId === '') {
+            return response()->json(['error' => 'Missing reference'], 422);
+        }
+
+        $payment = Payment::where('transaction_id', $referenceId)
+            ->where('payment_method', 'mobile_money')
+            ->first();
+
+        if (! $payment) {
+            Log::warning("Mobile money webhook payment not found for reference {$referenceId}");
+
+            return response()->json(['success' => true]);
+        }
+
+        $status = strtolower((string) (
+            data_get($payload, 'status')
+            ?? data_get($payload, 'Status')
+            ?? data_get($payload, 'Body.stkCallback.ResultCode')
+            ?? ''
+        ));
+
+        $isSuccess = in_array($status, ['success', 'successful', 'completed', '0'], true);
+
+        DB::beginTransaction();
+        try {
+            $payment->update([
+                'status' => $isSuccess ? 'completed' : 'failed',
+                'payment_data' => json_encode($payload),
+                'processed_at' => now(),
+                'error_message' => $isSuccess ? null : (string) (data_get($payload, 'message') ?? data_get($payload, 'Body.stkCallback.ResultDesc') ?? 'Mobile money payment failed'),
+            ]);
+
+            $order = $payment->order;
+            if ($order && $isSuccess && $order->payment_status !== 'paid') {
+                $order->update([
+                    'payment_status' => 'paid',
+                    'paid_at' => now(),
+                    'status' => 'processing',
+                ]);
+
+                // Award loyalty points if user and order exist
+                if ($order->user && $order->total) {
+                    $loyaltyService = app(LoyaltyPointsService::class);
+                    $loyaltyService->awardPointsForPurchase($order->user, (float) $order->total, $order->id);
+                }
+            }
+
+            if ($order && ! $isSuccess) {
+                $order->update(['payment_status' => 'failed']);
+            }
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $exception) {
+            DB::rollBack();
+            Log::error('Mobile money webhook processing failed: '.$exception->getMessage());
 
             return response()->json(['error' => 'Processing error'], 500);
         }
@@ -131,12 +244,14 @@ class WebhookController extends Controller
 
             if (! $order) {
                 Log::error("Order not found: {$orderId}");
+                DB::rollBack();
 
                 return;
             }
 
             if ($order->payment_status === 'paid') {
                 Log::info("Order {$orderId} already marked as paid");
+                DB::rollBack();
 
                 return;
             }
@@ -170,12 +285,17 @@ class WebhookController extends Controller
                 'status' => 'processing',
             ]);
 
-            $loyaltyService = app(LoyaltyPointsService::class);
-            $loyaltyService->awardPointsForPurchase($order->user, $order->total, $order->id);
+            // Award loyalty points if user and order exist
+            if ($order->user && $order->total) {
+                $loyaltyService = app(LoyaltyPointsService::class);
+                $loyaltyService->awardPointsForPurchase($order->user, (float) $order->total, $order->id);
+            }
 
             DB::commit();
 
-            Mail::to($order->user->email)->send(new OrderPlaced($order));
+            if ($order->user) {
+                Mail::to($order->user->email)->send(new OrderPlaced($order));
+            }
 
             Log::info("Stripe payment confirmed for order: {$orderId}");
         } catch (\Exception $e) {
@@ -230,6 +350,8 @@ class WebhookController extends Controller
             $order = Order::find($orderId);
 
             if (! $order || $order->payment_status === 'paid') {
+                DB::rollBack();
+
                 return;
             }
 
@@ -252,12 +374,17 @@ class WebhookController extends Controller
                 'status' => 'processing',
             ]);
 
-            $loyaltyService = app(LoyaltyPointsService::class);
-            $loyaltyService->awardPointsForPurchase($order->user, $order->total, $order->id);
+            // Award loyalty points if user and order exist
+            if ($order->user && $order->total) {
+                $loyaltyService = app(LoyaltyPointsService::class);
+                $loyaltyService->awardPointsForPurchase($order->user, (float) $order->total, $order->id);
+            }
 
             DB::commit();
 
-            Mail::to($order->user->email)->send(new OrderPlaced($order));
+            if ($order->user) {
+                Mail::to($order->user->email)->send(new OrderPlaced($order));
+            }
 
             Log::info("Stripe PaymentIntent confirmed for order: {$orderId}");
         } catch (\Exception $e) {
@@ -313,12 +440,14 @@ class WebhookController extends Controller
 
             if (! $order) {
                 Log::error("Order not found: {$orderId}");
+                DB::rollBack();
 
                 return;
             }
 
             if ($order->payment_status === 'paid') {
                 Log::info("Order {$orderId} already marked as paid");
+                DB::rollBack();
 
                 return;
             }
@@ -344,12 +473,17 @@ class WebhookController extends Controller
                 'status' => 'processing',
             ]);
 
-            $loyaltyService = app(LoyaltyPointsService::class);
-            $loyaltyService->awardPointsForPurchase($order->user, $order->total, $order->id);
+            // Award loyalty points if user and order exist
+            if ($order->user && $order->total) {
+                $loyaltyService = app(LoyaltyPointsService::class);
+                $loyaltyService->awardPointsForPurchase($order->user, (float) $order->total, $order->id);
+            }
 
             DB::commit();
 
-            Mail::to($order->user->email)->send(new OrderPlaced($order));
+            if ($order->user) {
+                Mail::to($order->user->email)->send(new OrderPlaced($order));
+            }
 
             Log::info("Paystack payment confirmed for order: {$orderId}");
         } catch (\Exception $e) {
@@ -387,6 +521,262 @@ class WebhookController extends Controller
             $order->update(['payment_status' => 'failed']);
 
             Log::warning("Paystack payment failed for order: {$orderId}");
+        }
+    }
+
+    protected function handleStripeSubscriptionCreated($subscription)
+    {
+        $userId = $subscription->metadata->user_id ?? null;
+
+        if (! $userId) {
+            Log::warning('Stripe subscription created but no user_id in metadata');
+
+            return;
+        }
+
+        Log::info("Stripe subscription created for user {$userId}: {$subscription->id}");
+    }
+
+    protected function handleStripeSubscriptionUpdated($subscription)
+    {
+        $userSubscription = UserSubscription::where('payment_provider_subscription_id', $subscription->id)->first();
+
+        if (! $userSubscription) {
+            Log::warning("Subscription not found for Stripe ID: {$subscription->id}");
+
+            return;
+        }
+
+        $status = match ($subscription->status) {
+            'active' => 'active',
+            'trialing' => 'trialing',
+            'past_due' => 'past_due',
+            'canceled' => 'canceled',
+            'unpaid' => 'expired',
+            default => $userSubscription->status,
+        };
+
+        $userSubscription->update([
+            'status' => $status,
+            'current_period_start' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_start),
+            'current_period_end' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
+            'cancel_at_period_end' => $subscription->cancel_at_period_end ?? false,
+        ]);
+
+        Log::info("Stripe subscription updated: {$subscription->id} - Status: {$status}");
+    }
+
+    protected function handleStripeSubscriptionDeleted($subscription)
+    {
+        $userSubscription = UserSubscription::where('payment_provider_subscription_id', $subscription->id)->first();
+
+        if (! $userSubscription) {
+            return;
+        }
+
+        $userSubscription->update([
+            'status' => 'canceled',
+            'canceled_at' => now(),
+        ]);
+
+        Log::info("Stripe subscription canceled: {$subscription->id}");
+    }
+
+    protected function handleStripeSubscriptionTrialWillEnd($subscription)
+    {
+        $userSubscription = UserSubscription::where('payment_provider_subscription_id', $subscription->id)->first();
+
+        if (! $userSubscription) {
+            return;
+        }
+
+        Log::info("Stripe subscription trial ending soon: {$subscription->id}");
+    }
+
+    protected function handleStripeInvoicePaymentSucceeded($invoice)
+    {
+        $subscriptionId = $invoice->subscription ?? null;
+
+        if (! $subscriptionId) {
+            return;
+        }
+
+        $userSubscription = UserSubscription::where('payment_provider_subscription_id', $subscriptionId)->first();
+
+        if (! $userSubscription) {
+            return;
+        }
+
+        $subscriptionService = app(SubscriptionService::class);
+        $payment = $subscriptionService->recordPayment(
+            $userSubscription,
+            $invoice->amount_paid / 100,
+            'paid',
+            'stripe',
+            $invoice->id
+        );
+
+        if (! $payment->wasRecentlyCreated) {
+            Log::info("Stripe invoice payment already processed for invoice: {$invoice->id}");
+
+            return;
+        }
+
+        if ($userSubscription->status === 'trialing') {
+            $subscriptionService->activateSubscription($userSubscription);
+        }
+
+        Log::info("Stripe invoice payment succeeded for subscription: {$subscriptionId}");
+    }
+
+    protected function handleStripeInvoicePaymentFailed($invoice)
+    {
+        $subscriptionId = $invoice->subscription ?? null;
+
+        if (! $subscriptionId) {
+            return;
+        }
+
+        $userSubscription = UserSubscription::where('payment_provider_subscription_id', $subscriptionId)->first();
+
+        if (! $userSubscription) {
+            return;
+        }
+
+        $subscriptionService = app(SubscriptionService::class);
+        $payment = $subscriptionService->recordPayment(
+            $userSubscription,
+            $invoice->amount_due / 100,
+            'failed',
+            'stripe',
+            $invoice->id
+        );
+
+        if ($payment->wasRecentlyCreated) {
+            $subscriptionService->markPastDue($userSubscription);
+        }
+
+        Log::warning("Stripe invoice payment failed for subscription: {$subscriptionId}");
+    }
+
+    protected function handlePaystackSubscriptionCreate($data)
+    {
+        Log::info('Paystack subscription created: '.json_encode($data));
+    }
+
+    protected function handlePaystackSubscriptionDisable($data)
+    {
+        $subscriptionCode = $data['subscription_code'] ?? null;
+
+        if (! $subscriptionCode) {
+            return;
+        }
+
+        $userSubscription = UserSubscription::where('payment_provider_subscription_id', $subscriptionCode)->first();
+
+        if (! $userSubscription) {
+            return;
+        }
+
+        $userSubscription->update([
+            'status' => 'canceled',
+            'canceled_at' => now(),
+        ]);
+
+        Log::info("Paystack subscription disabled: {$subscriptionCode}");
+    }
+
+    /**
+     * Handle SWISH payment webhook callback
+     */
+    public function swish(Request $request)
+    {
+        $webhookSecret = Setting::getValue('swish_webhook_secret');
+
+        // Require webhook secret for security - reject requests without it
+        if (empty($webhookSecret)) {
+            Log::error('SWISH webhook rejected: webhook secret not configured');
+
+            return response()->json(['error' => 'Webhook not configured'], 500);
+        }
+
+        $signature = $request->header('X-Swish-Signature');
+        $payload = $request->getContent();
+
+        if (empty($signature)) {
+            Log::error('SWISH webhook rejected: missing signature header');
+
+            return response()->json(['error' => 'Missing signature'], 400);
+        }
+
+        $computedSignature = hash_hmac('sha256', $payload, $webhookSecret);
+
+        // Use hash_equals to prevent timing attacks
+        if (! hash_equals($computedSignature, $signature)) {
+            Log::error('SWISH webhook rejected: invalid signature');
+
+            return response()->json(['error' => 'Invalid signature'], 400);
+        }
+
+        $payload = $request->all();
+
+        Log::info('SWISH webhook received', $payload);
+
+        $paymentRequestId = $payload['id'] ?? $payload['instructionUUID'] ?? null;
+
+        if (! $paymentRequestId) {
+            return response()->json(['error' => 'Missing payment request ID'], 422);
+        }
+
+        $payment = Payment::where('transaction_id', $paymentRequestId)
+            ->where('payment_method', 'swish')
+            ->first();
+
+        if (! $payment) {
+            Log::warning("SWISH webhook payment not found for ID {$paymentRequestId}");
+
+            return response()->json(['success' => true]);
+        }
+
+        $status = $payload['status'] ?? '';
+        $isSuccess = in_array($status, ['PAID', 'paid', 'SUCCESS', 'success'], true);
+
+        DB::beginTransaction();
+        try {
+            $payment->update([
+                'status' => $isSuccess ? 'completed' : 'failed',
+                'payment_data' => json_encode($payload),
+                'processed_at' => $isSuccess ? now() : null,
+                'error_message' => $isSuccess ? null : ($payload['errorMessage'] ?? 'SWISH payment failed'),
+            ]);
+
+            $order = $payment->order;
+            if ($order && $isSuccess && $order->payment_status !== 'paid') {
+                $order->update([
+                    'payment_status' => 'paid',
+                    'paid_at' => now(),
+                    'status' => 'processing',
+                ]);
+
+                // Award loyalty points if user and order exist
+                if ($order->user && $order->total) {
+                    $loyaltyService = app(LoyaltyPointsService::class);
+                    $loyaltyService->awardPointsForPurchase($order->user, (float) $order->total, $order->id);
+                }
+            }
+
+            if ($order && ! $isSuccess) {
+                $order->update(['payment_status' => 'failed']);
+            }
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $exception) {
+            DB::rollBack();
+            Log::error('SWISH webhook processing failed: '.$exception->getMessage());
+
+            return response()->json(['error' => 'Processing error'], 500);
         }
     }
 }

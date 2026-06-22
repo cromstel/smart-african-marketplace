@@ -16,7 +16,7 @@
 </head>
 <body>
     <div class="header">
-        <h1 style="margin: 0;">📦 Your Order is On Its Way!</h1>
+        <h2 style="margin: 0;">📦 Your Order is On Its Way!</h2>
         <p style="margin: 10px 0 0 0;">Order #{{ $order->order_number }}</p>
     </div>
 
@@ -76,3 +76,4 @@
     </div>
 </body>
 </html>
+
