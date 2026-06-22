@@ -162,7 +162,7 @@ php artisan migrate
 # ...
 ```
 
-### Step 7: Seed Database (Optional)
+### Step 7: Seed Database (Required)
 
 ```bash
 # Add sample data for testing
@@ -518,7 +518,7 @@ This creates:
 - [ ] Delivery system
 
 ### Month 4: Polish & Launch
-- [ ] WordPress-style installer
+- [ ] CMS-style installer
 - [ ] Testing
 - [ ] Documentation
 - [ ] Deployment
@@ -559,3 +559,4 @@ npm run dev
 Then open http://localhost:8000 in your browser.
 
 **Happy Coding! 🚀🌍**
+

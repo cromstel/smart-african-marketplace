@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\BrandController;
+use App\Http\Controllers\Api\BrandProductController;
+use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\Mobile\AuthController as MobileAuthController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SalonController as ApiSalonController;
+use App\Http\Controllers\Api\Vendor\ModuleAccessController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,22 +33,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('v1')->group(function () {
-    // Products
-    Route::get('/products', function () {
-        return response()->json([
-            'message' => 'Product list endpoint',
-            'data' => [],
-        ]);
-    });
-
-    // Categories
-    Route::get('/categories', function () {
-        return response()->json([
-            'message' => 'Category list endpoint',
-            'data' => [],
-        ]);
-    });
+Route::prefix('v1')->name('api.')->group(function () {
+    Route::apiResource('products', ProductController::class)->only(['index', 'show']);
+    Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
+    Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
+    Route::get('brands/{brand:slug}', [BrandController::class, 'show'])->name('brands.show');
+    Route::get('brands/{brand:slug}/products', [BrandProductController::class, 'index'])->name('brands.products.index');
+    Route::get('salon', [ApiSalonController::class, 'index'])->name('salon.index');
 });
 
 /*
@@ -48,20 +48,23 @@ Route::prefix('v1')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
-    // Cart
-    Route::post('/cart/add', function (Request $request) {
-        return response()->json([
-            'message' => 'Item added to cart',
-            'data' => [],
-        ]);
-    });
+Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
 
-    // Orders
-    Route::get('/orders', function (Request $request) {
-        return response()->json([
-            'message' => 'User orders',
-            'data' => [],
-        ]);
+    Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
+});
+
+Route::prefix('v1/vendor')->name('api.vendor.')->middleware(['auth:sanctum', 'vendor'])->group(function () {
+    Route::get('/modules', [ModuleAccessController::class, 'index'])->name('modules.index');
+});
+
+Route::prefix('v1/mobile')->name('api.mobile.')->group(function () {
+    Route::post('/auth/login', [MobileAuthController::class, 'login'])->name('auth.login');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/auth/me', [MobileAuthController::class, 'me'])->name('auth.me');
+        Route::post('/auth/logout', [MobileAuthController::class, 'logout'])->name('auth.logout');
     });
 });

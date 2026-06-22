@@ -70,6 +70,13 @@ class SmsService
         return $this->send($phoneNumber, $message);
     }
 
+    public function sendBookingCancellation(string $phoneNumber, string $serviceName, string $bookingDate)
+    {
+        $message = "Your booking for {$serviceName} on {$bookingDate} has been cancelled. Please contact us if you need help. - African Market";
+
+        return $this->send($phoneNumber, $message);
+    }
+
     public function send(string $to, string $message)
     {
         if (! $this->enabled || ! $this->client || ! $this->fromNumber) {

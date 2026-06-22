@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Salon;
 use App\Models\SalonService;
+use App\Models\SalonStylist;
 use App\Services\ImageOptimizationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -24,8 +26,11 @@ class SalonServiceController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $salonCategories = \App\Models\SalonServiceCategory::active()->orderBy('sort_order')->orderBy('name')->get();
+        $salons = Salon::orderBy('name')->get();
+        $stylists = SalonStylist::orderBy('name')->get();
 
-        return view('admin.salon-services.create', compact('categories'));
+        return view('admin.salon-services.create', compact('categories', 'salonCategories', 'salons', 'stylists'));
     }
 
     public function store(Request $request)
@@ -33,10 +38,13 @@ class SalonServiceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'salon_id' => 'nullable|exists:salons,id',
+            'stylist_id' => 'nullable|exists:salon_stylists,id',
             'category_id' => 'required|exists:categories,id',
+            'salon_category_id' => 'nullable|exists:salon_service_categories,id',
             'price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:15',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
             'is_active' => 'boolean',
         ]);
 
@@ -59,8 +67,11 @@ class SalonServiceController extends Controller
     public function edit(SalonService $salonService)
     {
         $categories = Category::all();
+        $salonCategories = \App\Models\SalonServiceCategory::active()->orderBy('sort_order')->orderBy('name')->get();
+        $salons = Salon::orderBy('name')->get();
+        $stylists = SalonStylist::orderBy('name')->get();
 
-        return view('admin.salon-services.edit', compact('salonService', 'categories'));
+        return view('admin.salon-services.edit', compact('salonService', 'categories', 'salonCategories', 'salons', 'stylists'));
     }
 
     public function update(Request $request, SalonService $salonService)
@@ -68,10 +79,13 @@ class SalonServiceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'salon_id' => 'nullable|exists:salons,id',
+            'stylist_id' => 'nullable|exists:salon_stylists,id',
             'category_id' => 'required|exists:categories,id',
+            'salon_category_id' => 'nullable|exists:salon_service_categories,id',
             'price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:15',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
             'is_active' => 'boolean',
         ]);
 

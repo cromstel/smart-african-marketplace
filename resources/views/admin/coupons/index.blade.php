@@ -4,7 +4,7 @@
 @section('header', 'Coupon Management')
 
 @section('content')
-<div class="mb-6 flex items-center justify-between">
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
     <div>
         <h3 class="text-2xl font-bold text-white">All Coupons</h3>
         <p class="text-gray-400 mt-1">Manage discount coupons and promotional codes</p>
@@ -17,12 +17,36 @@
     </a>
 </div>
 
+<div class="mb-6 bg-gray-800 rounded-lg border border-gray-700 p-4">
+    <form method="GET" class="flex flex-wrap gap-4">
+        <div>
+            <select name="vendor_id" class="bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                <option value="">All Vendors (Global + Vendor)</option>
+                @foreach($vendors as $vendor)
+                    <option value="{{ $vendor->id }}" {{ request('vendor_id') == $vendor->id ? 'selected' : '' }}>
+                        {{ $vendor->business_name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
+            Filter
+        </button>
+        @if(request('vendor_id'))
+            <a href="{{ route('admin.coupons.index') }}" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
+                Clear
+            </a>
+        @endif
+    </form>
+</div>
+
 <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
     <table class="min-w-full divide-y divide-gray-700">
         <thead class="bg-gray-900">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Code</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Vendor</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Value</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Usage</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Valid Until</th>
@@ -43,6 +67,9 @@
                         <span class="px-2 py-1 text-xs rounded {{ $coupon->type === 'fixed' ? 'bg-blue-900 text-blue-300' : 'bg-purple-900 text-purple-300' }}">
                             {{ ucfirst($coupon->type) }}
                         </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        {{ $coupon->vendor?->business_name ?? 'Global' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-white font-semibold">
                         @if($coupon->type === 'fixed')
@@ -84,7 +111,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="px-6 py-8 text-center text-gray-400">
+                    <td colspan="8" class="px-6 py-8 text-center text-gray-400">
                         No coupons found. Create your first coupon to get started.
                     </td>
                 </tr>
@@ -99,3 +126,4 @@
     </div>
 @endif
 @endsection
+

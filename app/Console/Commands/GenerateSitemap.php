@@ -20,7 +20,7 @@ class GenerateSitemap extends Command
 
         $sitemap .= $this->addUrl(url('/'), '1.0', 'daily');
         $sitemap .= $this->addUrl(route('shop.index'), '0.9', 'daily');
-        $sitemap .= $this->addUrl(route('salons.index'), '0.9', 'daily');
+        $sitemap .= $this->addUrl(route('salon.index'), '0.9', 'daily');
 
         $products = Product::where('is_active', true)->get();
         foreach ($products as $product) {
@@ -35,7 +35,7 @@ class GenerateSitemap extends Command
         $salonServices = SalonService::where('is_active', true)->get();
         foreach ($salonServices as $service) {
             $sitemap .= $this->addUrl(
-                route('salons.show', $service->slug),
+                route('salon.show', $service->slug),
                 '0.7',
                 'weekly',
                 $service->updated_at->toAtomString()

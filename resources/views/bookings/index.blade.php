@@ -1,13 +1,17 @@
-@extends('layouts.app')
+@extends('layouts.shop')
 
 @section('title', 'My Bookings')
 
 @section('content')
+<x-hero-section
+    pageIdentifier="bookings"
+    fallbackTitle="My Bookings"
+    fallbackSubtitle="View and manage your salon service bookings"
+    fallbackImage="/images/booking-banner.avif"
+    :animated="true"
+/>
+
 <div class="container mx-auto px-4 py-8">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-white mb-2">My Bookings</h1>
-        <p class="text-gray-400">View and manage your salon service bookings</p>
-    </div>
 
     @if($bookings->count() > 0)
         <div class="space-y-4">
@@ -68,6 +72,11 @@
                                 <a href="{{ route('bookings.show', $booking) }}" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">
                                     View Details
                                 </a>
+                                @if(in_array($booking->status, ['pending', 'confirmed']) && $booking->booking_date->isFuture())
+                                    <a href="{{ route('bookings.reschedule', $booking) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm">
+                                        Reschedule
+                                    </a>
+                                @endif
                                 @if(in_array($booking->status, ['pending', 'confirmed']))
                                     <form action="{{ route('bookings.cancel', $booking) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?')">
                                         @csrf
@@ -95,10 +104,11 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
             <p class="text-gray-400 text-lg mb-4">No bookings yet</p>
-            <a href="{{ route('salons.index') }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg">
+            <a href="{{ route('salon.index') }}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg">
                 Browse Salon Services
             </a>
         </div>
     @endif
 </div>
 @endsection
+

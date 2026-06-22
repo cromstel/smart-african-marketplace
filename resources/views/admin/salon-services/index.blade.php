@@ -36,7 +36,7 @@
                     <td class="px-6 py-4">
                         <div class="flex items-center">
                             @if($service->image)
-                                <img src="{{ Storage::url($service->image) }}" alt="{{ $service->name }}" class="w-16 h-12 object-cover rounded mr-3">
+                                <img src="{{ '/storage/' . ltrim($service->image ?? '', '/') }}" alt="{{ $service->name }}" class="w-16 h-12 object-cover rounded mr-3">
                             @else
                                 <div class="w-16 h-12 bg-gray-700 rounded mr-3 flex items-center justify-center">
                                     <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,3 +95,4 @@
     </div>
 @endif
 @endsection
+

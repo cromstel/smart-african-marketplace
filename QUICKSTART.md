@@ -100,6 +100,25 @@ african-market/
 - `/admin/dashboard` - Admin panel
 - `/vendor/dashboard` - Vendor portal
 - `/api/v1/*` - API endpoints
+- `/healthz` - Runtime health/readiness check
+
+### Mobile API Readiness (Sanctum)
+- `POST /api/v1/mobile/auth/login` - Issue Bearer token
+- `GET /api/v1/mobile/auth/me` - Current authenticated user
+- `POST /api/v1/mobile/auth/logout` - Revoke current token
+
+Example login request:
+```bash
+curl -X POST http://localhost:8000/api/v1/mobile/auth/login \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"vendor@africanmarket.com\",\"password\":\"password\",\"device_name\":\"android\"}"
+```
+
+Use returned token:
+```bash
+curl http://localhost:8000/api/v1/mobile/auth/me \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
 
 ### Custom Tailwind Classes
 - `btn-primary` - Primary buttons

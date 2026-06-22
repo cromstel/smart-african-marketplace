@@ -13,6 +13,9 @@ class SalonService extends Model
 
     protected $fillable = [
         'user_id',
+        'salon_id',
+        'stylist_id',
+        'salon_category_id',
         'category_id',
         'name',
         'slug',
@@ -34,9 +37,24 @@ class SalonService extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function salon(): BelongsTo
+    {
+        return $this->belongsTo(Salon::class);
+    }
+
+    public function stylist(): BelongsTo
+    {
+        return $this->belongsTo(SalonStylist::class, 'stylist_id');
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function salonCategory(): BelongsTo
+    {
+        return $this->belongsTo(SalonServiceCategory::class, 'salon_category_id');
     }
 
     public function bookings(): HasMany

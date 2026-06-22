@@ -11,7 +11,7 @@
             </svg>
         </div>
 
-        <h1 class="text-3xl font-bold text-white mb-2">Payment Failed</h1>
+        <h2 class="text-3xl font-bold text-white mb-2">Payment Failed</h2>
         <p class="text-gray-400 mb-8">We couldn't process your payment. Please try again or use a different payment method.</p>
 
         <div class="bg-gray-900 rounded-lg p-6 mb-8">
@@ -34,3 +34,4 @@
     </div>
 </div>
 @endsection
+

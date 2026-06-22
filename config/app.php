@@ -3,17 +3,25 @@
 use Illuminate\Support\Facades\Facade;
 
 return [
-    'name' => env('APP_NAME', 'African Market'),
+    'name' => env('APP_NAME', 'Smart African Marketplace'),
     'env' => env('APP_ENV', 'production'),
     'debug' => (bool) env('APP_DEBUG', false),
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL'),
     'asset_url' => env('ASSET_URL'),
     'timezone' => 'UTC',
     'locale' => 'en',
     'fallback_locale' => 'en',
+    'supported_locales' => ['en', 'fr', 'sv', 'da'],
+    'supported_locale_labels' => [
+        'en' => 'English',
+        'fr' => 'Francais',
+        'sv' => 'Svenska',
+        'da' => 'Dansk',
+    ],
     'faker_locale' => 'en_US',
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
+    'version' => env('APP_VERSION', '1.0.0'),
 
     'maintenance' => [
         'driver' => 'file',

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -15,6 +16,7 @@ class Product extends Model
     protected $fillable = [
         'vendor_id',
         'category_id',
+        'brand_id',
         'name',
         'slug',
         'sku',
@@ -29,6 +31,13 @@ class Product extends Model
         'weight',
         'dimensions',
         'origin_country',
+        'latitude',
+        'longitude',
+        'location_address',
+        'location_city',
+        'location_state',
+        'location_country',
+        'location_postal_code',
         'attributes',
         'featured_image',
         'is_featured',
@@ -66,6 +75,16 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(ProductTag::class, 'product_product_tag');
+    }
+
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');
@@ -73,7 +92,7 @@ class Product extends Model
 
     public function variants(): HasMany
     {
-        return $this->hasMany(ProductVariant::class);
+        return $this->hasMany(ProductVariation::class);
     }
 
     public function reviews(): HasMany
@@ -94,6 +113,11 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function seoMeta()
+    {
+        return $this->morphOne(SeoMeta::class, 'model');
     }
 
     public function scopeActive($query)

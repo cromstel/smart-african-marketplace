@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -56,5 +57,30 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    /**
+     * Update the user's profile avatar.
+     */
+    public function updateAvatar(Request $request): RedirectResponse
+    {
+        $validated = $request->validateWithBag('updateAvatar', [
+            'avatar' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:50'],
+        ]);
+
+        $user = $request->user();
+        $previousAvatar = $user->avatar;
+
+        $path = $validated['avatar']->store('avatars', 'public');
+        $user->avatar = $path;
+        $user->save();
+
+        if ($previousAvatar && ! str_starts_with($previousAvatar, 'http')) {
+            if (Storage::disk('public')->exists($previousAvatar)) {
+                Storage::disk('public')->delete($previousAvatar);
+            }
+        }
+
+        return Redirect::route('profile.edit')->with('status', 'avatar-updated');
     }
 }

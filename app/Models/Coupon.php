@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Coupon extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'vendor_id',
         'code',
         'type',
         'value',
@@ -44,6 +46,11 @@ class Coupon extends Model
                 $q->whereNull('expires_at')
                     ->orWhere('expires_at', '>=', now());
             });
+    }
+
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class);
     }
 
     public function isValid(): bool

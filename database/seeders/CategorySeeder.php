@@ -10,43 +10,154 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        $foodCategory = Category::create([
-            'name' => 'African Food Products',
-            'slug' => 'african-food-products',
-            'description' => 'Authentic African food products from across the continent',
-            'type' => 'food',
-            'sort_order' => 1,
-            'is_active' => true,
-        ]);
+        $grainsCategory = Category::where('slug', 'grains-flours')
+            ->orWhere('name', 'Grains & Flours')
+            ->first();
+        if ($grainsCategory) {
+            $grainsCategory->update([
+                'name' => 'Grains & Cereals',
+                'slug' => Str::slug('Grains & Cereals'),
+                'description' => 'Staple grains and cereals',
+                'parent_id' => null,
+                'type' => 'food',
+                'sort_order' => 1,
+                'is_active' => true,
+            ]);
+        } else {
+            $grainsCategory = Category::updateOrCreate(
+                ['slug' => 'grains-cereals'],
+                [
+                    'name' => 'Grains & Cereals',
+                    'description' => 'Staple grains and cereals',
+                    'parent_id' => null,
+                    'type' => 'food',
+                    'sort_order' => 1,
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        $spicesCategory = Category::where('slug', 'spices-seasonings')
+            ->orWhere('name', 'Spices & Seasonings')
+            ->first();
+        if ($spicesCategory) {
+            $spicesCategory->update([
+                'name' => 'Spices & Seasonings',
+                'slug' => Str::slug('Spices & Seasonings'),
+                'description' => 'Authentic spice blends and seasonings',
+                'parent_id' => null,
+                'type' => 'food',
+                'sort_order' => 2,
+                'is_active' => true,
+            ]);
+        } else {
+            $spicesCategory = Category::updateOrCreate(
+                ['slug' => 'spices-seasonings'],
+                [
+                    'name' => 'Spices & Seasonings',
+                    'description' => 'Authentic spice blends and seasonings',
+                    'parent_id' => null,
+                    'type' => 'food',
+                    'sort_order' => 2,
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        $readyMealsCategory = Category::where('slug', 'ready-meals')
+            ->orWhere('name', 'Ready Meals')
+            ->first();
+        if ($readyMealsCategory) {
+            $readyMealsCategory->update([
+                'name' => 'Ready Meals',
+                'slug' => Str::slug('Ready Meals'),
+                'description' => 'Ready to eat meals and quick dishes',
+                'parent_id' => null,
+                'type' => 'food',
+                'sort_order' => 3,
+                'is_active' => true,
+            ]);
+        } else {
+            $readyMealsCategory = Category::updateOrCreate(
+                ['slug' => 'ready-meals'],
+                [
+                    'name' => 'Ready Meals',
+                    'description' => 'Ready to eat meals and quick dishes',
+                    'parent_id' => null,
+                    'type' => 'food',
+                    'sort_order' => 3,
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        $fashionCategory = Category::where('slug', 'african-clothing')
+            ->orWhere('name', 'African Clothing')
+            ->first();
+        if ($fashionCategory) {
+            $fashionCategory->update([
+                'name' => 'Fashion & Apparel',
+                'slug' => Str::slug('Fashion & Apparel'),
+                'description' => 'Traditional and modern African fashion',
+                'parent_id' => null,
+                'type' => 'clothing',
+                'sort_order' => 4,
+                'is_active' => true,
+            ]);
+        } else {
+            $fashionCategory = Category::updateOrCreate(
+                ['slug' => 'fashion-apparel'],
+                [
+                    'name' => 'Fashion & Apparel',
+                    'description' => 'Traditional and modern African fashion',
+                    'parent_id' => null,
+                    'type' => 'clothing',
+                    'sort_order' => 4,
+                    'is_active' => true,
+                ]
+            );
+        }
+
+        $foodCategory = Category::updateOrCreate(
+            ['slug' => 'african-food-products'],
+            [
+                'name' => 'African Food Products',
+                'description' => 'Authentic African food products from across the continent',
+                'type' => 'food',
+                'sort_order' => 10,
+                'is_active' => true,
+            ]
+        );
 
         $foodSubcategories = [
-            'Grains & Flours' => ['Fufu flour', 'Cassava flour', 'Yam flour', 'Plantain flour'],
-            'Spices & Seasonings' => ['Suya spice', 'Berbere', 'Ras el hanout', 'Peri peri'],
             'Sauces & Condiments' => ['Palm oil', 'Groundnut paste', 'Shito sauce', 'Piri piri sauce'],
-            'Snacks & Beverages' => ['Chin chin', 'Puff puff mix', 'Hibiscus tea', 'Baobab powder'],
             'Fresh & Frozen' => ['Plantains', 'Cassava', 'Yams', 'African vegetables'],
         ];
 
         foreach ($foodSubcategories as $name => $keywords) {
-            Category::create([
-                'name' => $name,
-                'slug' => Str::slug($name),
-                'description' => 'Various '.$name.' products',
-                'parent_id' => $foodCategory->id,
+            Category::updateOrCreate(
+                ['slug' => Str::slug($name)],
+                [
+                    'name' => $name,
+                    'description' => 'Various '.$name.' products',
+                    'parent_id' => $foodCategory->id,
+                    'type' => 'food',
+                    'sort_order' => 0,
+                    'is_active' => true,
+                ]
+            );
+        }
+        Category::updateOrCreate(
+            ['slug' => 'snacks-beverages'],
+            [
+                'name' => 'Snacks & Beverages',
+                'description' => 'Quick bites and refreshing drinks',
+                'parent_id' => $readyMealsCategory->id,
                 'type' => 'food',
                 'sort_order' => 0,
                 'is_active' => true,
-            ]);
-        }
-
-        $clothingCategory = Category::create([
-            'name' => 'African Clothing',
-            'slug' => 'african-clothing',
-            'description' => 'Traditional and modern African fashion',
-            'type' => 'clothing',
-            'sort_order' => 2,
-            'is_active' => true,
-        ]);
+            ]
+        );
 
         $clothingSubcategories = [
             "Men's Wear" => ['Dashiki', 'Agbada', 'Kaftan', 'African shirts'],
@@ -56,25 +167,29 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($clothingSubcategories as $name => $keywords) {
-            Category::create([
-                'name' => $name,
-                'slug' => Str::slug($name),
-                'description' => 'Various '.$name.' products',
-                'parent_id' => $clothingCategory->id,
-                'type' => 'clothing',
-                'sort_order' => 0,
-                'is_active' => true,
-            ]);
+            Category::updateOrCreate(
+                ['slug' => Str::slug($name)],
+                [
+                    'name' => $name,
+                    'description' => 'Various '.$name.' products',
+                    'parent_id' => $fashionCategory->id,
+                    'type' => 'clothing',
+                    'sort_order' => 0,
+                    'is_active' => true,
+                ]
+            );
         }
 
-        $salonCategory = Category::create([
-            'name' => 'Salon Services',
-            'slug' => 'salon-services',
-            'description' => 'Professional African hair and beauty services',
-            'type' => 'salon',
-            'sort_order' => 3,
-            'is_active' => true,
-        ]);
+        $salonCategory = Category::updateOrCreate(
+            ['slug' => 'salon-services'],
+            [
+                'name' => 'Salon Services',
+                'description' => 'Professional African hair and beauty services',
+                'type' => 'salon',
+                'sort_order' => 3,
+                'is_active' => true,
+            ]
+        );
 
         $salonSubcategories = [
             'Braiding' => ['Box braids', 'Cornrows', 'Twist braids', 'Ghana weaving'],
@@ -84,15 +199,17 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($salonSubcategories as $name => $keywords) {
-            Category::create([
-                'name' => $name,
-                'slug' => Str::slug($name),
-                'description' => 'Various '.$name.' services',
-                'parent_id' => $salonCategory->id,
-                'type' => 'salon',
-                'sort_order' => 0,
-                'is_active' => true,
-            ]);
+            Category::updateOrCreate(
+                ['slug' => Str::slug($name)],
+                [
+                    'name' => $name,
+                    'description' => 'Various '.$name.' services',
+                    'parent_id' => $salonCategory->id,
+                    'type' => 'salon',
+                    'sort_order' => 0,
+                    'is_active' => true,
+                ]
+            );
         }
     }
 }

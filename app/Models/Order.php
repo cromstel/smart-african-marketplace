@@ -15,6 +15,8 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'user_id',
+        'order_group_id',
+        'is_parent',
         'billing_address_id',
         'shipping_address_id',
         'subtotal',
@@ -41,6 +43,7 @@ class Order extends Model
         'shipping_cost' => 'decimal:2',
         'discount' => 'decimal:2',
         'total' => 'decimal:2',
+        'is_parent' => 'boolean',
         'paid_at' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
@@ -65,6 +68,16 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(OrderGroup::class, 'order_group_id');
+    }
+
+    public function scopeChildOrders($query)
+    {
+        return $query->where('is_parent', false);
     }
 
     public function payment(): HasOne
@@ -100,5 +113,15 @@ class Order extends Model
     public function scopePaid($query)
     {
         return $query->where('payment_status', 'paid');
+    }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(OrderNote::class)->latest();
+    }
+
+    public function shipment(): HasOne
+    {
+        return $this->hasOne(Shipment::class);
     }
 }

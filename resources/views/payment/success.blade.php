@@ -11,7 +11,7 @@
             </svg>
         </div>
 
-        <h1 class="text-3xl font-bold text-white mb-2">Payment Successful!</h1>
+        <h2 class="text-3xl font-bold text-white mb-2">Payment Successful!</h2>
         <p class="text-gray-400 mb-8">Thank you for your order. Your payment has been processed successfully.</p>
 
         <div class="bg-gray-900 rounded-lg p-6 mb-8">
@@ -46,3 +46,4 @@
     </div>
 </div>
 @endsection
+

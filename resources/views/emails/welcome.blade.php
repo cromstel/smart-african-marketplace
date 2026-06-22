@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="header">
-        <h1 style="margin: 0; font-size: 32px;">Welcome to African Market!</h1>
+        <h2 style="margin: 0; font-size: 32px;">Welcome to African Market!</h2>
         <p style="margin: 10px 0 0 0; font-size: 16px;">Your gateway to authentic African products</p>
     </div>
 
@@ -63,3 +63,4 @@
     </div>
 </body>
 </html>
+

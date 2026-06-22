@@ -1,12 +1,13 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="app-page-container px-4 sm:px-6 lg:px-8 sticky top-0 z-30 bg-white dark:bg-gray-800">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('dashboard') }}" class="flex items-center">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                        <span class="ms-2 text-sm sm:text-base lg:text-lg font-semibold text-gray-800 dark:text-gray-200 uppercase tracking-wide">{{ config('app.name', 'African Market') }}</span>
                     </a>
                 </div>
 
@@ -19,11 +20,27 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-3">
+                @php
+                    $navUser = Auth::user();
+                    $navAvatarValue = $navUser?->avatar;
+                    $navAvatarUrl = $navAvatarValue
+                        ? (str_starts_with($navAvatarValue, 'http') ? $navAvatarValue : asset('storage/' . ltrim($navAvatarValue, '/')))
+                        : null;
+                @endphp
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center">
+                                    @if ($navAvatarUrl)
+                                        <img src="{{ $navAvatarUrl }}" alt="{{ $navUser->name }} avatar" class="w-full h-full object-cover">
+                                    @else
+                                        <span class="text-xs font-semibold text-gray-500">{{ strtoupper(substr($navUser->name, 0, 1)) }}</span>
+                                    @endif
+                                </span>
+                                <span>{{ $navUser->name }}</span>
+                            </div>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -34,8 +51,20 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link :href="route('profile.edit') . '#profile-summary'">
+                            {{ __('View Profile') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('profile.edit') . '#profile-info'">
+                            {{ __('Edit Profile') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('profile.edit') . '#profile-photo'">
+                            {{ __('Update Profile Picture') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('profile.edit') . '#password'">
+                            {{ __('Change Password') }}
+                        </x-dropdown-link>
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            {{ __('Account Settings') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -80,8 +109,20 @@
             </div>
 
             <div class="mt-3 space-y-1">
+                <x-responsive-nav-link :href="route('profile.edit') . '#profile-summary'">
+                    {{ __('View Profile') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('profile.edit') . '#profile-info'">
+                    {{ __('Edit Profile') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('profile.edit') . '#profile-photo'">
+                    {{ __('Update Profile Picture') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('profile.edit') . '#password'">
+                    {{ __('Change Password') }}
+                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    {{ __('Account Settings') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
@@ -98,3 +139,4 @@
         </div>
     </div>
 </nav>
+

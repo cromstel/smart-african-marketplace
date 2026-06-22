@@ -13,7 +13,7 @@
 
         <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
             <div class="bg-gray-900 px-6 py-4 border-b border-gray-700">
-                <h1 class="text-2xl font-bold text-white">Mobile Money Payment</h1>
+                <h2 class="text-2xl font-bold text-white">Mobile Money Payment</h2>
                 <p class="text-gray-400 text-sm mt-1">Order #{{ $order->order_number }}</p>
             </div>
 
@@ -73,6 +73,17 @@
                     <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
                         <h2 class="text-lg font-bold text-white mb-4">Enter Payment Details</h2>
 
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                Provider *
+                            </label>
+                            <select name="provider" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2" required>
+                                <option value="mtn" {{ old('provider', $provider ?? 'mtn') === 'mtn' ? 'selected' : '' }}>MTN MoMo</option>
+                                <option value="mpesa" {{ old('provider', $provider ?? 'mtn') === 'mpesa' ? 'selected' : '' }}>M-Pesa</option>
+                            </select>
+                            @error('provider') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-2">
                                 Mobile Money Phone Number *
@@ -130,3 +141,4 @@
     </div>
 </div>
 @endsection
+

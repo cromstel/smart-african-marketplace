@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.orders.update-status', $order) }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.orders.update', $order) }}" method="POST" class="space-y-6">
         @csrf
         @method('PUT')
 
@@ -44,11 +44,23 @@
                         <option value="shipped" {{ $order->status === 'shipped' ? 'selected' : '' }}>Shipped</option>
                         <option value="delivered" {{ $order->status === 'delivered' ? 'selected' : '' }}>Delivered</option>
                         <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        <option value="refunded" {{ $order->status === 'refunded' ? 'selected' : '' }}>Refunded</option>
                     </select>
                     <p class="text-gray-400 text-xs mt-2">
                         ⚠️ Changing status to "Shipped" or "Delivered" will automatically send email notification to customer
                     </p>
                     @error('status') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Payment Status *</label>
+                    <select name="payment_status" required class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                        <option value="pending" {{ $order->payment_status === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="paid" {{ $order->payment_status === 'paid' ? 'selected' : '' }}>Paid</option>
+                        <option value="failed" {{ $order->payment_status === 'failed' ? 'selected' : '' }}>Failed</option>
+                        <option value="refunded" {{ $order->payment_status === 'refunded' ? 'selected' : '' }}>Refunded</option>
+                    </select>
+                    @error('payment_status') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
@@ -58,6 +70,12 @@
                            placeholder="e.g., 1Z999AA10123456784">
                     <p class="text-gray-400 text-xs mt-1">Add tracking number if status is "Shipped"</p>
                     @error('tracking_number') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Admin Notes</label>
+                    <textarea name="admin_notes" rows="3" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">{{ old('admin_notes', $order->admin_notes) }}</textarea>
+                    @error('admin_notes') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
         </div>
@@ -102,3 +120,4 @@
     </form>
 </div>
 @endsection
+

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smart African Market</string>
+    <string name="download_started">Download started</string>
+    <string name="unsupported_link">Cannot open this link</string>
+</resources>

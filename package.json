@@ -1,22 +1,27 @@
 {
-    "name": "african-market",
+    "name": "smart-african-marketplace",
     "private": true,
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "security-check": "npm audit --audit-level=high"
     },
     "devDependencies": {
-        "@tailwindcss/forms": "^0.5.2",
-        "alpinejs": "^3.4.2",
-        "autoprefixer": "^10.4.2",
-        "axios": "^1.6.2",
-        "laravel-vite-plugin": "^1.0.0",
-        "postcss": "^8.4.31",
-        "tailwindcss": "^3.1.0",
-        "vite": "^6.4.3"
+        "@tailwindcss/forms": "^0.5.7",
+        "alpinejs": "^3.15.12",
+        "autoprefixer": "^10.5.0",
+        "axios": "^1.9.0",
+        "laravel-vite-plugin": "^3.1.0",
+        "playwright": "^1.61.0",
+        "postcss": "^8.5.10",
+        "tailwindcss": "^3.4.19",
+        "vite": "^8.0.15"
     },
     "dependencies": {
-        "chart.js": "^4.5.1"
+        "chart.js": "^4.5.1",
+        "laravel-echo": "^1.19.0",
+        "pusher-js": "^8.5.0",
+        "tinymce": "^8.6.0"
     }
 }

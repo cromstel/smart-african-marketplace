@@ -17,7 +17,7 @@
 </head>
 <body>
     <div class="header">
-        <h1 style="margin: 0;">Order Confirmation</h1>
+        <h2 style="margin: 0;">Order Confirmation</h2>
         <p style="margin: 10px 0 0 0;">Thank you for your order!</p>
     </div>
 
@@ -29,7 +29,13 @@
         <div class="order-summary">
             <h2 style="margin-top: 0;">Order Details</h2>
             
-            @foreach($order->items as $item)
+            @php
+                $emailItems = $order->items;
+                if ($order->is_parent && $order->group) {
+                    $emailItems = $order->group->orders->where('is_parent', false)->flatMap->items;
+                }
+            @endphp
+            @foreach($emailItems as $item)
                 <div class="order-item">
                     <div>
                         <strong>{{ $item->product_name }}</strong><br>
@@ -79,3 +85,4 @@
     </div>
 </body>
 </html>
+

@@ -1,7 +1,7 @@
 {
     "name": "african-market/ecommerce",
     "type": "project",
-    "description": "African Market E-commerce Platform - WordPress-style installable marketplace for African products and services",
+    "description": "African Market E-commerce Platform - CMS-style installable marketplace for African products and services",
     "keywords": [
         "ecommerce",
         "african-market",
@@ -12,31 +12,32 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.1|^8.2",
-        "barryvdh/laravel-dompdf": "^2.0",
-        "intervention/image": "^2.7",
-        "laravel/cashier": "^15.0",
-        "laravel/framework": "^10.0",
-        "laravel/sanctum": "^3.3",
-        "laravel/socialite": "^5.24",
+        "php": "^8.2|^8.3|^8.4",
+        "barryvdh/laravel-dompdf": "dev-master",
+        "endroid/qr-code": "^6.0",
+        "intervention/image": "^2.7|^3.0",
+        "laravel/cashier": "^15.8|^17.0",
+        "laravel/framework": "^12.60",
+        "laravel/sanctum": "^3.3|^4.0",
+        "laravel/socialite": "^5.24|^5.28",
         "laravel/tinker": "^2.8",
-        "livewire/livewire": "^3.0",
-        "spatie/laravel-activitylog": "^4.7",
-        "spatie/laravel-permission": "^5.11",
-        "spatie/laravel-sluggable": "^3.5",
-        "twilio/sdk": "^8.11",
-        "unicodeveloper/laravel-paystack": "^1.1"
+        "livewire/livewire": "^3.0|^4.0",
+        "spatie/laravel-activitylog": "^4.7|^5.0",
+        "spatie/laravel-permission": "^6.24|^8.0",
+        "spatie/laravel-sluggable": "^3.5|^4.0",
+        "stripe/stripe-php": "^16.2|^20.0",
+        "twilio/sdk": "^8.11"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.9.1",
+        "fakerphp/faker": "^1.22",
         "laravel/breeze": "*",
-        "laravel/pint": "^1.0",
-        "laravel/sail": "^1.18",
-        "laravel/telescope": "^4.17",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^7.0",
-        "phpunit/phpunit": "^10.0",
-        "spatie/laravel-ignition": "^2.0"
+        "laravel/pint": "^1.15",
+        "laravel/sail": "^1.18|^2.0",
+        "laravel/telescope": "^4.17|^5.0",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^7.0|^8.0",
+        "phpunit/phpunit": "^10.0|^11.0|^12.0",
+        "spatie/laravel-ignition": "^2.0|^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -85,6 +86,9 @@
         ],
         "format": [
             "./vendor/bin/pint"
+        ],
+        "security-check": [
+            "@php -r \"echo 'Run: npm audit && composer audit --no-security-blocking\\n';\""
         ]
     },
     "extra": {

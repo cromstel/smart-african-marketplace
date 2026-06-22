@@ -1,6 +1,10 @@
 # African Market - E-commerce Platform
 
-> WordPress-style installable e-commerce platform for African food products, clothing, and salon services.
+<p align="center">
+  <img src="./public/assets/hero-banner.svg" alt="African Market Hero Banner" width="100%">
+</p>
+
+> CMS-style installable e-commerce platform for African food products, clothing, and salon services.
 
 [![Laravel](https://img.shields.io/badge/Laravel-10+-FF2D20?logo=laravel)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php)](https://php.net)
@@ -19,7 +23,7 @@
 - **Multi-Vendor Marketplace**: Allow vendors to sell products
 - **Built-in Delivery System**: Manage deliveries without external services
 
-**Key Feature**: Installable like WordPress - upload, run installer, done!
+**Key Feature**: Installable like CMS - upload, run installer, done!
 
 ---
 
@@ -36,7 +40,7 @@
 - 🔐 Secure authentication (Laravel Sanctum)
 - 📧 Email notifications
 - 🎛️ Comprehensive admin panel
-- 💿 **WordPress-style web installer**
+- 💿 **CMS-style web installer**
 
 ### Advanced Features
 - 💇 Salon booking system
@@ -98,7 +102,7 @@ zip, gd, fileinfo, openssl, tokenizer, json
 
 ## 🚀 Installation
 
-### Option 1: Web Installer (Production - Like WordPress)
+### Option 1: Web Installer (Production - Like CMS)
 
 1. **Download** the African Market package
 2. **Upload** files to your web server via FTP/SFTP
@@ -311,8 +315,11 @@ php artisan route:list
 
 - **[PRD.md](./PRD.md)** - Product Requirements Document
 - **[TECH_STACK.md](./TECH_STACK.md)** - Technology Stack Details
-- **[TODO.md](./TODO.md)** - Development Tasks (needs Laravel updates)
-- **[IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)** - Roadmap (needs Laravel updates)
+- **[TODO.md](./TODO.md)** - Development Tasks and Laravel status
+- **[IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)** - Implementation roadmap
+- **[docs/DEPLOYMENT_RUNBOOK.md](./docs/DEPLOYMENT_RUNBOOK.md)** - Production readiness checklist
+- **[docs/WEBHOOK_E2E.md](./docs/WEBHOOK_E2E.md)** - Deterministic webhook E2E verification
+- **[docs/PENDING_CLOSURE_MATRIX.md](./docs/PENDING_CLOSURE_MATRIX.md)** - Auditable pending-task closure status
 
 ---
 
@@ -334,6 +341,17 @@ php artisan route:list
 - [ ] Configure Apache virtual host
 - [ ] Enable SSL/TLS (Let's Encrypt)
 - [ ] Set up automated backups
+- [ ] Run `php artisan app:verify-readiness --strict`
+- [ ] Run deterministic webhook checks from `docs/WEBHOOK_E2E.md`
+
+### CI Strict Readiness Secrets
+
+To enable strict readiness in GitHub Actions, configure these repository secrets:
+
+- `STRIPE_KEY`
+- `STRIPE_SECRET`
+- `PAYSTACK_PUBLIC_KEY`
+- `PAYSTACK_SECRET_KEY`
 
 ### File Permissions
 
@@ -476,3 +494,11 @@ php artisan serve
 ```
 
 **That's it! Start building your African Market!** 🎉
+
+---
+
+## Documentation
+
+- User-facing documentation: `documentation/README.md`
+- Existing technical/deployment notes: `docs/`
+

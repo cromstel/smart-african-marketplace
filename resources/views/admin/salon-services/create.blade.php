@@ -28,7 +28,7 @@
                     @error('description') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">Category *</label>
                         <select name="category_id" required class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
@@ -40,6 +40,20 @@
                             @endforeach
                         </select>
                         @error('category_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Service Type</label>
+                        <select name="salon_category_id" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                            <option value="">Select Type</option>
+                            @foreach($salonCategories as $salonCategory)
+                                <option value="{{ $salonCategory->id }}" {{ old('salon_category_id') == $salonCategory->id ? 'selected' : '' }}>
+                                    {{ $salonCategory->icon }} {{ $salonCategory->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('salon_category_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                        <p class="text-xs text-gray-500 mt-1">Optional predefined type</p>
                     </div>
 
                     <div>
@@ -57,6 +71,34 @@
                                placeholder="60">
                         <p class="text-xs text-gray-500 mt-1">Minimum 15 minutes</p>
                         @error('duration_minutes') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Salon</label>
+                        <select name="salon_id" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                            <option value="">Select Salon</option>
+                            @foreach($salons as $salon)
+                                <option value="{{ $salon->id }}" {{ old('salon_id') == $salon->id ? 'selected' : '' }}>
+                                    {{ $salon->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('salon_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Stylist</label>
+                        <select name="stylist_id" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                            <option value="">Select Stylist</option>
+                            @foreach($stylists as $stylist)
+                                <option value="{{ $stylist->id }}" {{ old('stylist_id') == $stylist->id ? 'selected' : '' }}>
+                                    {{ $stylist->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('stylist_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
@@ -87,3 +129,4 @@
     </form>
 </div>
 @endsection
+

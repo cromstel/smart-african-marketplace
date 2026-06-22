@@ -67,7 +67,7 @@
 ### ✅ Meets Your Requirements
 
 1. **Works with existing Apache/PHP/MySQL** - No need for Node.js, Docker, or cloud services
-2. **WordPress-style installation** - Can be uploaded to any server and installed via web wizard
+2. **CMS-style installation** - Can be uploaded to any server and installed via web wizard
 3. **No external paid services** - Everything self-hosted except payment gateways
 4. **Cross-platform** - Runs on Windows, Linux, Mac
 5. **Easy deployment** - FTP upload + web installer
@@ -244,3 +244,4 @@ PAYSTACK_PAYMENT_URL=https://api.paystack.co
 ---
 
 **Ready to start development!** 🚀
+
