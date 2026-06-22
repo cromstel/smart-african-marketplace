@@ -12,12 +12,9 @@ use App\Models\Vendor;
 use App\Observers\KnowledgeBaseObserver;
 use App\Observers\OrderObserver;
 use App\Observers\VendorObserver;
-use App\Rules\SecureEmail;
 use App\Services\QrCodeService;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -32,9 +29,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Secure email validation to mitigate CRLF injection (CVE-2024-xxxxx)
-        Validator::extend('email_secure', SecureEmail::class);
-
         Blade::if('canModule', function (string $moduleKey) {
             return auth()->check() && auth()->user()->hasModuleAccess($moduleKey);
         });
@@ -56,12 +50,8 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureMail(): void
     {
-// Use cache to avoid configuring mail on every request
-// Skip if the settings table does not exist (e.g., fresh DB)
-if (!Schema::hasTable('settings')) {
-    return;
-}
-$cacheKey = 'mail.configured_from_db';
+        // Use cache to avoid configuring mail on every request
+        $cacheKey = 'mail.configured_from_db';
 
         if (Cache::has($cacheKey)) {
             return;
