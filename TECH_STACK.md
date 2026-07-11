@@ -1,15 +1,16 @@
 # African Market - Tech Stack Summary
 
-**Framework**: Laravel 10+ (PHP 8.2+)  
+**Framework**: Laravel 12 (PHP 8.2+)  
 **Database**: MySQL 8.0+ (Your existing installation)  
-**Server**: Apache (Your existing installation)
+**Server**: Apache (Your existing installation)  
+**Last Major Upgrade**: July 11, 2026
 
 ---
 
 ## Core Stack
 
 ### Backend & Frontend (Unified)
-- **Laravel 10+**: Full-stack PHP framework
+- **Laravel 12**: Full-stack PHP framework
   - Eloquent ORM for database
   - Blade templates for views
   - Built-in authentication & authorization
@@ -17,7 +18,7 @@
   - File storage handling
   
 ### UI/Frontend
-- **Livewire 3**: Real-time reactive components (no JavaScript frameworks needed)
+- **Livewire 3.8**: Real-time reactive components (no JavaScript frameworks needed)
 - **Alpine.js**: Minimal JavaScript for interactions
 - **Tailwind CSS 3**: Utility-first CSS framework
 - **DaisyUI / Flowbite**: Free Tailwind component libraries
@@ -28,8 +29,8 @@
 - **Laravel Seeders**: Sample data generation
 
 ### Payment Gateways
-- **Stripe**: Cards, Apple Pay, Google Pay
-  - Integration: Laravel Cashier (Stripe)
+- **Stripe** (v17.6): Cards, Apple Pay, Google Pay
+  - Integration: Laravel Cashier 16
 - **Paystack**: African payment gateway
   - Mobile money: M-Pesa, MTN, Airtel
   - Bank transfers
@@ -57,7 +58,7 @@
 ### Development Tools
 - **Composer**: PHP dependency manager
 - **NPM**: For Tailwind CSS compilation
-- **Laravel Telescope**: Debugging (free)
+- **Laravel Telescope 5**: Debugging (free)
 - **Laravel Log Viewer**: Error tracking (free)
 
 ---
@@ -95,7 +96,7 @@
 
 **Server:**
 - Apache 2.4+ with mod_rewrite
-- PHP 8.1 or 8.2
+- PHP 8.2+ (Laravel 12 requirement)
 - MySQL 8.0+
 - 1GB disk space
 - 512MB RAM (2GB recommended)
@@ -206,7 +207,8 @@ STRIPE_SECRET=sk_test_...
 
 ### Paystack
 ```bash
-composer require unicodeveloper/laravel-paystack
+# Custom integration (no external package required)
+# Paystack API calls handled via app/Services/PaymentService.php
 ```
 
 **.env:**
