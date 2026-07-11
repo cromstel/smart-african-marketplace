@@ -6,10 +6,11 @@
 
 > CMS-style installable e-commerce platform for African food products, clothing, and salon services.
 
-[![Laravel](https://img.shields.io/badge/Laravel-10+-FF2D20?logo=laravel)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?logo=php)](https://php.net)
+[![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?logo=php)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?logo=mysql)](https://mysql.com)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Security](https://img.shields.io/badge/security-0_vulnerabilities-brightgreen)](docs/SECURITY_PATCH_LOG.md)
 
 ---
 
@@ -67,7 +68,7 @@
 
 | Component | Technology |
 |-----------|------------|
-| **Framework** | Laravel 10+ (PHP 8.2+) |
+| **Framework** | Laravel 12 (PHP 8.2+) |
 | **Database** | MySQL 8.0+ |
 | **Server** | Apache |
 | **Frontend** | Livewire 3 + Alpine.js |

@@ -85,6 +85,8 @@ Desktop.ini
 # NPM/Yarn
 yarn.lock
 pnpm-lock.yaml
+node_modules/
+soketi/node_modules/
 # Note: soketi/package-lock.json is NOT ignored (can be tracked)
 
 # Build artifacts

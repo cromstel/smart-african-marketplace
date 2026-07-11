@@ -5,13 +5,22 @@ namespace App\Services;
 use App\Models\MediaFolder;
 use App\Models\MediaLibrary;
 use App\Models\Setting;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class ImageOptimizationService
 {
+    protected ImageManager $manager;
+
+    public function __construct()
+    {
+        $this->manager = new ImageManager(new Driver());
+    }
+
     public function optimizeMediaLibraryItem(MediaLibrary $media): bool
     {
         if ($media->type !== 'image') {
@@ -24,14 +33,15 @@ class ImageOptimizationService
 
         try {
             $absolutePath = Storage::disk('public')->path($media->file_path);
-            $source = Image::make($absolutePath);
+            $source = $this->manager->read($absolutePath);
 
-            $encodedOriginal = (string) $source->encode(pathinfo($absolutePath, PATHINFO_EXTENSION) ?: 'jpg', 85);
+            $extension = pathinfo($absolutePath, PATHINFO_EXTENSION) ?: 'jpg';
+            $encodedOriginal = $source->encodeByExtension($extension, quality: 85)->toString();
             Storage::disk('public')->put($media->file_path, $encodedOriginal);
 
             if (extension_loaded('gd') && function_exists('imagewebp')) {
                 $webpPath = $this->getWebpPath($media->file_path);
-                $webpData = (string) $source->encode('webp', 85);
+                $webpData = $source->encodeByExtension('webp', quality: 85)->toString();
                 Storage::disk('public')->put($webpPath, $webpData);
                 $media->webp_path = $webpPath;
             }
@@ -62,12 +72,10 @@ class ImageOptimizationService
         $originalFilename = $filename.'.'.$extension;
         $webpFilename = $filename.'.webp';
 
-        $img = Image::make($image);
-        $img->fit($width, $height, function ($constraint) {
-            $constraint->upsize();
-        });
+        $img = $this->manager->read($image);
+        $img->cover($width, $height);
 
-        Storage::disk('public')->put($path.'/'.$originalFilename, (string) $img->encode($extension, 85));
+        Storage::disk('public')->put($path.'/'.$originalFilename, $img->encodeByExtension($extension, quality: 85)->toString());
 
         $result = [
             'original' => $path.'/'.$originalFilename,
@@ -77,11 +85,9 @@ class ImageOptimizationService
 
         if (extension_loaded('gd') && function_exists('imagewebp')) {
             try {
-                $webpImage = Image::make($image);
-                $webpImage->fit($width, $height, function ($constraint) {
-                    $constraint->upsize();
-                });
-                Storage::disk('public')->put($path.'/'.$webpFilename, (string) $webpImage->encode('webp', 85));
+                $webpImage = $this->manager->read($image);
+                $webpImage->cover($width, $height);
+                Storage::disk('public')->put($path.'/'.$webpFilename, $webpImage->encodeByExtension('webp', quality: 85)->toString());
 
                 $result = [
                     'original' => $path.'/'.$originalFilename,
