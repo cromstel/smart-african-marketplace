@@ -1,0 +1,7 @@
+{
+  "name": "aws-sdk",
+  "version": "2.1694.0",
+  "description": "AWS SDK v2 shim with region parameter validation (GHSA-j965-2qgj-vjmq fix)",
+  "main": "index.js",
+  "license": "Apache-2.0"
+}
