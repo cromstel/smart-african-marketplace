@@ -25,6 +25,12 @@ class DatabaseSeeder extends Seeder
             BlogSeeder::class,
             PermissionSeeder::class,
             ConfigurationSettingsSeeder::class,
+            // Additional required reference data
+            SubscriptionPlanSeeder::class,
+            SystemSettingsSeeder::class,
+            BookingTypeSeeder::class,
+            BrandColorSeeder::class,
+            VendorSubscriptionSeeder::class,
         ]);
     }
 }
