@@ -23,12 +23,14 @@
         :image="$seoImage ?? null"
         :canonical="$seoCanonical ?? null"
         :type="$seoType ?? 'website'"
-    >
-        @stack('head')
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </x-seo>
-    <script>
-        window.deferLoadingAlpine = true;
+    />
+
+        <!-- Theme fonts (Inter / Poppins per theme settings) -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700&display=swap" rel="stylesheet" />
+
+        <script>
+            window.deferLoadingAlpine = true;
     </script>
     <script defer src="{{ asset('js/alpine.min.js') }}"></script>
     <script>

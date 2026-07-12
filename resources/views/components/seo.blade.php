@@ -88,6 +88,8 @@
 <!-- Vite -->
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+{{ $slot }}
+
 <!-- Additional head stack -->
 @stack('head')
 

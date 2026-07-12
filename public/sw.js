@@ -1,14 +1,9 @@
-const CACHE_NAME = 'african-market-shell-v2';
-const ASSETS_TO_CACHE = [
-    '/',
-    '/shop',
-    '/blog',
-    '/sitemap.xml',
-];
+const CACHE_NAME = 'african-market-shell-v3';
+const APP_SHELL = ['/', '/shop', '/blog', '/sitemap.xml'];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE)).catch(() => Promise.resolve())
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)).catch(() => Promise.resolve())
     );
     self.skipWaiting();
 });
@@ -32,7 +27,8 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    const skipDynamicCache = requestUrl.pathname === '/site.webmanifest'
+    const skipDynamicCache =
+        requestUrl.pathname === '/site.webmanifest'
         || requestUrl.pathname === '/favicon.svg'
         || requestUrl.pathname === '/favicon.ico'
         || requestUrl.pathname.startsWith('/favicon-')
@@ -43,17 +39,44 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    // Navigations (HTML pages): network-first so updated pages always load,
+    // falling back to cache / offline shell only when the network is unavailable.
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request)
+                .then((response) => {
+                    const copy = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => {});
+                    return response;
+                })
+                .catch(() =>
+                    caches.match(event.request).then(
+                        (cached) => cached || caches.match('/').then((shell) => shell || Response.error())
+                    )
+                )
+        );
+        return;
+    }
+
+    // Static assets: cache-first with background refresh for performance.
     event.respondWith(
         caches.match(event.request).then((cached) => {
             if (cached) {
+                fetch(event.request)
+                    .then((response) => {
+                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, response.clone())).catch(() => {});
+                    })
+                    .catch(() => {});
                 return cached;
             }
 
-            return fetch(event.request).then((networkResponse) => {
-                const responseCopy = networkResponse.clone();
-                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseCopy)).catch(() => {});
-                return networkResponse;
-            }).catch(() => caches.match('/'));
+            return fetch(event.request)
+                .then((networkResponse) => {
+                    const responseCopy = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseCopy)).catch(() => {});
+                    return networkResponse;
+                })
+                .catch(() => caches.match('/'));
         })
     );
 });
