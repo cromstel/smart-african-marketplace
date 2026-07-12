@@ -224,7 +224,7 @@ class BlogPostController extends Controller
     public function uploadContentImage(Request $request)
     {
         $validated = $request->validate([
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:5120'],
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,webp,avif', 'max:5120'],
         ]);
 
         $result = $this->imageService->uploadAndOptimize(
@@ -262,7 +262,7 @@ class BlogPostController extends Controller
             'meta_description' => ['nullable', 'string', 'max:500'],
             'excerpt' => ['nullable', 'string', 'max:500'],
             'content' => ['required', 'string'],
-            'featured_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:5120'],
+            'featured_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,avif', 'max:5120'],
             'featured_image_media_id' => ['nullable', 'integer', 'exists:media_library,id'],
             'status' => ['required', Rule::in(['draft', 'published'])],
             'published_at' => ['nullable', 'date'],

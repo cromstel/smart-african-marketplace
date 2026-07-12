@@ -36,7 +36,7 @@ class SalonServiceCategoryController extends Controller
             'name' => 'required|string|max:255|unique:salon_service_categories,name',
             'description' => 'nullable|string|max:1000',
             'icon' => 'nullable|string|max:100',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:4096',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:4096',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -74,7 +74,7 @@ class SalonServiceCategoryController extends Controller
             'name' => 'required|string|max:255|unique:salon_service_categories,name,'.$salonCategory->id,
             'description' => 'nullable|string|max:1000',
             'icon' => 'nullable|string|max:100',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:4096',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:4096',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);

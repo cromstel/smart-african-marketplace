@@ -36,7 +36,7 @@
             @endif
             <input type="file" name="logo" id="logo" accept="image/*"
                    class="mt-1 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700">
-            <p class="mt-1 text-xs text-gray-400">PNG, JPG, GIF up to 2MB. Leave empty to keep current logo.</p>
+            <p class="mt-1 text-xs text-gray-400">PNG, JPG up to 2MB. Leave empty to keep current logo.</p>
             @error('logo')
                 <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
             @enderror

@@ -307,7 +307,7 @@ class ProductController extends Controller
     public function replaceImage(Request $request, ProductImage $image)
     {
         $validated = $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp,avif|max:2048',
         ]);
 
         $product = $image->product;
