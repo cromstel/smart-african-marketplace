@@ -641,6 +641,7 @@
         updateHeaderState();
     </script>
     @include('components.password-toggle-script')
+    @stack('scripts')
 </body>
 </html>
 
