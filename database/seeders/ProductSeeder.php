@@ -40,14 +40,16 @@ class ProductSeeder extends Seeder
                 $vendor = $vendors->random();
                 $name = $category->name.' Sample '.$i;
                 $slug = Str::slug($category->slug.'-'.$i);
+                $sku = 'CAT'.$category->id.'-'.str_pad($i, 3, '0', STR_PAD_LEFT);
 
                 $product = Product::updateOrCreate(
-                    ['slug' => $slug],
+                    ['sku' => $sku],
                     [
                         'vendor_id' => $vendor->id,
                         'category_id' => $category->id,
                         'name' => $name,
-                        'sku' => 'CAT'.$category->id.'-'.str_pad($i, 3, '0', STR_PAD_LEFT),
+                        'slug' => $slug,
+                        'sku' => $sku,
                         'description' => 'Sample product for '.$category->name.'.',
                         'short_description' => 'Sample '.$category->name.' product',
                         'price' => 19.99 + $i,
