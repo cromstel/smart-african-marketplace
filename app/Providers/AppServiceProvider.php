@@ -33,10 +33,13 @@ class AppServiceProvider extends ServiceProvider
             return auth()->check() && auth()->user()->hasModuleAccess($moduleKey);
         });
 
-        Product::observe(new KnowledgeBaseObserver('product'));
-        SalonService::observe(new KnowledgeBaseObserver('salon_service'));
-        BlogPost::observe(new KnowledgeBaseObserver('blog_post'));
-        SitePage::observe(new KnowledgeBaseObserver('site_page'));
+        // KnowledgeBaseObserver resolves its source type from the model class,
+        // so it is registered by class name (Laravel resolves observers from the
+        // container when dispatched, which cannot satisfy a constructor argument).
+        Product::observe(KnowledgeBaseObserver::class);
+        SalonService::observe(KnowledgeBaseObserver::class);
+        BlogPost::observe(KnowledgeBaseObserver::class);
+        SitePage::observe(KnowledgeBaseObserver::class);
 
         Order::observe(OrderObserver::class);
         Vendor::observe(VendorObserver::class);

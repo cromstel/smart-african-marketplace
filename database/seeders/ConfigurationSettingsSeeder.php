@@ -60,7 +60,7 @@ class ConfigurationSettingsSeeder extends Seeder
         $categoryIds = [];
 
         foreach ($categories as $category) {
-            $created = ConfigurationCategory::create($category);
+            $created = ConfigurationCategory::firstOrCreate(['slug' => $category['slug']], $category);
             $categoryIds[$category['slug']] = $created->id;
         }
 
@@ -511,7 +511,7 @@ class ConfigurationSettingsSeeder extends Seeder
         ];
 
         foreach ($settings as $setting) {
-            ConfigurationSetting::create($setting);
+            ConfigurationSetting::updateOrCreate(['key' => $setting['key']], $setting);
         }
     }
 }

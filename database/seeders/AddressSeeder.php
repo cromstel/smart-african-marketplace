@@ -13,7 +13,7 @@ class AddressSeeder extends Seeder
         $customer = User::where('email', 'customer@africanmarket.com')->first();
 
         if ($customer) {
-            Address::create([
+            Address::firstOrCreate(['user_id' => $customer->id, 'type' => 'both'], [
                 'user_id' => $customer->id,
                 'type' => 'both',
                 'first_name' => 'Customer',
@@ -27,7 +27,7 @@ class AddressSeeder extends Seeder
                 'is_default' => true,
             ]);
 
-            Address::create([
+            Address::firstOrCreate(['user_id' => $customer->id, 'type' => 'shipping'], [
                 'user_id' => $customer->id,
                 'type' => 'shipping',
                 'first_name' => 'Customer',
@@ -46,7 +46,7 @@ class AddressSeeder extends Seeder
         $customer2 = User::where('email', 'customer2@africanmarket.com')->first();
 
         if ($customer2) {
-            Address::create([
+            Address::firstOrCreate(['user_id' => $customer2->id, 'type' => 'both'], [
                 'user_id' => $customer2->id,
                 'type' => 'both',
                 'first_name' => 'Another',

@@ -9,7 +9,7 @@ class DeliveryZoneSeeder extends Seeder
 {
     public function run(): void
     {
-        DeliveryZone::create([
+        DeliveryZone::updateOrCreate(['name' => 'Lagos Metropolitan'], [
             'name' => 'Lagos Metropolitan',
             'cities' => ['Lagos', 'Ikeja', 'Victoria Island', 'Lekki', 'Ajah'],
             'postal_codes' => ['100001', '100211', '101245', '105102'],
@@ -19,7 +19,7 @@ class DeliveryZoneSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        DeliveryZone::create([
+        DeliveryZone::updateOrCreate(['name' => 'Accra Central'], [
             'name' => 'Accra Central',
             'cities' => ['Accra', 'Tema', 'Osu', 'Labone', 'East Legon'],
             'postal_codes' => ['00233', 'GA-001', 'GA-002'],
@@ -29,7 +29,7 @@ class DeliveryZoneSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        DeliveryZone::create([
+        DeliveryZone::updateOrCreate(['name' => 'Nairobi Region'], [
             'name' => 'Nairobi Region',
             'cities' => ['Nairobi', 'Westlands', 'Kilimani', 'Karen', 'Lavington'],
             'postal_codes' => ['00100', '00200', '00300'],
@@ -39,7 +39,7 @@ class DeliveryZoneSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        DeliveryZone::create([
+        DeliveryZone::updateOrCreate(['name' => 'Johannesburg Area'], [
             'name' => 'Johannesburg Area',
             'cities' => ['Johannesburg', 'Sandton', 'Rosebank', 'Midrand', 'Randburg'],
             'postal_codes' => ['2000', '2001', '2196', '2090'],
@@ -49,7 +49,7 @@ class DeliveryZoneSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        DeliveryZone::create([
+        DeliveryZone::updateOrCreate(['name' => 'Cairo District'], [
             'name' => 'Cairo District',
             'cities' => ['Cairo', 'Giza', 'Heliopolis', 'Maadi', 'Nasr City'],
             'postal_codes' => ['11511', '11512', '11513'],
