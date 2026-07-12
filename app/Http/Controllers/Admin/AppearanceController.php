@@ -241,7 +241,7 @@ class AppearanceController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
-            'background_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,avif', 'max:2048'],
+            'background_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,avif', 'max:2048'],
             'background_type' => ['required', 'in:gradient,image'],
             'gradient_from' => ['nullable', 'string', 'max:7'],
             'gradient_to' => ['nullable', 'string', 'max:7'],

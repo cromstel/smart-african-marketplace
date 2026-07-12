@@ -53,7 +53,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2">Category Hero Banner</label>
-                <input type="file" name="banner_image" accept="image/png,image/jpeg,image/webp,image/avif,image/gif"
+                <input type="file" name="banner_image" accept="image/png,image/jpeg,image/webp,image/avif"
                        class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:ring-brand-from focus:border-brand-from">
                 @error('banner_image')
                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>

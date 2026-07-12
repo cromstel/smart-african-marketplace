@@ -64,7 +64,7 @@ class SalonServiceController extends Controller
             ],
             'price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:15',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:2048',
             'is_active' => 'boolean',
         ]);
 
@@ -131,7 +131,7 @@ class SalonServiceController extends Controller
             ],
             'price' => 'required|numeric|min:0',
             'duration_minutes' => 'required|integer|min:15',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:2048',
             'is_active' => 'boolean',
         ]);
 

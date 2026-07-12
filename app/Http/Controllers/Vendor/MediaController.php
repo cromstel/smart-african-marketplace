@@ -238,7 +238,7 @@ class MediaController extends Controller
 
         $request->validate([
             'files' => 'required|array',
-            'files.*' => 'file|mimes:jpeg,jpg,png,gif,webp,svg,pdf,doc,docx,xls,xlsx,mp4,mov,avi|max:10240',
+            'files.*' => 'file|mimes:jpeg,jpg,png,webp,svg,pdf,doc,docx,xls,xlsx,mp4,mov,avi|max:10240',
             'folder_id' => 'nullable|exists:media_folders,id',
         ]);
 
@@ -448,7 +448,7 @@ class MediaController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|mimes:jpeg,jpg,png,gif,webp|max:10240',
+            'file' => 'required|file|mimes:jpeg,jpg,png,webp|max:10240',
         ]);
 
         $file = $request->file('file');

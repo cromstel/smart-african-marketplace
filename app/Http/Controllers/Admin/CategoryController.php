@@ -85,7 +85,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name',
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:4096',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:4096',
         ]);
 
         $validated['slug'] = $this->uniqueSlug($validated['name']);
@@ -183,7 +183,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,'.$category->id,
             'parent_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:4096',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:4096',
         ]);
 
         $newParentId = $validated['parent_id'] ?? null;

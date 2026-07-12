@@ -130,7 +130,7 @@ class ProductController extends Controller
             'is_active' => 'boolean',
             'tags' => 'nullable|array',
             'tags.*' => Rule::exists('product_tags', 'id')->whereNull('vendor_id'),
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:2048',
         ]);
 
         $vendor = auth()->user()->vendor;
@@ -216,7 +216,7 @@ class ProductController extends Controller
             'is_active' => 'boolean',
             'tags' => 'nullable|array',
             'tags.*' => Rule::exists('product_tags', 'id')->whereNull('vendor_id'),
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,avif|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -291,7 +291,7 @@ class ProductController extends Controller
     public function replaceImage(Request $request, ProductImage $image)
     {
         $validated = $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp,avif|max:2048',
         ]);
 
         $product = $image->product;
