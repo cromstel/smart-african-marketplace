@@ -10,6 +10,8 @@ class ConfigurationAudit extends Model
 {
     use HasFactory;
 
+    protected $table = 'configuration_audit_logs';
+
     protected $fillable = [
         'user_id',
         'configuration_setting_id',

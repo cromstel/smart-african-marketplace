@@ -10,6 +10,8 @@ class SeoMeta extends Model
 {
     use HasFactory;
 
+    protected $table = 'seo_meta';
+
     protected $fillable = [
         'model_type',
         'model_id',
