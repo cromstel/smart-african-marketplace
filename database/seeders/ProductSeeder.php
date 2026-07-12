@@ -25,6 +25,13 @@ class ProductSeeder extends Seeder
             return;
         }
 
+        // Idempotent: do not duplicate the catalog if products already exist.
+        // (The seeded catalog predates the current CAT{n} SKU scheme, so a blind
+        // re-run would create duplicate products alongside the existing ones.)
+        if (Product::query()->exists()) {
+            return;
+        }
+
         $admin = \App\Models\User::where('email', 'admin@africanmarket.com')->first()
             ?? \App\Models\User::where('role', 'admin')->first();
 
