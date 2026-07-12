@@ -345,17 +345,16 @@ class MediaLibraryController extends Controller
 
             // Get the optimized paths
             $newFilePath = $result['original'];
-            $newWebpPath = $result['webp'];
 
-            // Update the media record
-            $imageSize = getimagesize($file->getRealPath());
+            // Update the media record (metadata reflects the converted AVIF/WebP file)
             $media->file_path = $newFilePath;
-            $media->webp_path = $newWebpPath;
+            $media->file_name = $result['file_name'] ?? basename($newFilePath);
+            $media->webp_path = null;
             $media->original_name = $file->getClientOriginalName();
-            $media->file_size = $file->getSize();
-            $media->width = $imageSize[0] ?? null;
-            $media->height = $imageSize[1] ?? null;
-            $media->mime_type = $file->getMimeType();
+            $media->file_size = $result['file_size'] ?? $file->getSize();
+            $media->width = $result['width'] ?? null;
+            $media->height = $result['height'] ?? null;
+            $media->mime_type = $result['mime_type'];
             $media->is_optimized = true;
             $media->original_file_path = $oldFilePath; // Store old path as reference
             $media->save();

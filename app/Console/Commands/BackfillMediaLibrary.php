@@ -96,13 +96,12 @@ class BackfillMediaLibrary extends Command
         } catch (\Throwable $e) {
         }
         $dimensions = @getimagesize($fullPath) ?: [null, null];
-        $webpPath = $this->resolveWebpPath($path);
 
         MediaLibrary::create([
             'file_name' => basename($path),
             'original_name' => basename($path),
             'file_path' => $path,
-            'webp_path' => Storage::disk('public')->exists($webpPath) ? $webpPath : null,
+            'webp_path' => null,
             'mime_type' => $mimeType,
             'file_size' => $size,
             'width' => $dimensions[0],
@@ -113,12 +112,5 @@ class BackfillMediaLibrary extends Command
         ]);
 
         return 1;
-    }
-
-    private function resolveWebpPath(string $originalPath): string
-    {
-        $pathInfo = pathinfo($originalPath);
-
-        return $pathInfo['dirname'].'/'.$pathInfo['filename'].'.webp';
     }
 }

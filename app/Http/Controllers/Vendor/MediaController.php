@@ -284,14 +284,14 @@ class MediaController extends Controller
                     );
 
                     $media = MediaLibrary::create([
-                        'file_name' => basename($result['original']),
+                        'file_name' => $result['file_name'] ?? basename($result['original']),
                         'original_name' => $file->getClientOriginalName(),
                         'file_path' => $result['original'],
-                        'webp_path' => $result['webp'],
-                        'mime_type' => $file->getMimeType(),
-                        'file_size' => Storage::disk('public')->size($result['original']),
-                        'width' => isset($result['width']) ? $result['width'] : null,
-                        'height' => isset($result['height']) ? $result['height'] : null,
+                        'webp_path' => null,
+                        'mime_type' => $result['mime_type'],
+                        'file_size' => $result['file_size'] ?? Storage::disk('public')->size($result['original']),
+                        'width' => $result['width'] ?? null,
+                        'height' => $result['height'] ?? null,
                         'type' => $type,
                         'uploaded_by_type' => 'App\\Models\\User',
                         'uploaded_by_id' => auth()->id(),
@@ -461,19 +461,32 @@ class MediaController extends Controller
             Storage::disk('public')->delete($media->webp_path);
         }
 
-        // Store new file
-        $path = $file->store("media/vendors/{$vendor->id}", 'public');
+        // Store new file (converted to AVIF / kept as WebP — single optimized file, no derivatives)
+        $maxWidth = Setting::get('media_max_width', 1200);
+        $maxHeight = Setting::get('media_max_height', 1200);
 
-        $media->file_path = $path;
+        $result = $this->imageOptimizationService->uploadAndOptimize(
+            $file,
+            "media/vendors/{$vendor->id}",
+            $maxWidth,
+            $maxHeight,
+            null,
+            null,
+            false,
+            $media->folder_id
+        );
+
+        $media->file_path = $result['original'];
+        $media->file_name = $result['file_name'];
         $media->original_name = $file->getClientOriginalName();
-        $media->file_size = $file->getSize();
-        $media->mime_type = $file->getMimeType();
+        $media->file_size = $result['file_size'];
+        $media->mime_type = $result['mime_type'];
+        $media->webp_path = null;
 
         if ($media->type === 'image') {
-            $imageSize = getimagesize($file->getRealPath());
-            $media->width = $imageSize[0] ?? null;
-            $media->height = $imageSize[1] ?? null;
-            $media->is_optimized = false;
+            $media->width = $result['width'] ?? null;
+            $media->height = $result['height'] ?? null;
+            $media->is_optimized = true;
         }
 
         $media->save();
