@@ -1,7 +1,8 @@
 <?php
 
-$appHost = parse_url(config('app.url'), PHP_URL_HOST) ?: 'localhost';
-$appScheme = parse_url(config('app.url'), PHP_URL_SCHEME) ?: 'https';
+$appUrl = config('app.url') ?? 'http://localhost';
+$appHost = parse_url($appUrl, PHP_URL_HOST) ?: 'localhost';
+$appScheme = parse_url($appUrl, PHP_URL_SCHEME) ?: 'https';
 
 return [
     'scheme' => env('VENDOR_STORE_SCHEME', $appScheme),
