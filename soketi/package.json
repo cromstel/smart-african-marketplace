@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "soketi start",
+    "dev": "soketi start"
   },
   "dependencies": {
     "@soketi/soketi": "^1.6.1"
