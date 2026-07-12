@@ -10,7 +10,7 @@ class OptimizePendingMediaCommand extends Command
 {
     protected $signature = 'media:optimize-pending {--limit=100 : Maximum number of images to optimize}';
 
-    protected $description = 'Optimize pending media images and generate webp variants';
+    protected $description = 'Optimize pending media images and convert them to AVIF';
 
     public function handle(ImageOptimizationService $imageOptimizationService): int
     {
@@ -20,10 +20,7 @@ class OptimizePendingMediaCommand extends Command
 
         $items = MediaLibrary::query()
             ->where('type', 'image')
-            ->where(function ($query) {
-                $query->where('is_optimized', false)
-                    ->orWhereNull('webp_path');
-            })
+            ->where('is_optimized', false)
             ->orderBy('id')
             ->limit($limit)
             ->get();

@@ -35,19 +35,34 @@ class ImageOptimizationService
             $absolutePath = Storage::disk('public')->path($media->file_path);
             $source = $this->manager->read($absolutePath);
 
-            $extension = pathinfo($absolutePath, PATHINFO_EXTENSION) ?: 'jpg';
-            $encodedOriginal = $source->encodeByExtension($extension, quality: 85)->toString();
-            Storage::disk('public')->put($media->file_path, $encodedOriginal);
+            // WebP stays WebP; every other format is converted to AVIF.
+            // A single optimized file is stored (no derivative variations).
+            $currentExtension = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION) ?: 'jpg');
+            $outputExtension = $currentExtension === 'webp' ? 'webp' : 'avif';
 
-            if (extension_loaded('gd') && function_exists('imagewebp')) {
-                $webpPath = $this->getWebpPath($media->file_path);
-                $webpData = $source->encodeByExtension('webp', quality: 85)->toString();
-                Storage::disk('public')->put($webpPath, $webpData);
-                $media->webp_path = $webpPath;
+            $newPath = dirname($media->file_path).'/'.pathinfo($media->file_path, PATHINFO_FILENAME).'.'.$outputExtension;
+            $encoded = $source->encodeByExtension($outputExtension, quality: 82)->toString();
+            Storage::disk('public')->put($newPath, $encoded);
+
+            // Remove any previously generated WebP derivative.
+            $oldWebpPath = $this->getWebpPath($media->file_path);
+            if ($oldWebpPath !== $newPath && Storage::disk('public')->exists($oldWebpPath)) {
+                Storage::disk('public')->delete($oldWebpPath);
             }
 
+            // If the extension changed (e.g. jpg -> avif), remove the old original file.
+            if ($newPath !== $media->file_path && Storage::disk('public')->exists($media->file_path)) {
+                Storage::disk('public')->delete($media->file_path);
+            }
+
+            $media->file_path = $newPath;
+            $media->file_name = basename($newPath);
+            $media->webp_path = null;
+            $media->mime_type = $outputExtension === 'webp' ? 'image/webp' : 'image/avif';
+            $media->file_size = Storage::disk('public')->size($newPath);
+            $media->width = $source->width();
+            $media->height = $source->height();
             $media->is_optimized = true;
-            $media->file_size = Storage::disk('public')->size($media->file_path);
             $media->save();
 
             return true;
@@ -67,51 +82,47 @@ class ImageOptimizationService
             $folderId = $this->resolveDefaultFolderId();
         }
 
-        $filename = Str::random(20);
-        $extension = $image->getClientOriginalExtension();
-        $originalFilename = $filename.'.'.$extension;
-        $webpFilename = $filename.'.webp';
+        // WebP uploads are kept as WebP; every other format is converted to AVIF.
+        // A single optimized file is stored (no derivative variations) to save
+        // disk space and improve page performance.
+        $inputExtension = strtolower($image->getClientOriginalExtension() ?: 'jpg');
+        $outputExtension = $inputExtension === 'webp' ? 'webp' : 'avif';
+
+        $filename = Str::random(20).'.'.$outputExtension;
+        $storagePath = $path.'/'.$filename;
 
         $img = $this->manager->read($image);
         $img->cover($width, $height);
+        $encoded = $img->encodeByExtension($outputExtension, quality: 82)->toString();
+        Storage::disk('public')->put($storagePath, $encoded);
 
-        Storage::disk('public')->put($path.'/'.$originalFilename, $img->encodeByExtension($extension, quality: 85)->toString());
+        $mimeType = $outputExtension === 'webp' ? 'image/webp' : 'image/avif';
+        $widthPx = $img->width();
+        $heightPx = $img->height();
+        $fileSize = Storage::disk('public')->size($storagePath);
 
         $result = [
-            'original' => $path.'/'.$originalFilename,
+            'original' => $storagePath,
             'webp' => null,
             'has_webp' => false,
+            'mime_type' => $mimeType,
+            'file_name' => $filename,
+            'width' => $widthPx,
+            'height' => $heightPx,
+            'file_size' => $fileSize,
         ];
-
-        if (extension_loaded('gd') && function_exists('imagewebp')) {
-            try {
-                $webpImage = $this->manager->read($image);
-                $webpImage->cover($width, $height);
-                Storage::disk('public')->put($path.'/'.$webpFilename, $webpImage->encodeByExtension('webp', quality: 85)->toString());
-
-                $result = [
-                    'original' => $path.'/'.$originalFilename,
-                    'webp' => $path.'/'.$webpFilename,
-                    'has_webp' => true,
-                ];
-            } catch (\Exception $e) {
-            }
-        }
 
         $media = null;
         if ($trackInLibrary) {
-            $imageSize = getimagesize($image->getRealPath());
-            $fileSize = $image->getSize();
-
             $media = MediaLibrary::create([
-                'file_name' => $originalFilename,
+                'file_name' => $filename,
                 'original_name' => $image->getClientOriginalName(),
-                'file_path' => $result['original'],
-                'webp_path' => $result['webp'] ?? null,
-                'mime_type' => $image->getMimeType(),
+                'file_path' => $storagePath,
+                'webp_path' => null,
+                'mime_type' => $mimeType,
                 'file_size' => $fileSize,
-                'width' => $imageSize[0] ?? null,
-                'height' => $imageSize[1] ?? null,
+                'width' => $widthPx,
+                'height' => $heightPx,
                 'type' => 'image',
                 'uploaded_by_type' => auth()->check() ? get_class(auth()->user()) : null,
                 'uploaded_by_id' => auth()->id(),

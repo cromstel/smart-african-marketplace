@@ -34,7 +34,7 @@
                     </div>
                     <div class="flex items-center">
                         <input type="checkbox" id="generate_webp" name="generate_webp" class="rounded bg-gray-700 border-gray-600 text-brand-from focus:ring-brand-from" checked>
-                        <label for="generate_webp" class="ml-2 text-sm text-gray-300">Generate WebP versions</label>
+                        <label for="generate_webp" class="ml-2 text-sm text-gray-300">Automatically convert images to AVIF (best performance)</label>
                     </div>
                     <div class="flex items-center">
                         <input type="checkbox" id="auto_delete_originals" name="auto_delete_originals" class="rounded bg-gray-700 border-gray-600 text-brand-from focus:ring-brand-from">

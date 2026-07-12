@@ -1,7 +1,19 @@
 import { Server } from '@soketi/soketi';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+import dotenv from 'dotenv';
 
-const port = parseInt(process.env.SOKETI_PORT || '6001', 10);
-const host = process.env.SOKETI_HOST || '0.0.0.0';
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Load environment variables from the project's env files so the websocket
+// server can read PUSHER_PORT / PUSHER_APP_* without a wrapper script.
+dotenv.config({ path: resolve(__dirname, '../.env') });
+dotenv.config({ path: resolve(__dirname, '../.env.local') });
+
+// The websocket port is sourced from PUSHER_PORT (the same value the frontend
+// uses via VITE_PUSHER_PORT), falling back to SOKETI_PORT and then 6001.
+const port = parseInt(process.env.PUSHER_PORT || process.env.SOKETI_PORT || '6001', 10);
+const host = process.env.SOKETI_HOST || process.env.PUSHER_HOST || '0.0.0.0';
 
 const server = new Server({
   host,
