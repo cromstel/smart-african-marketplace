@@ -6,12 +6,12 @@
 @section('content')
 <x-auth-overlay-shell panelClass="max-w-md lg:max-w-lg">
                 <div>
-                    <a href="/" class="inline-flex items-center space-x-3 mb-8 group">
+                    <div class="inline-flex items-center space-x-3 mb-8 group">
                         <a href="{{ route('home') }}" class="relative" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
                             <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Marketplace') }}" class="h-16 w-16 rounded-full p-2 bg-gradient-to-br from-orange-500 to-red-600 shadow-lg animate-pulse-glow transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
                         </a>
                         <span class="text-sm sm:text-base lg:text-lg font-extrabold uppercase tracking-wide bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 bg-clip-text text-transparent animate-gradient">Smart African Marketplace</span>
-                    </a>
+                    </div>
                     <h2 class="mt-6 text-4xl font-bold text-gray-900">Welcome Back!</h2>
                     <p class="mt-2 text-sm text-gray-600">Sign in to access your account and continue shopping</p>
                 </div>

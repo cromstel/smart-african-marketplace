@@ -46,12 +46,12 @@
         <div class="w-full lg:w-[30%] flex items-center justify-center px-4 sm:px-6 lg:px-12 xl:px-16 bg-white">
             <div class="max-w-md w-full space-y-8">
                 <div>
-                    <a href="/" class="inline-flex items-center space-x-3 mb-8 group">
+                    <div class="inline-flex items-center space-x-3 mb-8 group">
                         <a href="{{ route('home') }}" class="relative" aria-label="{{ config('app.name', 'African Market') }} - Go to homepage">
                             <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'African Market') }}" class="h-16 w-16 rounded-full p-2 bg-gradient-to-br from-orange-500 to-red-600 shadow-lg animate-pulse-glow transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
                         </a>
                         <span class="text-xl sm:text-2xl font-extrabold uppercase tracking-wide bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 bg-clip-text text-transparent animate-gradient">Smart African Marketplace</span>
-                    </a>
+                    </div>
                     <h2 class="mt-6 text-4xl font-bold text-gray-900">Super Admin Portal</h2>
                     <p class="mt-2 text-sm text-gray-600">Sign in to access the site super admin dashboard</p>
                 </div>
