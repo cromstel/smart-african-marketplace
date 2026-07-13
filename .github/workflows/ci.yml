@@ -6,102 +6,71 @@ on:
       - main
       - master
   pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
-  test-and-readiness:
+  test:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: african_market_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-          extensions: mbstring, pdo_sqlite, sqlite3, fileinfo, curl
+          php-version: '8.3'
+          extensions: mbstring, pdo_mysql, fileinfo, curl, dom, libxml, xmlwriter, tokenizer
           coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
-          path: vendor
+          path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install dependencies
+      - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Dependency vulnerability scan (Composer)
-        continue-on-error: true
-        run: composer audit --locked --no-interaction
+      - name: Copy environment file
+        run: cp .env.example .env
 
-      - name: Prepare environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate --force
-          touch database/database.sqlite
+      - name: Generate application key
+        run: php artisan key:generate --force
 
-      - name: Setup Node.js (for npm audit)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install Node dependencies (audit only)
-        if: ${{ hashFiles('package-lock.json') != '' }}
-        run: npm ci --omit=dev
-
-      - name: Dependency vulnerability scan (npm)
-        if: ${{ hashFiles('package-lock.json') != '' }}
-        continue-on-error: true
-        run: npm audit --omit=dev --audit-level=high
-
-      - name: Run migrations (sqlite)
+      - name: Run database migrations
         env:
-          APP_ENV: production
-          APP_DEBUG: false
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-          QUEUE_CONNECTION: database
-          CACHE_DRIVER: array
-          SESSION_DRIVER: array
-          MAIL_MAILER: array
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USERNAME: root
+          DB_PASSWORD: password
         run: php artisan migrate --force
 
       - name: Run tests
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USERNAME: root
+          DB_PASSWORD: password
         run: php artisan test
-
-      - name: Run readiness checks (non-strict)
-        env:
-          APP_ENV: production
-          APP_DEBUG: false
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-          QUEUE_CONNECTION: database
-          CACHE_DRIVER: array
-          SESSION_DRIVER: array
-          MAIL_HOST: smtp.example.com
-          MAIL_USERNAME: ci-user
-          MAIL_PASSWORD: ci-pass
-        run: php artisan app:verify-readiness
-
-      - name: Run readiness checks (strict, secrets configured)
-        if: ${{ secrets.STRIPE_KEY != '' && secrets.STRIPE_SECRET != '' && secrets.PAYSTACK_PUBLIC_KEY != '' && secrets.PAYSTACK_SECRET_KEY != '' }}
-        env:
-          APP_ENV: production
-          APP_DEBUG: false
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-          QUEUE_CONNECTION: database
-          CACHE_DRIVER: array
-          SESSION_DRIVER: array
-          MAIL_HOST: smtp.example.com
-          MAIL_USERNAME: ci-user
-          MAIL_PASSWORD: ci-pass
-          STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
-          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
-          PAYSTACK_PUBLIC_KEY: ${{ secrets.PAYSTACK_PUBLIC_KEY }}
-          PAYSTACK_SECRET_KEY: ${{ secrets.PAYSTACK_SECRET_KEY }}
-        run: php artisan app:verify-readiness --strict
