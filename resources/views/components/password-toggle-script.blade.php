@@ -16,19 +16,57 @@
             return { percent, label: strengthLabels[labelIndex], score };
         };
 
-        const updateStrengthMeter = (input, meter) => {
+        const GRADIENT_CLASSES = ['bg-gradient-to-r', 'from-orange-500', 'via-yellow-500', 'to-rose-500'];
+        const FILL_COLOR_CLASSES = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-600', 'bg-emerald-500'];
+        const LABEL_COLOR_CLASSES = ['text-red-600', 'text-orange-500', 'text-yellow-500', 'text-lime-600', 'text-emerald-600'];
+
+        const updateStrengthMeter = (meter) => {
             if (!meter) return;
             const fill = meter.querySelector('[data-password-strength-fill]');
             const label = meter.querySelector('[data-password-strength-label]');
             if (!fill || !label) return;
 
-            const { percent, label: strengthLabel, score } = evaluateStrength(input.value);
-            fill.style.width = `${percent}%`;
-            label.textContent = strengthLabel;
+            const passwordInput = document.getElementById(meter.getAttribute('data-password-strength-for'));
+            const confirmInput = meter.getAttribute('data-password-confirm-for')
+                ? document.getElementById(meter.getAttribute('data-password-confirm-for'))
+                : null;
 
-            label.classList.remove('text-red-600', 'text-orange-500', 'text-yellow-500', 'text-lime-600', 'text-emerald-600');
-            const colorClass = score <= 1 ? 'text-red-600' : score <= 3 ? 'text-orange-500' : score <= 4 ? 'text-yellow-500' : score === 5 ? 'text-lime-600' : 'text-emerald-600';
-            label.classList.add(colorClass);
+            const password = passwordInput ? passwordInput.value : '';
+            const confirm = confirmInput ? confirmInput.value : '';
+
+            const { percent, label: strengthLabel, score } = evaluateStrength(password);
+
+            fill.classList.remove(...GRADIENT_CLASSES, ...FILL_COLOR_CLASSES);
+            label.classList.remove(...LABEL_COLOR_CLASSES);
+
+            const confirmFilled = confirmInput && confirm.length > 0;
+            const matches = confirmFilled && password === confirm;
+            const mismatches = confirmFilled && password !== confirm;
+
+            let displayLabel = strengthLabel;
+            let width = percent;
+
+            if (matches) {
+                displayLabel = 'Match';
+                width = 100;
+                fill.classList.add('bg-emerald-500');
+                label.classList.add('text-emerald-600');
+            } else if (mismatches) {
+                displayLabel = 'Mismatch';
+                fill.classList.add('bg-red-500');
+                label.classList.add('text-red-600');
+            } else {
+                fill.classList.add(...GRADIENT_CLASSES);
+                label.classList.add(
+                    score <= 1 ? 'text-red-600'
+                        : score <= 3 ? 'text-orange-500'
+                        : score <= 4 ? 'text-yellow-500'
+                        : 'text-lime-600'
+                );
+            }
+
+            fill.style.width = `${width}%`;
+            label.textContent = displayLabel;
         };
 
         const initPasswordVisibilityToggles = () => {
@@ -62,20 +100,19 @@
 
         const initPasswordStrengthMeters = () => {
             document.querySelectorAll('[data-password-strength-for]').forEach((meter) => {
-                const targetId = meter.getAttribute('data-password-strength-for');
-                if (!targetId) {
+                if (meter.dataset.passwordStrengthBound === '1') {
                     return;
                 }
-
-                const input = document.getElementById(targetId);
-                if (!input || meter.dataset.passwordStrengthBound === '1') {
-                    return;
-                }
-
                 meter.dataset.passwordStrengthBound = '1';
 
-                const onInput = () => updateStrengthMeter(input, meter);
-                input.addEventListener('input', onInput);
+                const passwordInput = document.getElementById(meter.getAttribute('data-password-strength-for'));
+                const confirmInput = meter.getAttribute('data-password-confirm-for')
+                    ? document.getElementById(meter.getAttribute('data-password-confirm-for'))
+                    : null;
+
+                const onInput = () => updateStrengthMeter(meter);
+                if (passwordInput) passwordInput.addEventListener('input', onInput);
+                if (confirmInput) confirmInput.addEventListener('input', onInput);
                 onInput();
             });
         };
@@ -94,4 +131,3 @@
         document.addEventListener('livewire:navigated', init);
     })();
 </script>
-

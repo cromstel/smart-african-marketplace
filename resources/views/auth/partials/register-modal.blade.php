@@ -80,7 +80,7 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div data-password-strength-for="modal-password" class="mt-3 space-y-1">
+                            <div data-password-strength-for="modal-password" data-password-confirm-for="modal-password-confirmation" class="mt-3 space-y-1">
                                 <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                                     <div data-password-strength-fill class="h-full w-0 rounded-full bg-gradient-to-r from-orange-500 via-yellow-500 to-rose-500 transition-all duration-200"></div>
                                 </div>
