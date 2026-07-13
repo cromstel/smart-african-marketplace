@@ -19,6 +19,7 @@
 
                 <form method="POST" action="{{ route('password.confirm') }}" class="mt-6 space-y-6">
                     @csrf
+                    @include('auth.partials.honeypot')
 
                     <div>
                         <label for="password" class="sr-only">{{ __('Password') }}</label>

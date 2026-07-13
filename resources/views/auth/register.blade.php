@@ -13,6 +13,7 @@
 
                 <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-5">
                     @csrf
+                    @include('auth.partials.honeypot')
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>

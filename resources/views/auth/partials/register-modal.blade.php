@@ -40,6 +40,7 @@
 
                     <form method="POST" action="{{ route('register') }}" class="space-y-4">
                         @csrf
+                        @include('auth.partials.honeypot')
 
                         <div>
                             <label for="name" class="sr-only">Full Name</label>
