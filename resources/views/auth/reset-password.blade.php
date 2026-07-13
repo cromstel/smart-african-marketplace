@@ -13,6 +13,7 @@
 
                 <form method="POST" action="{{ route('password.store') }}" class="mt-8 space-y-6">
                     @csrf
+                    @include('auth.partials.honeypot')
 
                     <input type="hidden" name="token" value="{{ $request->route()->parameter('token') }}">
 

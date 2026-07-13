@@ -15,6 +15,7 @@
 
                 <form method="POST" action="{{ route('login') }}" class="mt-8 space-y-6">
                     @csrf
+                    @include('auth.partials.honeypot')
 
                     <div>
                         <label for="email" class="sr-only">Email Address</label>

@@ -55,6 +55,7 @@
 
                 <form method="POST" action="{{ route('admin.login') }}" class="mt-8 space-y-6">
                     @csrf
+                    @include('auth.partials.honeypot')
 
                     <div>
                         <label for="email" class="sr-only">Super Admin Email</label>

@@ -37,6 +37,7 @@
 
             <form method="POST" action="/forgot-password" class="space-y-5">
                 @csrf
+                @include('auth.partials.honeypot')
 
                 <div>
                     <label for="modal-email" class="sr-only">Email</label>
