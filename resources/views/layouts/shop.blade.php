@@ -29,38 +29,8 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700&display=swap" rel="stylesheet" />
 
-    <script>
-        window.deferLoadingAlpine = true;
-    </script>
     @livewireStyles
     @livewireScripts
-    <script>
-        (() => {
-            const startAlpine = () => {
-                if (!window.Alpine || window.Alpine.__deferredStarted) {
-                    return;
-                }
-                window.Alpine.start();
-                window.Alpine.__deferredStarted = true;
-            };
-
-            const scheduleStart = () => {
-                if (window.Livewire && window.Alpine) {
-                    startAlpine();
-                }
-            };
-
-            document.addEventListener('livewire:load', () => {
-                startAlpine();
-            });
-
-            document.addEventListener('DOMContentLoaded', scheduleStart);
-
-            if (window.Livewire && window.Alpine) {
-                startAlpine();
-            }
-        })();
-    </script>
     <link rel="preload" as="style" href="{{ \Illuminate\Support\Facades\Vite::asset('resources/css/app.css') }}">
     <link rel="prefetch" href="{{ route('home') }}">
     <link rel="prefetch" href="{{ route('shop.index') }}">
