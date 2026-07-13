@@ -15,6 +15,7 @@ use App\Observers\VendorObserver;
 use App\Services\QrCodeService;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -53,6 +54,13 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureMail(): void
     {
+        // During migrations (and on a freshly migrated test DB) the
+        // settings/cache tables may not exist yet — skip the DB-backed
+        // mail configuration rather than crashing application bootstrap.
+        if (! Schema::hasTable('settings') || ! Schema::hasTable('cache')) {
+            return;
+        }
+
         // Use cache to avoid configuring mail on every request
         $cacheKey = 'mail.configured_from_db';
 

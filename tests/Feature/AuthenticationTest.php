@@ -12,8 +12,13 @@ use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    // The app reads settings/cache tables at bootstrap, so we run against the
-    // (already migrated + seeded) database and roll back all writes per test.
+    // Isolated test DB: phpunit.xml points DB_DATABASE at a dedicated
+    // `african_market_test` clone of the dev schema + data. Writes are
+    // wrapped in a transaction per test and rolled back, so the dev DB is
+    // never touched and the test DB stays pristine between runs.
+    // (We intentionally avoid RefreshDatabase: this project's migrations are
+    // not "fresh-safe" — some run Eloquent queries / bootstrap DB reads at
+    // migration time, which breaks `migrate:fresh` on a clean database.)
     use DatabaseTransactions;
 
     private function makeUser(array $attrs = []): User
@@ -172,7 +177,12 @@ class AuthenticationTest extends TestCase
 
     public function test_vendor_can_register(): void
     {
-        $category = VendorCategory::first();
+        $category = VendorCategory::create([
+            'name' => 'Test Category',
+            'slug' => 'test-category-'.uniqid(),
+            'is_active' => true,
+            'sort_order' => 1,
+        ]);
         $email = 'vendor_'.uniqid().'@example.com';
 
         $response = $this->post(route('register'), [
