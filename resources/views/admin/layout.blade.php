@@ -54,6 +54,9 @@
         .focus\:border-brand-from:focus {
             border-color: var(--brand-from);
         }
+        .hover\:bg-gray-750:hover {
+            background-color: rgba(55, 65, 81, 0.5);
+        }
         .no-scrollbar {
             scrollbar-width: none;
             -ms-overflow-style: none;

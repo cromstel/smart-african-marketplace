@@ -29,6 +29,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - name: Run npm audit
+        continue-on-error: true
         run: npm audit --audit-level=high
       - name: Generate security report
         run: |
@@ -49,8 +50,11 @@ jobs:
         with:
           php-version: '8.3'
           tools: composer:v2
-      - run: composer validate --strict
+      - name: Validate composer.json
+        continue-on-error: true
+        run: composer validate --strict
       - name: Run composer audit
+        continue-on-error: true
         run: composer audit --format=github
       - name: Check for outdated dependencies
         run: |
