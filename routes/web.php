@@ -108,40 +108,42 @@ Route::get('/pricing/{plan:slug}', [\App\Http\Controllers\SubscriptionController
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+// Authenticated users may browse account pages; sensitive actions (money,
+// account mutations, security) require a verified email — added per-route below.
+Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('verified');
+    Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update')->middleware('verified');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy')->middleware('verified');
 
     // Security routes - Two-Factor Authentication & Session Management
     Route::get('/account/security', [UserSecurityController::class, 'index'])->name('account.security');
     Route::get('/account/security/2fa/setup', [UserSecurityController::class, 'show2faSetup'])->name('account.security.2fa.setup');
-    Route::post('/account/security/2fa/enable', [UserSecurityController::class, 'enable2fa'])->name('account.security.2fa.enable')->middleware('throttle:5,1');
-    Route::post('/account/security/2fa/disable', [UserSecurityController::class, 'disable2fa'])->name('account.security.2fa.disable')->middleware('throttle:5,1');
-    Route::post('/account/security/2fa/verify', [UserSecurityController::class, 'verify2fa'])->name('account.security.2fa.verify')->middleware('throttle:5,1');
+    Route::post('/account/security/2fa/enable', [UserSecurityController::class, 'enable2fa'])->name('account.security.2fa.enable')->middleware('throttle:5,1', 'verified');
+    Route::post('/account/security/2fa/disable', [UserSecurityController::class, 'disable2fa'])->name('account.security.2fa.disable')->middleware('throttle:5,1', 'verified');
+    Route::post('/account/security/2fa/verify', [UserSecurityController::class, 'verify2fa'])->name('account.security.2fa.verify')->middleware('throttle:5,1', 'verified');
     Route::get('/account/security/2fa/recovery-codes', [UserSecurityController::class, 'showRecoveryCodes'])->name('account.security.2fa.recovery-codes');
-    Route::post('/account/security/2fa/regenerate-codes', [UserSecurityController::class, 'regenerateRecoveryCodes'])->name('account.security.2fa.regenerate-codes')->middleware('throttle:5,1');
+    Route::post('/account/security/2fa/regenerate-codes', [UserSecurityController::class, 'regenerateRecoveryCodes'])->name('account.security.2fa.regenerate-codes')->middleware('throttle:5,1', 'verified');
     Route::get('/account/security/sessions', [UserSecurityController::class, 'showSessions'])->name('account.security.sessions');
-    Route::delete('/account/security/sessions/{sessionId}', [UserSecurityController::class, 'revokeSession'])->name('account.security.sessions.revoke');
-    Route::delete('/account/security/sessions', [UserSecurityController::class, 'revokeAllSessions'])->name('account.security.sessions.revoke-all');
+    Route::delete('/account/security/sessions/{sessionId}', [UserSecurityController::class, 'revokeSession'])->name('account.security.sessions.revoke')->middleware('verified');
+    Route::delete('/account/security/sessions', [UserSecurityController::class, 'revokeAllSessions'])->name('account.security.sessions.revoke-all')->middleware('verified');
 
     Route::get('/vendor/apply', [\App\Http\Controllers\VendorApplicationController::class, 'create'])->name('vendor.apply');
-    Route::post('/vendor/apply', [\App\Http\Controllers\VendorApplicationController::class, 'store'])->name('vendor.apply.store');
+    Route::post('/vendor/apply', [\App\Http\Controllers\VendorApplicationController::class, 'store'])->name('vendor.apply.store')->middleware('verified');
     Route::get('/vendor/application/status', [\App\Http\Controllers\VendorApplicationController::class, 'status'])->name('vendor.application.status');
-    Route::post('/vendor/application/documents', [\App\Http\Controllers\VendorApplicationController::class, 'storeDocuments'])->name('vendor.application.documents');
+    Route::post('/vendor/application/documents', [\App\Http\Controllers\VendorApplicationController::class, 'storeDocuments'])->name('vendor.application.documents')->middleware('verified');
 
     Route::get('/pricing/checkout/{plan:slug}', [\App\Http\Controllers\SubscriptionController::class, 'checkout'])->name('subscriptions.checkout');
-    Route::post('/subscribe', [\App\Http\Controllers\SubscriptionController::class, 'subscribe'])->name('subscriptions.subscribe');
+    Route::post('/subscribe', [\App\Http\Controllers\SubscriptionController::class, 'subscribe'])->name('subscriptions.subscribe')->middleware('verified');
     Route::get('/my-subscription', [\App\Http\Controllers\SubscriptionController::class, 'mySubscription'])->name('subscriptions.my');
-    Route::post('/subscription/cancel', [\App\Http\Controllers\SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
-    Route::post('/subscription/resume', [\App\Http\Controllers\SubscriptionController::class, 'resume'])->name('subscriptions.resume');
+    Route::post('/subscription/cancel', [\App\Http\Controllers\SubscriptionController::class, 'cancel'])->name('subscriptions.cancel')->middleware('verified');
+    Route::post('/subscription/resume', [\App\Http\Controllers\SubscriptionController::class, 'resume'])->name('subscriptions.resume')->middleware('verified');
     Route::get('/subscription/success', [\App\Http\Controllers\SubscriptionController::class, 'success'])->name('subscriptions.success');
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'verified'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/analytics/revenue-data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'revenueData'])->name('analytics.revenue');
     Route::get('/analytics/top-products', [\App\Http\Controllers\Admin\AnalyticsController::class, 'topProducts'])->name('analytics.top-products');
@@ -424,19 +426,19 @@ Route::get('/auctions/search', [\App\Http\Controllers\AuctionController::class, 
 Route::get('/auctions/{auction:slug}', [\App\Http\Controllers\AuctionController::class, 'show'])->name('auctions.show');
 
 // Auction bidding (requires authentication)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/auctions/{auction:slug}/bid', [\App\Http\Controllers\AuctionController::class, 'bid'])->name('auctions.bid');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/cart/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store')->middleware('verified');
+    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('cart.update')->middleware('verified');
+    Route::delete('/cart/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy')->middleware('verified');
 
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::get('/checkout/shipping-preview', [CheckoutController::class, 'shippingPreview'])->name('checkout.shipping-preview');
-    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('verified');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
@@ -444,35 +446,35 @@ Route::middleware('auth')->group(function () {
     Route::resource('addresses', AddressController::class);
 
     Route::get('/payment/stripe/{order}', [PaymentController::class, 'stripe'])->name('payment.stripe');
-    Route::post('/payment/stripe/{order}', [PaymentController::class, 'stripeProcess'])->name('payment.stripe.process');
+    Route::post('/payment/stripe/{order}', [PaymentController::class, 'stripeProcess'])->name('payment.stripe.process')->middleware('verified');
     Route::get('/payment/paystack/{order}', [PaymentController::class, 'paystack'])->name('payment.paystack');
-    Route::get('/payment/paystack/{order}/callback', [PaymentController::class, 'paystackCallback'])->name('payment.paystack.callback');
+    Route::get('/payment/paystack/{order}/callback', [PaymentController::class, 'paystackCallback'])->name('payment.paystack.callback')->middleware('verified');
     Route::get('/payment/momo/{order}', [PaymentController::class, 'momo'])->name('payment.momo');
-    Route::post('/payment/momo/{order}', [PaymentController::class, 'momoProcess'])->name('payment.momo.process');
+    Route::post('/payment/momo/{order}', [PaymentController::class, 'momoProcess'])->name('payment.momo.process')->middleware('verified');
     Route::get('/payment/swish/{order}', [SwishPaymentController::class, 'show'])->name('payment.swish');
-    Route::post('/payment/swish/{order}', [SwishPaymentController::class, 'process'])->name('payment.swish.process');
+    Route::post('/payment/swish/{order}', [SwishPaymentController::class, 'process'])->name('payment.swish.process')->middleware('verified');
     Route::get('/payment/swish/{order}/status', [SwishPaymentController::class, 'status'])->name('payment.swish.status');
     Route::get('/payment/success/{order}', [PaymentController::class, 'success'])->name('payment.success');
     Route::get('/payment/failed/{order}', [PaymentController::class, 'failed'])->name('payment.failed');
 
-    Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
-    Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
-    Route::post('/reviews/{review}/helpful', [\App\Http\Controllers\ReviewController::class, 'toggleHelpful'])->name('reviews.helpful');
+    Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store')->middleware('verified');
+    Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy')->middleware('verified');
+    Route::post('/reviews/{review}/helpful', [\App\Http\Controllers\ReviewController::class, 'toggleHelpful'])->name('reviews.helpful')->middleware('verified');
     Route::get('/account/reviews', [\App\Http\Controllers\ReviewController::class, 'myReviews'])->name('account.reviews');
     Route::get('/account/notifications', [NotificationController::class, 'index'])->name('account.notifications');
-    Route::post('/account/notifications/{notification}/mark-read', [NotificationController::class, 'markRead'])->name('account.notifications.markRead');
-    Route::post('/account/notifications/mark-all-read', [NotificationController::class, 'markAll'])->name('account.notifications.markAll');
-    Route::post('/account/notifications/preferences', [NotificationController::class, 'updatePreferences'])->name('account.notifications.preferences');
-    Route::post('/account/notifications/push-token', [NotificationController::class, 'updatePushToken'])->name('account.notifications.push-token');
+    Route::post('/account/notifications/{notification}/mark-read', [NotificationController::class, 'markRead'])->name('account.notifications.markRead')->middleware('verified');
+    Route::post('/account/notifications/mark-all-read', [NotificationController::class, 'markAll'])->name('account.notifications.markAll')->middleware('verified');
+    Route::post('/account/notifications/preferences', [NotificationController::class, 'updatePreferences'])->name('account.notifications.preferences')->middleware('verified');
+    Route::post('/account/notifications/push-token', [NotificationController::class, 'updatePushToken'])->name('account.notifications.push-token')->middleware('verified');
 
     Route::get('/wishlist', [\App\Http\Controllers\WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('/wishlist', [\App\Http\Controllers\WishlistController::class, 'store'])->name('wishlist.store');
-    Route::delete('/wishlist/{wishlist}', [\App\Http\Controllers\WishlistController::class, 'destroy'])->name('wishlist.destroy');
-    Route::post('/wishlist/share', [\App\Http\Controllers\WishlistController::class, 'share'])->name('wishlist.share');
-    Route::post('/wishlist/{wishlist}/move-to-cart', [\App\Http\Controllers\WishlistController::class, 'moveToCart'])->name('wishlist.move');
+    Route::post('/wishlist', [\App\Http\Controllers\WishlistController::class, 'store'])->name('wishlist.store')->middleware('verified');
+    Route::delete('/wishlist/{wishlist}', [\App\Http\Controllers\WishlistController::class, 'destroy'])->name('wishlist.destroy')->middleware('verified');
+    Route::post('/wishlist/share', [\App\Http\Controllers\WishlistController::class, 'share'])->name('wishlist.share')->middleware('verified');
+    Route::post('/wishlist/{wishlist}/move-to-cart', [\App\Http\Controllers\WishlistController::class, 'moveToCart'])->name('wishlist.move')->middleware('verified');
 
-    Route::post('/coupon/apply', [\App\Http\Controllers\CouponController::class, 'apply'])->name('coupon.apply');
-    Route::delete('/coupon/remove', [\App\Http\Controllers\CouponController::class, 'remove'])->name('coupon.remove');
+    Route::post('/coupon/apply', [\App\Http\Controllers\CouponController::class, 'apply'])->name('coupon.apply')->middleware('verified');
+    Route::delete('/coupon/remove', [\App\Http\Controllers\CouponController::class, 'remove'])->name('coupon.remove')->middleware('verified');
 
     // Booking routes - protected by both permissions and subscription module
     Route::middleware('module.access:bookings')->group(function () {
@@ -482,37 +484,37 @@ Route::middleware('auth')->group(function () {
         });
         Route::middleware('can:bookings.update')->group(function () {
             Route::get('/bookings/{booking}/reschedule', [\App\Http\Controllers\BookingController::class, 'edit'])->name('bookings.reschedule');
-            Route::put('/bookings/{booking}/reschedule', [\App\Http\Controllers\BookingController::class, 'update'])->name('bookings.update');
+            Route::put('/bookings/{booking}/reschedule', [\App\Http\Controllers\BookingController::class, 'update'])->name('bookings.update')->middleware('verified');
         });
         Route::middleware('can:bookings.cancel')->group(function () {
-            Route::put('/bookings/{booking}/cancel', [\App\Http\Controllers\BookingController::class, 'cancel'])->name('bookings.cancel');
+            Route::put('/bookings/{booking}/cancel', [\App\Http\Controllers\BookingController::class, 'cancel'])->name('bookings.cancel')->middleware('verified');
         });
         Route::middleware('can:bookings.create')->group(function () {
             Route::get('/salon/{service}/book/calendar', [\App\Http\Controllers\BookingController::class, 'calendarPreview'])->name('bookings.calendar');
             Route::get('/salon/{service}/book', [\App\Http\Controllers\BookingController::class, 'create'])->name('bookings.create');
-            Route::post('/salon/{service}/book', [\App\Http\Controllers\BookingController::class, 'store'])->name('bookings.store');
+            Route::post('/salon/{service}/book', [\App\Http\Controllers\BookingController::class, 'store'])->name('bookings.store')->middleware('verified');
         });
         Route::get('/api/bookings/types', [\App\Http\Controllers\BookingController::class, 'getBookingTypes'])->name('api.bookings.types');
         Route::get('/api/bookings/options', [\App\Http\Controllers\BookingController::class, 'getBookingOptions'])->name('api.bookings.options');
         Route::get('/api/bookings/slots', [\App\Http\Controllers\BookingController::class, 'getAvailableSlots'])->name('api.bookings.slots');
-        Route::post('/api/bookings/price', [\App\Http\Controllers\BookingController::class, 'calculatePrice'])->name('api.bookings.price');
+        Route::post('/api/bookings/price', [\App\Http\Controllers\BookingController::class, 'calculatePrice'])->name('api.bookings.price')->middleware('verified');
         Route::get('/api/salon/{service}/available-slots', [\App\Http\Controllers\BookingController::class, 'getServiceSlots'])->name('bookings.available-slots');
     });
 
     Route::get('/loyalty', [LoyaltyController::class, 'index'])->name('loyalty.index');
-    Route::post('/loyalty/redeem', [LoyaltyController::class, 'redeem'])->name('loyalty.redeem');
+    Route::post('/loyalty/redeem', [LoyaltyController::class, 'redeem'])->name('loyalty.redeem')->middleware('verified');
     Route::get('/referrals', [ReferralController::class, 'index'])->name('referrals.index');
 
-    Route::post('/vendors/{vendor}/follow', [\App\Http\Controllers\Shop\VendorFollowController::class, 'toggle'])->name('vendors.follow');
+    Route::post('/vendors/{vendor}/follow', [\App\Http\Controllers\Shop\VendorFollowController::class, 'toggle'])->name('vendors.follow')->middleware('verified');
     Route::get('/following', [\App\Http\Controllers\Shop\VendorFollowController::class, 'following'])->name('following.index');
 
-    Route::post('/products/{product}/enquiries', [\App\Http\Controllers\Shop\ProductEnquiryController::class, 'store'])->name('products.enquiries.store');
+    Route::post('/products/{product}/enquiries', [\App\Http\Controllers\Shop\ProductEnquiryController::class, 'store'])->name('products.enquiries.store')->middleware('verified');
 
-    Route::post('/orders/{order}/refunds', [\App\Http\Controllers\RefundRequestController::class, 'store'])->name('orders.refunds.store');
-    Route::post('/privacy/delete', [\App\Http\Controllers\DataRequestController::class, 'delete'])->name('privacy.delete');
+    Route::post('/orders/{order}/refunds', [\App\Http\Controllers\RefundRequestController::class, 'store'])->name('orders.refunds.store')->middleware('verified');
+    Route::post('/privacy/delete', [\App\Http\Controllers\DataRequestController::class, 'delete'])->name('privacy.delete')->middleware('verified');
 });
 
-Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor'])->group(function () {
+Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verified'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Vendor\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/analytics', [\App\Http\Controllers\Vendor\AnalyticsController::class, 'index'])->name('analytics.index');
 
