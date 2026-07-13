@@ -49,6 +49,9 @@
             width: 0;
             height: 0;
         }
+        .hover\:bg-gray-750:hover {
+            background-color: rgba(55, 65, 81, 0.5);
+        }
         #sidebar {
             transition-property: width, transform !important;
             transition-duration: 200ms, 300ms !important;
