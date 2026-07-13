@@ -207,4 +207,28 @@ class AuthenticationTest extends TestCase
         $this->assertDatabaseHas('vendors', ['user_id' => $user->id]);
         $response->assertRedirect();
     }
+
+    public function test_unverified_user_can_browse_but_is_gated_on_sensitive_actions(): void
+    {
+        $user = User::factory()->unverified()->create([
+            'password' => 'Password123!',
+            'is_active' => true,
+        ]);
+
+        $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'Password123!',
+        ]);
+
+        $this->assertAuthenticated();
+
+        // Browsing account pages is allowed for unverified users.
+        $this->get(route('dashboard'))->assertStatus(200);
+        $this->get(route('profile.edit'))->assertStatus(200);
+        $this->get(route('cart.index'))->assertStatus(200);
+
+        // Sensitive actions (money / account mutations) require verification.
+        $this->post(route('subscriptions.subscribe'))->assertRedirect(route('verification.notice'));
+        $this->post(route('checkout.store'))->assertRedirect(route('verification.notice'));
+    }
 }
