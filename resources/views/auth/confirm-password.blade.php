@@ -6,7 +6,7 @@
 @section('content')
 <x-auth-overlay-shell panelClass="max-w-md lg:max-w-lg">
                 <div>
-                    <x-auth.brand-header name="Smart African Market" />
+                    <x-auth.brand-header />
                     <h2 class="mt-6 text-4xl font-bold text-gray-900">Confirm Password</h2>
                     <p class="mt-2 text-sm text-gray-600">
                         This is a secure action. Please confirm your password to continue.

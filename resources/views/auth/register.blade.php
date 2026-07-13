@@ -6,7 +6,7 @@
 @section('content')
 <x-auth-overlay-shell panelClass="w-full sm:w-1/2 lg:w-1/2 lg:max-w-[500px] lg:ml-[25%]" wrapperClass="px-4 sm:px-6 lg:px-12 xl:px-16 py-8">
                 <div>
-                    <x-auth.brand-header name="Smart African Market" />
+                    <x-auth.brand-header />
                     <h2 class="mt-6 text-[1.5rem] font-semibold text-gray-900">Create Your User Account</h2>
                     <p class="mt-2 text-sm text-gray-600">Join Smart African Marketplace and start your journey</p>
                 </div>
