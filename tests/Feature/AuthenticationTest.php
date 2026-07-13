@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\VendorCategory;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
@@ -120,5 +121,80 @@ class AuthenticationTest extends TestCase
                 return true;
             }
         );
+    }
+
+    public function test_admin_can_login(): void
+    {
+        $admin = User::factory()->admin()->create([
+            'password' => 'Password123!',
+            'is_active' => true,
+        ]);
+
+        $response = $this->post(route('admin.login'), [
+            'email' => $admin->email,
+            'password' => 'Password123!',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('admin.dashboard'));
+    }
+
+    public function test_non_admin_is_rejected_from_admin_login(): void
+    {
+        $user = $this->makeUser();
+
+        $response = $this->post(route('admin.login'), [
+            'email' => $user->email,
+            'password' => 'Password123!',
+        ]);
+
+        $this->assertGuest();
+        $response->assertRedirect();
+        $response->assertSessionHasErrors('email');
+    }
+
+    public function test_customer_can_register(): void
+    {
+        $email = 'reg_'.uniqid().'@example.com';
+
+        $response = $this->post(route('register'), [
+            'firstname' => 'Jane',
+            'lastname' => 'Doe',
+            'email' => $email,
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+        ]);
+
+        $this->assertAuthenticated();
+        $this->assertDatabaseHas('users', ['email' => $email, 'role' => 'customer']);
+        $response->assertRedirect();
+    }
+
+    public function test_vendor_can_register(): void
+    {
+        $category = VendorCategory::first();
+        $email = 'vendor_'.uniqid().'@example.com';
+
+        $response = $this->post(route('register'), [
+            'firstname' => 'Jane',
+            'lastname' => 'Doe',
+            'email' => $email,
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
+            'register_as_vendor' => '1',
+            'business_name' => 'Test Business',
+            'business_email' => 'biz@example.com',
+            'business_phone' => '1234567890',
+            'business_address' => '123 Market St',
+            'vendor_category_id' => $category->id,
+        ]);
+
+        $this->assertAuthenticated();
+
+        $user = User::where('email', $email)->first();
+        $this->assertNotNull($user);
+        $this->assertTrue($user->isVendor());
+        $this->assertDatabaseHas('vendors', ['user_id' => $user->id]);
+        $response->assertRedirect();
     }
 }

@@ -6,7 +6,7 @@
 @section('content')
 <x-auth-overlay-shell panelClass="max-w-md lg:max-w-lg">
                 <div>
-                    <x-auth.brand-header name="Smart African Market" />
+                    <x-auth.brand-header />
                     <h2 class="mt-6 text-4xl font-bold text-gray-900">Verify Your Email</h2>
                     <p class="mt-2 text-sm text-gray-600">
                         We sent a verification link to your email. Please verify to continue.
