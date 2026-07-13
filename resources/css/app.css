@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Keep Alpine.js components (e.g. the forgot-password modal) hidden until
+   Alpine initializes, preventing a flash of unstyled/visible markup. */
+[x-cloak] {
+    display: none !important;
+}
