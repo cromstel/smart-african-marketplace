@@ -5,28 +5,23 @@
 <div
     x-data="{ 
         open: false,
-        checkboxChecked: {{ old('register_as_vendor') || request()->query('type') === 'vendor' ? 'true' : 'false' }}
-    }"
-    x-init="
-        // Open modal automatically if checkbox should be checked (e.g., from URL ?type=vendor)
-        if (checkboxChecked) {
-            setTimeout(() => { open = true; }, 100);
+        checkboxChecked: {{ old('register_as_vendor') || request()->query('type') === 'vendor' ? 'true' : 'false' }},
+        init() {
+            if (this.checkboxChecked) {
+                setTimeout(() => { this.open = true; }, 100);
+            }
+            this.$watch('checkboxChecked', value => {
+                if (value) { this.open = true; }
+            });
+            this.$watch('open', value => {
+                document.body.classList[value ? 'add' : 'remove']('overflow-hidden');
+                if (!value && !this.checkboxChecked) {
+                    const el = document.getElementById('register_as_vendor');
+                    if (el) { el.checked = false; }
+                }
+            });
         }
-        $watch('checkboxChecked', value => {
-            if (value) {
-                open = true;
-            }
-        });
-        $watch('open', value => {
-            if (!value && checkboxChecked) {
-                // Modal closed but checkbox should remain checked - user clicked X or outside
-                // Keep checkbox checked, fields will be in modal
-            } else if (!value && !checkboxChecked) {
-                // Modal closed and checkbox unchecked - user unchecked inside modal
-                document.getElementById('register_as_vendor').checked = false;
-            }
-        })
-    "
+    }"
     x-cloak
 >
     {{-- Hidden checkbox that controls the modal trigger - placed outside modal for form integration --}}
@@ -81,7 +76,6 @@
         aria-labelledby="vendor-modal-title"
     >
         <div 
-            x-trap.noscroll="open"
             class="w-full max-w-2xl max-h-[90vh] rounded-2xl bg-white py-6 px-6 shadow-2xl border border-gray-200 text-left overflow-hidden flex flex-col"
         >
             {{-- Modal Header --}}
