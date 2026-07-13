@@ -47,7 +47,6 @@ storage/logs/*
 /install.lock
 
 # Testing
-/tests/
 /test/
 /tests/coverage
 /.phpunit.cache
