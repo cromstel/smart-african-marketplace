@@ -168,7 +168,7 @@ class ShopController extends Controller
         $seo = app(SeoService::class);
         $seo->setTitle('Shop Authentic African Products')
             ->setDescription('Discover authentic African food, clothing, art, and more. Shop from verified vendors across Africa and the diaspora.')
-            ->setKeywords(['african products', 'african food', 'african clothing', 'african art', 'Smart African Marketplace'])
+            ->setKeywords(['african products', 'african food', 'african clothing', 'african art', config('app.name')])
             ->setCanonical(route('shop.index'));
 
         return view('shop.index', compact('products', 'categories', 'categoryTree', 'categoryLookup', 'brands'));

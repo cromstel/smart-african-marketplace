@@ -190,8 +190,8 @@
             <div class="flex justify-between items-center h-16 md:h-20">
                 <div class="flex items-center space-x-8 lg:space-x-12">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0">
-                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ __('ui.brand.name') }}" class="h-10 w-10">
-                        <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent truncate max-w-[10.5rem] sm:max-w-none" style="background-image: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));">{{ __('ui.brand.name') }}</span>
+                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-10 w-10">
+                        <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent truncate max-w-[10.5rem] sm:max-w-none" style="background-image: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));">{{ config('app.name') }}</span>
                     </a>
                     <div class="hidden md:flex md:space-x-8 lg:space-x-10">
                         <a href="{{ route('shop.index') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('shop.*') ? 'theme-accent-text' : '' }}">
@@ -338,8 +338,8 @@
         
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0">
-                <img src="{{ asset(config('branding.logo')) }}" alt="{{ __('ui.brand.name') }}" class="h-8 w-8">
-                <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 bg-clip-text text-transparent truncate max-w-[10rem] sm:max-w-none">{{ __('ui.brand.name') }}</span>
+                <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8">
+                <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 bg-clip-text text-transparent truncate max-w-[10rem] sm:max-w-none">{{ config('app.name') }}</span>
             </a>
             <button type="button" @click="mobileMenuOpen = false" aria-label="Close mobile menu" class="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

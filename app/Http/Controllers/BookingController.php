@@ -395,7 +395,7 @@ class BookingController extends Controller
         $ics = implode("\r\n", [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//Smart African Marketplace Booking//EN',
+            'PRODID:-//' . config('app.name') . ' Booking//EN',
             'BEGIN:VEVENT',
             'UID:booking-'.uniqid(),
             'DTSTAMP:'.$start->format('Ymd\\THis').'Z',

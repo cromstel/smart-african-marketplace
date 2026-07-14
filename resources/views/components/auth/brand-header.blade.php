@@ -4,7 +4,7 @@
 ])
 
 @php
-    $brandName = $name ?? 'Smart African Marketplace';
+    $brandName = $name ?? config('app.name');
     $textSize = $size === 'lg' ? 'text-xl sm:text-2xl' : 'text-sm sm:text-base lg:text-lg';
 @endphp
 

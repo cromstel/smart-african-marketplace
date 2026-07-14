@@ -276,7 +276,7 @@
 
             <div>
                 <h3 class="font-semibold text-gray-900 mb-2">What payment methods do you accept?</h3>
-                <p class="text-gray-600 text-sm">We accept all major credit cards via Stripe and Paystack, plus mobile money (MTN, Airtel) for Smart African Marketplaces.</p>
+                <p class="text-gray-600 text-sm">We accept all major credit cards via Stripe and Paystack, plus mobile money (MTN, Airtel) for {{ config('app.name') }}.</p>
             </div>
         </div>
     </div>

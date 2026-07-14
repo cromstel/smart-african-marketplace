@@ -1,10 +1,10 @@
 @extends('layouts.shop')
 
-@section('title', $product->name . ' - ' . __('ui.brand.name'))
+@section('title', $product->name . ' - ' . config('app.name'))
 
 @push('head')
 <meta name="description" content="{{ Str::limit(strip_tags($product->description), 160) }}">
-<meta name="keywords" content="{{ $product->category->name }}, {{ $product->name }}, Smart African Marketplace, buy {{ $product->name }}">
+<meta name="keywords" content="{{ $product->category->name }}, {{ $product->name }}, {{ config('app.name') }}, buy {{ $product->name }}">
 <link rel="canonical" href="{{ route('shop.show', $product->slug) }}">
 
 <meta property="og:title" content="{{ $product->name }}">
@@ -12,7 +12,7 @@
 <meta property="og:image" content="{{ $product->featured_image ? '/storage/' . ltrim($product->featured_image ?? '', '/') : '/images/default-product.jpg' }}">
 <meta property="og:url" content="{{ route('shop.show', $product->slug) }}">
 <meta property="og:type" content="product">
-<meta property="og:site_name" content="Smart African Marketplace">
+<meta property="og:site_name" content="{{ config('app.name') }}">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ $product->name }}">
@@ -29,7 +29,7 @@
   "sku": "{{ $product->sku }}",
   "brand": {
     "@type": "Brand",
-    "name": "{{ $product->vendor ? $product->vendor->business_name : 'Smart African Marketplace' }}"
+    "name": "{{ $product->vendor ? $product->vendor->business_name : config('app.name') }}"
   },
   "offers": {
     "@type": "Offer",
@@ -39,7 +39,7 @@
     "availability": "{{ $product->stock_quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
     "seller": {
       "@type": "Organization",
-      "name": "Smart African Marketplace"
+      "name": "{{ config('app.name') }}"
     }
   }
   @if($product->reviews->count() > 0)

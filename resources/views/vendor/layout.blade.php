@@ -124,7 +124,7 @@
                 <a href="{{ route('home') }}" class="flex items-center space-x-2" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
                     <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Marketplace') }}" class="h-8 w-8">
                     <div class="sidebar-brand-text">
-                    <h2 class="truncate max-w-[12rem] sm:max-w-none text-xs sm:text-sm md:text-base font-semibold text-white uppercase tracking-wide">Smart African Marketplace</h2>
+                    <h2 class="truncate max-w-[12rem] sm:max-w-none text-xs sm:text-sm md:text-base font-semibold text-white uppercase tracking-wide">{{ config('app.name') }}</h2>
                         <p class="text-xs text-gray-400">Vendor Portal</p>
                     </div>
                     <button id="sidebar-collapse-toggle" type="button" class="hidden lg:inline-flex ml-auto items-center justify-center w-9 h-9 rounded-lg border border-gray-700 bg-gray-800 text-gray-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600" aria-label="Toggle sidebar" title="Collapse sidebar">

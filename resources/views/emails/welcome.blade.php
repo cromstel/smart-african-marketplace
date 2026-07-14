@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Welcome to Smart African Marketplace</title>
+    <title>Welcome to {{ config('app.name') }}</title>
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { background: #4f46e5; color: white; padding: 40px 20px; text-align: center; border-radius: 8px 8px 0 0; }
@@ -14,14 +14,14 @@
 </head>
 <body>
     <div class="header">
-        <h2 style="margin: 0; font-size: 32px;">Welcome to Smart African Marketplace!</h2>
+        <h2 style="margin: 0; font-size: 32px;">Welcome to {{ config('app.name') }}!</h2>
         <p style="margin: 10px 0 0 0; font-size: 16px;">Your gateway to authentic African products</p>
     </div>
 
     <div class="content">
         <p>Hi {{ $user->name }},</p>
         
-        <p>Welcome to <strong>Smart African Marketplace</strong>! We're thrilled to have you join our community.</p>
+        <p>Welcome to <strong>{{ config('app.name') }}</strong>! We're thrilled to have you join our community.</p>
 
         <p>You now have access to an amazing collection of authentic African food products, clothing, and salon services, all in one place.</p>
 
@@ -54,11 +54,11 @@
         <p>If you have any questions, our support team is always here to help.</p>
         
         <p>Happy shopping!</p>
-        <p style="margin-top: 30px;"><strong>The Smart African Marketplace Team</strong></p>
+        <p style="margin-top: 30px;"><strong>The {{ config('app.name') }} Team</strong></p>
     </div>
 
     <div class="footer">
-        <p>&copy; {{ date('Y') }} Smart African Marketplace. All rights reserved.</p>
+        <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
         <p>You received this email because you signed up for an account.</p>
     </div>
 </body>

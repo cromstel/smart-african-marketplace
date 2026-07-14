@@ -37,7 +37,7 @@ class ChatbotService
 
     public function greeting(): string
     {
-        return (string) Setting::get('chatbot_greeting', 'Hello! Welcome to Smart African Marketplace. How can I help you today?');
+        return (string) Setting::get('chatbot_greeting', 'Hello! Welcome to ' . config('app.name') . '. How can I help you today?');
     }
 
     public function sanitizeMessage(string $message): string

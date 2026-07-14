@@ -67,11 +67,11 @@
 
         <p style="margin-top: 30px;">Your order should arrive soon. We'll send you another email once it's delivered.</p>
         
-        <p>Thank you for shopping with Smart African Marketplace!</p>
+        <p>Thank you for shopping with {{ config('app.name') }}!</p>
     </div>
 
     <div class="footer">
-        <p>&copy; {{ date('Y') }} Smart African Marketplace. All rights reserved.</p>
+        <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
         <p>This is an automated email, please do not reply.</p>
     </div>
 </body>
