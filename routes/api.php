@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\BrandProductController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\Mobile\AuthController as MobileAuthController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
@@ -57,6 +58,8 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
 
     Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
     Route::apiResource('addresses', AddressController::class);
+    Route::post('/checkout/shipping-preview', [CheckoutController::class, 'shippingPreview'])->name('checkout.shipping-preview');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 });
 
 Route::prefix('v1/vendor')->name('api.vendor.')->middleware(['auth:sanctum', 'vendor'])->group(function () {
