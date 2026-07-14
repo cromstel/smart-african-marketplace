@@ -18,7 +18,7 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to African Market!',
+            subject: 'Welcome to Smart African Marketplace!',
         );
     }
 

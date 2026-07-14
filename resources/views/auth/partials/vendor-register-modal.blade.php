@@ -55,7 +55,7 @@
             Register as a Vendor
         </span>
     </label>
-    <p class="ml-6 text-xs text-gray-500 mt-1">Check this box if you want to sell products on Smart African Market</p>
+    <p class="ml-6 text-xs text-gray-500 mt-1">Check this box if you want to sell products on Smart African Marketplace</p>
 
     {{-- Modal Backdrop --}}
     <div

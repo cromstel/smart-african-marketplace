@@ -121,10 +121,10 @@
     <div class="min-h-screen flex flex-col lg:flex-row">
         <aside id="sidebar" class="fixed lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden inset-y-0 left-0 z-40 w-72 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
             <div class="px-4 py-6 border-b border-gray-700">
-                <a href="{{ route('home') }}" class="flex items-center space-x-2" aria-label="{{ config('app.name', 'African Market') }} - Go to homepage">
-                    <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'African Market') }}" class="h-8 w-8">
+                <a href="{{ route('home') }}" class="flex items-center space-x-2" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
+                    <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Marketplace') }}" class="h-8 w-8">
                     <div class="sidebar-brand-text">
-                    <h2 class="truncate max-w-[12rem] sm:max-w-none text-xs sm:text-sm md:text-base font-semibold text-white uppercase tracking-wide">Smart African Market</h2>
+                    <h2 class="truncate max-w-[12rem] sm:max-w-none text-xs sm:text-sm md:text-base font-semibold text-white uppercase tracking-wide">Smart African Marketplace</h2>
                         <p class="text-xs text-gray-400">Vendor Portal</p>
                     </div>
                     <button id="sidebar-collapse-toggle" type="button" class="hidden lg:inline-flex ml-auto items-center justify-center w-9 h-9 rounded-lg border border-gray-700 bg-gray-800 text-gray-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600" aria-label="Toggle sidebar" title="Collapse sidebar">

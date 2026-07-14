@@ -36,7 +36,7 @@
 @if($canonical)
 <meta property="og:url" content="{{ $canonical }}">
 @endif
-<meta property="og:site_name" content="{{ config('app.name', 'African Market') }}">
+<meta property="og:site_name" content="{{ config('app.name', 'Smart African Marketplace') }}">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">

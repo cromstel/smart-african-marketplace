@@ -27,7 +27,7 @@ class SubscriptionExpiringNotification extends Notification implements ShouldQue
         $upgradeUrl = route('vendor.subscription.upgrade');
 
         return (new MailMessage)
-            ->subject('Your African Market Subscription is Expiring Soon')
+            ->subject('Your Smart African Marketplace Subscription is Expiring Soon')
             ->greeting("Hello {$notifiable->name}!")
             ->line("Your **{$this->planName}** subscription will expire in **{$this->daysLeft} days**.")
             ->line('To continue enjoying uninterrupted access to our platform, please upgrade your subscription now.')
@@ -35,7 +35,7 @@ class SubscriptionExpiringNotification extends Notification implements ShouldQue
             ->line('Benefits of upgrading:')
             ->line('Priority support and improved operations')
             ->line('Advanced analytics and growth tools')
-            ->line('Thank you for being a valued member of African Market!');
+            ->line('Thank you for being a valued member of Smart African Marketplace!');
     }
 
     public function toArray(object $notifiable): array

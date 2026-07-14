@@ -38,7 +38,7 @@ class VendorSeeder extends Seeder
         $adminUser = User::where('email', 'admin@africanmarket.com')->first();
 
         if ($adminUser) {
-            $businessName = 'African Market Official Store';
+            $businessName = 'Smart African Marketplace Official Store';
 
             Vendor::updateOrCreate(
                 ['user_id' => $adminUser->id],
@@ -50,7 +50,7 @@ class VendorSeeder extends Seeder
                     'business_address' => '123 Admin Street, Lagos, Nigeria',
                     'business_registration_number' => 'NG-BN-2024-001',
                     'tax_id' => 'NG-TAX-987654',
-                    'description' => 'Official African Market store offering curated products',
+                    'description' => 'Official Smart African Marketplace store offering curated products',
                     'commission_rate' => 0.00,
                     'status' => 'approved',
                     'is_active' => true,

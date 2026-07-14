@@ -83,11 +83,11 @@
             <a href="{{ url('/admin/products') }}" class="button">Manage Inventory</a>
         </p>
 
-        <p>This is an automated alert sent by the African Market inventory management system.</p>
+        <p>This is an automated alert sent by the Smart African Marketplace inventory management system.</p>
     </div>
 
     <div class="footer">
-        <p>&copy; {{ date('Y') }} African Market. All rights reserved.</p>
+        <p>&copy; {{ date('Y') }} Smart African Marketplace. All rights reserved.</p>
         <p>You received this email because you are an administrator.</p>
     </div>
 </body>

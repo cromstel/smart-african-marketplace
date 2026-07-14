@@ -2,7 +2,7 @@
 
 return [
     'brand' => [
-        'name' => 'Smart African Market',
+        'name' => 'Smart African Marketplace',
         'tagline' => 'Relier les cultures avec des produits et services africains authentiques.',
     ],
     'nav' => [
@@ -78,7 +78,7 @@ return [
     'home' => [
         'hero_title' => 'Bienvenue sur le marche africain multivendeur',
         'hero_subtitle' => 'Votre plateforme unique pour des produits alimentaires africains authentiques, des vetements traditionnels et des services de salon professionnels.',
-        'why_choose' => 'Pourquoi choisir African Market ?',
+        'why_choose' => 'Pourquoi choisir Smart African Marketplace ?',
         'feature_food_title' => 'Cuisine authentique',
         'feature_food_body' => 'Ingredients africains frais, epices et plats prets a consommer de tout le continent.',
         'feature_clothing_title' => 'Vetements traditionnels',
@@ -218,21 +218,21 @@ return [
         'title' => 'Conditions d utilisation',
         'last_updated' => 'Derniere mise a jour : :date',
         'section_1_title' => '1. Accord aux conditions',
-        'section_1_body' => 'En accedant et en utilisant African Market, vous acceptez d etre lie par ces Conditions d utilisation et toutes les lois et reglementations applicables. Si vous n acceptez pas ces conditions, vous ne devez pas utiliser ce site.',
+        'section_1_body' => 'En accedant et en utilisant Smart African Marketplace, vous acceptez d etre lie par ces Conditions d utilisation et toutes les lois et reglementations applicables. Si vous n acceptez pas ces conditions, vous ne devez pas utiliser ce site.',
         'section_2_title' => '2. Licence d utilisation',
-        'section_2_body' => 'La permission est accordee pour acceder temporairement aux contenus d African Market pour un usage personnel et non commercial uniquement. Il s agit d une licence et non d un transfert de propriete.',
+        'section_2_body' => 'La permission est accordee pour acceder temporairement aux contenus d Smart African Marketplace pour un usage personnel et non commercial uniquement. Il s agit d une licence et non d un transfert de propriete.',
         'section_3_title' => '3. Informations sur les produits',
         'section_3_body' => 'Nous nous efforcons de fournir des informations produit precises. Cependant, nous ne garantissons pas que les descriptions, prix ou autres contenus soient exacts, complets, fiables ou a jour.',
         'section_4_title' => '4. Commandes et paiement',
         'section_4_body' => 'Toutes les commandes sont soumises a acceptation et disponibilite. Nous nous reservons le droit de refuser ou d annuler toute commande. Le paiement doit etre recu avant le traitement et l expedition.',
         'section_5_title' => '5. Expedition et livraison',
-        'section_5_body' => 'Les delais de livraison sont des estimations et ne sont pas garantis. African Market n est pas responsable des retards dus a des circonstances hors de notre controle.',
+        'section_5_body' => 'Les delais de livraison sont des estimations et ne sont pas garantis. Smart African Marketplace n est pas responsable des retards dus a des circonstances hors de notre controle.',
         'section_6_title' => '6. Retours et remboursements',
         'section_6_body' => 'Les retours sont acceptes dans les 14 jours suivant la livraison pour les articles non utilises dans leur emballage d origine. Les remboursements seront traites sous 7 a 10 jours ouvrables apres reception.',
         'section_7_title' => '7. Comptes utilisateurs',
         'section_7_body' => 'Vous etes responsable de la confidentialite de vos identifiants et de toutes les activites sur votre compte.',
         'section_8_title' => '8. Limitation de responsabilite',
-        'section_8_body' => 'African Market ne sera pas responsable des dommages indirects, accessoires, speciaux, consequents ou punitifs resultants de votre utilisation ou de votre incapacit� a utiliser le service.',
+        'section_8_body' => 'Smart African Marketplace ne sera pas responsable des dommages indirects, accessoires, speciaux, consequents ou punitifs resultants de votre utilisation ou de votre incapacit� a utiliser le service.',
         'section_9_title' => '9. Modifications des conditions',
         'section_9_body' => 'Nous nous reservons le droit de modifier ces conditions a tout moment. L utilisation continue du site apres les changements constitue votre acceptation.',
         'section_10_title' => '10. Informations de contact',
@@ -279,8 +279,8 @@ return [
     'vendor' => [
         'hero_title' => 'Devenir vendeur',
         'hero_subtitle' => 'Rejoignez notre marketplace et developpez votre activite africaine',
-        'why_title' => 'Pourquoi vendre sur African Market ?',
-        'why_body' => 'African Market est une marketplace multivendeur dediee aux produits et services africains authentiques. Que vous vendiez des aliments traditionnels, des articles artisanaux, de la mode ou des services de salon, notre plateforme vous connecte a des clients du monde entier.',
+        'why_title' => 'Pourquoi vendre sur Smart African Marketplace ?',
+        'why_body' => 'Smart African Marketplace est une marketplace multivendeur dediee aux produits et services africains authentiques. Que vous vendiez des aliments traditionnels, des articles artisanaux, de la mode ou des services de salon, notre plateforme vous connecte a des clients du monde entier.',
         'benefits' => [
             'global_title' => 'Portee mondiale',
             'global_body' => 'Connectez-vous avec des clients du monde entier interesses par des produits africains authentiques',
@@ -389,7 +389,7 @@ return [
         'commission_title' => 'Commission et paiements',
         'commission' => [
             'how_title' => 'Comment fonctionnent les commissions',
-            'how_body' => 'African Market preleve une commission sur chaque vente pour maintenir la plateforme et fournir du support. Le taux varie selon le plan et est affiche dans votre tableau.',
+            'how_body' => 'Smart African Marketplace preleve une commission sur chaque vente pour maintenir la plateforme et fournir du support. Le taux varie selon le plan et est affiche dans votre tableau.',
             'how_list' => [
                 'La commission est calculee automatiquement sur chaque vente',
                 'Vous recevez les gains nets (prix de vente moins commission)',
@@ -407,7 +407,7 @@ return [
             ],
         ],
         'cta_title' => 'Pret a commencer ?',
-        'cta_body' => 'Rejoignez des centaines de vendeurs sur African Market',
+        'cta_body' => 'Rejoignez des centaines de vendeurs sur Smart African Marketplace',
         'cta_primary' => 'S inscrire comme vendeur',
         'cta_secondary' => 'Contacter le support',
         'help_title' => 'Besoin d aide ?',

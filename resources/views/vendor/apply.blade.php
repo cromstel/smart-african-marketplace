@@ -6,7 +6,7 @@
 <x-hero-section
     pageIdentifier="vendor-apply"
     fallbackTitle="Become a Vendor"
-    fallbackSubtitle="Apply to sell on African Market"
+    fallbackSubtitle="Apply to sell on Smart African Marketplace"
     fallbackImage="/images/vendor-apply-banner.avif"
     headingTag="h2"
     :animated="true"

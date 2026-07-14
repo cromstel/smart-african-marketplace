@@ -1,4 +1,4 @@
-# African Market - Tech Stack Summary
+# Smart African Marketplace - Tech Stack Summary
 
 **Framework**: Laravel 12 (PHP 8.2+)  
 **Database**: MySQL 8.0+ (Your existing installation)  
