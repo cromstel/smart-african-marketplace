@@ -68,7 +68,6 @@
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
                                 class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                                 placeholder="e-mail@domain.com">
-                            <x-form-hint text="Use your authorized administrator email address." />
                         </div>
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
@@ -94,7 +93,6 @@
                                 </svg>
                             </button>
                         </div>
-                        <x-form-hint text="Admin passwords are case-sensitive and must match your admin account." />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 

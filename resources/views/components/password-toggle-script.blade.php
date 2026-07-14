@@ -117,9 +117,68 @@
             });
         };
 
+        const PASSWORD_REQUIREMENTS = [
+            { key: 'length', test: (v) => v.length >= 8 },
+            { key: 'uppercase', test: (v) => /[A-Z]/.test(v) },
+            { key: 'lowercase', test: (v) => /[a-z]/.test(v) },
+            { key: 'number', test: (v) => /[0-9]/.test(v) },
+            { key: 'symbol', test: (v) => /[^A-Za-z0-9]/.test(v) },
+        ];
+
+        const initPasswordRequirements = () => {
+            document.querySelectorAll('[data-password-requirements-for]').forEach((panel) => {
+                if (panel.dataset.passwordReqBound === '1') {
+                    return;
+                }
+                panel.dataset.passwordReqBound = '1';
+
+                const input = document.getElementById(panel.getAttribute('data-password-requirements-for'));
+                if (!input) {
+                    return;
+                }
+
+                const items = {};
+                panel.querySelectorAll('[data-req]').forEach((li) => {
+                    items[li.getAttribute('data-req')] = li;
+                });
+
+                const update = () => {
+                    const value = input.value;
+                    let allMet = value.length > 0;
+
+                    PASSWORD_REQUIREMENTS.forEach(({ key, test }) => {
+                        const met = test(value);
+                        if (!met) {
+                            allMet = false;
+                        }
+                        const li = items[key];
+                        if (!li) {
+                            return;
+                        }
+                        li.classList.toggle('text-emerald-600', met);
+                        li.classList.toggle('text-gray-400', !met);
+                        const icon = li.querySelector('[data-req-icon]');
+                        if (icon) {
+                            icon.textContent = met ? '✓' : '○';
+                        }
+                    });
+
+                    // Show only while the field is focused/typed AND requirements are unmet.
+                    const show = value.length > 0 && !allMet;
+                    panel.classList.toggle('hidden', !show);
+                };
+
+                input.addEventListener('input', update);
+                input.addEventListener('focus', update);
+                input.addEventListener('blur', () => panel.classList.add('hidden'));
+                update();
+            });
+        };
+
         const init = () => {
             initPasswordVisibilityToggles();
             initPasswordStrengthMeters();
+            initPasswordRequirements();
         };
 
         if (document.readyState === 'loading') {

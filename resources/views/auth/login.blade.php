@@ -28,7 +28,6 @@
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
                                 class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                                 placeholder="you@example.com">
-                            <x-form-hint text="Use the email address linked to your account." />
                         </div>
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
