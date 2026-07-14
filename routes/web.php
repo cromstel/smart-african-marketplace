@@ -522,6 +522,8 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
         ->name('data-export.request');
     Route::post('/data-export/request', [\App\Http\Controllers\Vendor\DataExportRequestController::class, 'store'])
         ->name('data-export.store');
+    Route::get('/data-export/{dataExportRequest}/download', [\App\Http\Controllers\Vendor\DataExportRequestController::class, 'download'])
+        ->name('data-export.download');
 
     Route::middleware('module.access:bookings')->group(function () {
         Route::middleware('can:bookings.view_any')->group(function () {

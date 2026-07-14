@@ -287,7 +287,7 @@
     @if($existingRequest)
         <p class="text-gray-400 mb-4">{{ $existingRequest->reason }}</p>
         @if($existingRequest->status === 'ready')
-            <a href="{{ route('admin.data-exports.download', ['dataExportRequest' => $existingRequest, 'token' => $existingRequest->token]) }}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg">
+            <a href="{{ route('vendor.data-export.download', ['dataExportRequest' => $existingRequest, 'token' => $existingRequest->token]) }}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg">
                 Download Export
             </a>
         @endif

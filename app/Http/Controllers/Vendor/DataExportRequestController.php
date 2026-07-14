@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataExportRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class DataExportRequestController extends Controller
 {
@@ -48,5 +49,28 @@ class DataExportRequestController extends Controller
         ]);
 
         return redirect()->route('vendor.data-export.request')->with('success', 'Export request submitted. An admin will review it.');
+    }
+
+    public function download(Request $request, DataExportRequest $dataExportRequest)
+    {
+        if ($dataExportRequest->requested_by !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($dataExportRequest->status !== DataExportRequest::STATUS_READY) {
+            abort(404);
+        }
+
+        $token = $request->query('token');
+        if (! $token || $token !== $dataExportRequest->token) {
+            abort(403);
+        }
+
+        $path = $dataExportRequest->archive_path;
+        if (! $path || ! Storage::disk('local')->exists($path)) {
+            abort(404);
+        }
+
+        return Storage::disk('local')->download($path);
     }
 }
