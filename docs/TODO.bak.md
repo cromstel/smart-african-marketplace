@@ -1000,7 +1000,7 @@
 - **Auth Pages**: Custom modern UI for login, register, forgot password, reset password (replaced default Laravel)
 - **Branding**: SVG logo and favicon with African Market theme (orange-red gradient)
 - **Admin Dashboard**: Enhanced with Blog, Loyalty Points, Referrals management cards
-- **Test Users**: Admin (admin@africanmarket.com / Password123!) & Customer seeded
+- **Test Users**: Admin & Customer seeded (use `DEMO_USER_PASSWORD` env var)
 
 ### 🎨 UI/UX ENHANCEMENTS
 

@@ -1,5 +1,9 @@
 @php
-    $containerWidth = max(1024, min(1600, (int) \App\Models\Setting::get('theme_container_width', 1600)));
+    try {
+        $containerWidth = max(1024, min(1600, (int) \App\Models\Setting::getValue('theme_container_width', 1600)));
+    } catch (\Throwable $e) {
+        $containerWidth = 1600;
+    }
 @endphp
 
 <footer class="border-t border-gray-700 bg-gray-800/80 mt-auto">

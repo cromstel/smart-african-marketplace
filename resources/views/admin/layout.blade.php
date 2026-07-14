@@ -10,8 +10,13 @@
         :type="$seoType ?? 'website'"
     />
     @php
-        $brandColorFrom = \App\Models\Setting::getValue('brand_color_from', '#ea580c');
-        $brandColorTo = \App\Models\Setting::getValue('brand_color_to', '#dc2626');
+        try {
+            $brandColorFrom = \App\Models\Setting::getValue('brand_color_from', '#ea580c');
+            $brandColorTo = \App\Models\Setting::getValue('brand_color_to', '#dc2626');
+        } catch (\Throwable $e) {
+            $brandColorFrom = '#ea580c';
+            $brandColorTo = '#dc2626';
+        }
     @endphp
     <style>
         :root {

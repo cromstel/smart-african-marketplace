@@ -258,7 +258,7 @@
 
     @include('components.site-footer')
 
-    @if(\App\Models\Setting::get('chatbot_enabled', true) && \App\Models\Setting::get('chatbot_show_on_vendor_storefront', true))
+    @if((\App\Models\Setting::getValue('chatbot_enabled', true)) && (\App\Models\Setting::getValue('chatbot_show_on_vendor_storefront', true)))
         @include('components.chatbot-widget')
     @endif
 

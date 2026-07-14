@@ -73,7 +73,7 @@ Route::get('/pages/{page:slug}', [PageController::class, 'customPage'])->name('p
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::post('/blog/{post:slug}/comments', [BlogCommentController::class, 'store'])
-    ->middleware('auth')
+    ->middleware('auth', 'throttle:30,1')
     ->name('blog.comments.store');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
@@ -427,7 +427,7 @@ Route::get('/auctions/{auction:slug}', [\App\Http\Controllers\AuctionController:
 
 // Auction bidding (requires authentication)
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/auctions/{auction:slug}/bid', [\App\Http\Controllers\AuctionController::class, 'bid'])->name('auctions.bid');
+    Route::post('/auctions/{auction:slug}/bid', [\App\Http\Controllers\AuctionController::class, 'bid'])->middleware('throttle:60,1')->name('auctions.bid');
 });
 
 Route::middleware(['auth'])->group(function () {

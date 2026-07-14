@@ -5,8 +5,8 @@ Scope: Admin + Vendor dashboards
 Validation: Desktop hover flyouts + mobile tap submenus + submenu route health checks
 
 ## Credentials used
-- Admin: `admin@africanmarket.com / Password123!`
-- Vendor: `vendor@africanmarket.com / Password123!`
+- Admin: `admin@africanmarket.com` (password via `DEMO_USER_PASSWORD` env var)
+- Vendor: `vendor@africanmarket.com` (password via `DEMO_USER_PASSWORD` env var)
 
 ## Initial issues found
 1. `GET /admin/products` returned `500` from Admin Products submenu.

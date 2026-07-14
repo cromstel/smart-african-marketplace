@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        @php
-            $containerWidth = (int) \App\Models\Setting::get('theme_container_width', 1600);
-        @endphp
+    @php
+        try {
+            $containerWidth = (int) \App\Models\Setting::getValue('theme_container_width', 1600);
+        } catch (\Throwable $e) {
+            $containerWidth = 1600;
+        }
+    @endphp
         <x-seo 
             :title="$seoTitle ?? null"
             :description="$seoDescription ?? null"

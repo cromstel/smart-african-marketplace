@@ -30,8 +30,8 @@
     $heroTitleWeightClass = ($isHomeHero && $headingTag === 'h1') ? 'font-[800]' : 'font-bold';
     
     // Default brand colors (red-orange gradient)
-    $brandColorFrom = \App\Models\Setting::get('brand_color_from', '#ea580c');
-    $brandColorTo = \App\Models\Setting::get('brand_color_to', '#dc2626');
+    $brandColorFrom = \App\Models\Setting::getValue('brand_color_from', '#ea580c');
+    $brandColorTo = \App\Models\Setting::getValue('brand_color_to', '#dc2626');
     
     // Use hero-specific colors if set, otherwise use brand colors
     if ($hero && $hero->gradient_from && $hero->gradient_to) {
