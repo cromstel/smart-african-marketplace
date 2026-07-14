@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <x-seo
         :title="'Site Under Maintenance - ' . config('app.name', 'Smart African Marketplace')"
-        :description="'Smart African Marketplace is temporarily unavailable for maintenance'"
+        :description="config('app.name') . ' is temporarily unavailable for maintenance'"
         :index="false"
         :follow="false"
     />
@@ -169,7 +169,7 @@
             <h1 class="hero-title">We'll Be <span>Back Soon!</span></h1>
             
             <p class="hero-subtitle">
-                {{ $message ?? 'The Smart African Marketplace is currently undergoing scheduled maintenance to bring you an even better shopping experience. We appreciate your patience!' }}
+                {{ $message ?? 'The ' . config('app.name') . ' is currently undergoing scheduled maintenance to bring you an even better shopping experience. We appreciate your patience!' }}
             </p>
             
             <div class="info-row">

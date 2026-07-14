@@ -84,7 +84,7 @@ class SendWelcomeEmailSeriesCommand extends Command
     {
         return match ($step) {
             1 => [
-                'Welcome to Smart African Marketplace',
+                 'Welcome to ' . config('app.name'),
                 'Thanks for subscribing. Discover authentic products and services from trusted vendors.',
             ],
             2 => [

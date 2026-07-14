@@ -33,7 +33,7 @@ class SmsService
 
     public function sendOrderConfirmation(string $phoneNumber, string $orderNumber, float $total)
     {
-        $message = "Your order #{$orderNumber} has been confirmed! Total: $".number_format($total, 2).'. Thank you for shopping at Smart African Marketplace!';
+        $message = "Your order #{$orderNumber} has been confirmed! Total: $".number_format($total, 2).'. Thank you for shopping at ' . config('app.name') . '!';
 
         return $this->send($phoneNumber, $message);
     }
@@ -44,35 +44,35 @@ class SmsService
         if ($trackingNumber) {
             $message .= " Tracking: {$trackingNumber}";
         }
-        $message .= ' You will receive it soon. - Smart African Marketplace';
+        $message .= ' You will receive it soon. - ' . config('app.name');
 
         return $this->send($phoneNumber, $message);
     }
 
     public function sendOrderDelivered(string $phoneNumber, string $orderNumber)
     {
-        $message = "Your order #{$orderNumber} has been delivered! We hope you enjoy your purchase. - Smart African Marketplace";
+        $message = "Your order #{$orderNumber} has been delivered! We hope you enjoy your purchase. - " . config('app.name');
 
         return $this->send($phoneNumber, $message);
     }
 
     public function sendBookingConfirmation(string $phoneNumber, string $serviceName, string $bookingDate)
     {
-        $message = "Booking confirmed for {$serviceName} on {$bookingDate}. We look forward to seeing you! - Smart African Marketplace";
+        $message = "Booking confirmed for {$serviceName} on {$bookingDate}. We look forward to seeing you! - " . config('app.name');
 
         return $this->send($phoneNumber, $message);
     }
 
     public function sendBookingReminder(string $phoneNumber, string $serviceName, string $bookingDate)
     {
-        $message = "Reminder: You have a booking for {$serviceName} tomorrow at {$bookingDate}. See you soon! - Smart African Marketplace";
+        $message = "Reminder: You have a booking for {$serviceName} tomorrow at {$bookingDate}. See you soon! - " . config('app.name');
 
         return $this->send($phoneNumber, $message);
     }
 
     public function sendBookingCancellation(string $phoneNumber, string $serviceName, string $bookingDate)
     {
-        $message = "Your booking for {$serviceName} on {$bookingDate} has been cancelled. Please contact us if you need help. - Smart African Marketplace";
+        $message = "Your booking for {$serviceName} on {$bookingDate} has been cancelled. Please contact us if you need help. - " . config('app.name');
 
         return $this->send($phoneNumber, $message);
     }

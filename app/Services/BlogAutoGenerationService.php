@@ -65,7 +65,7 @@ class BlogAutoGenerationService
     {
         $metaTitle = Str::limit($title.' | Weekly African News', 255, '');
         $metaDescription = Str::limit(
-            "Discover key insights about {$title}. Explore practical takeaways, trends, and what it means for buyers and sellers across Smart African Marketplace.",
+            "Discover key insights about {$title}. Explore practical takeaways, trends, and what it means for buyers and sellers across " . config('app.name') . ".",
             500,
             ''
         );

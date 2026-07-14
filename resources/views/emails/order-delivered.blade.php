@@ -65,11 +65,11 @@
 
         <p>If you have any issues with your order, please contact our support team and we'll be happy to help.</p>
         
-        <p style="margin-top: 30px;">Thank you for shopping with Smart African Marketplace! We look forward to serving you again.</p>
+        <p style="margin-top: 30px;">Thank you for shopping with {{ config('app.name') }}! We look forward to serving you again.</p>
     </div>
 
     <div class="footer">
-        <p>&copy; {{ date('Y') }} Smart African Marketplace. All rights reserved.</p>
+        <p>&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
         <p>This is an automated email, please do not reply.</p>
     </div>
 </body>

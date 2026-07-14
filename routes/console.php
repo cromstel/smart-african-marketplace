@@ -19,8 +19,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('market:setup', function () {
-    $this->info('Setting up Smart African Marketplace...');
+    $this->info('Setting up ' . config('app.name') . '...');
     $this->call('migrate');
     $this->call('db:seed');
-    $this->info('Smart African Marketplace setup complete!');
-})->purpose('Set up Smart African Marketplace database');
+    $this->info(config('app.name') . ' setup complete!');
+})->purpose('Set up ' . config('app.name') . ' database');

@@ -13,7 +13,7 @@
 
     <section class="py-16 bg-white">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Why Choose Smart African Marketplace?</h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">Why Choose {{ config('app.name') }}?</h2>
             <p class="text-center text-gray-600 max-w-3xl mx-auto -mt-6 mb-10">
                 Discover quality products and services curated for the African community, backed by trusted sellers and a seamless shopping experience.
             </p>

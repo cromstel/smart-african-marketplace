@@ -14,7 +14,7 @@ class ChatbotSettingsController extends Controller
     {
         $settings = [
             'chatbot_enabled' => Setting::get('chatbot_enabled', true),
-            'chatbot_greeting' => Setting::get('chatbot_greeting', 'Hello! Welcome to Smart African Marketplace. How can I help you today?'),
+            'chatbot_greeting' => Setting::get('chatbot_greeting', 'Hello! Welcome to ' . config('app.name') . '. How can I help you today?'),
             'chatbot_openai_model' => Setting::get('chatbot_openai_model', 'gpt-4o-mini'),
             'chatbot_fallback_enabled' => Setting::get('chatbot_fallback_enabled', true),
             'chatbot_show_on_home' => Setting::get('chatbot_show_on_home', true),

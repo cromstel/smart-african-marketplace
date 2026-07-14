@@ -8,7 +8,7 @@
                 <div>
                     <x-auth.brand-header />
                     <h2 class="mt-6 text-[1.5rem] font-semibold text-gray-900">Create Your User Account</h2>
-                    <p class="mt-2 text-sm text-gray-600">Join Smart African Marketplace and start your journey</p>
+                    <p class="mt-2 text-sm text-gray-600">Join {{ config('app.name') }} and start your journey</p>
                 </div>
 
                 <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-5">

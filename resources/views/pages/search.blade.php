@@ -25,7 +25,7 @@
     <div class="bg-gradient-to-r from-orange-600 to-red-600 text-white py-16">
         <div class="container mx-auto px-4">
             <div class="space-y-3 max-w-3xl">
-                <h1 class="text-4xl md:text-5xl font-semibold leading-tight">Search the Smart African Marketplace</h1>
+                <h1 class="text-4xl md:text-5xl font-semibold leading-tight">Search the {{ config('app.name') }}</h1>
                 <p class="text-lg text-orange-50">Use filters, insights, and suggestions to find products, salon services, vendors, and stories that matter.</p>
             </div>
             <div class="mt-8 max-w-4xl">

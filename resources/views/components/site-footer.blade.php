@@ -13,9 +13,9 @@
             <div class="md:col-span-2">
                 <h4 class="text-xl font-bold mb-4 flex items-center space-x-2">
                     <a href="{{ route('home') }}" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
-                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ __('ui.brand.name') }}" class="h-8 w-8">
+                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8">
                     </a>
-                    <span class="uppercase tracking-wide">{{ __('ui.brand.name') }}</span>
+                    <span class="uppercase tracking-wide">{{ config('app.name') }}</span>
                 </h4>
                 <p class="text-gray-400 mb-4">
                     {{ __('ui.brand.tagline') }}
@@ -78,7 +78,7 @@
 <!-- Sticky Bottom Bar -->
 <div class="bg-gray-900 text-white border-t border-gray-800 sticky bottom-0 z-40">
     <div class="mx-auto px-4 py-3 flex flex-col gap-1 text-left sm:flex-row sm:items-center sm:justify-between" style="max-width: {{ $containerWidth }}px;">
-        <p class="text-gray-400 text-xs sm:text-sm md:text-base">&copy; 2025-{{ date('Y') }} {{ __('ui.brand.name') }}. {{ __('ui.footer.rights') }}</p>
+        <p class="text-gray-400 text-xs sm:text-sm md:text-base">&copy; 2025-{{ date('Y') }} {{ config('app.name') }}. {{ __('ui.footer.rights') }}</p>
         <div class="flex items-center justify-between sm:justify-end gap-4">
             <p class="text-gray-400 text-xs sm:text-sm md:text-base sm:text-right">
                 {{ __('ui.footer.powered_by') }}
