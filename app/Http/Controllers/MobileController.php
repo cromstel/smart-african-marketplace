@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class MobileController extends Controller
 {
-    public function index(Request $request): \Illuminate\View\View
+    public function index(Request $request): View
     {
         $userAgent = $request->userAgent() ?? '';
         $deviceType = $this->detectDeviceType($userAgent);
