@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\BrandProductController;
 use App\Http\Controllers\Api\CartController;
@@ -55,6 +56,7 @@ Route::prefix('v1')->name('api.')->middleware('auth:sanctum')->group(function ()
     Route::delete('/cart/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
 
     Route::apiResource('orders', OrderController::class)->only(['index', 'show']);
+    Route::apiResource('addresses', AddressController::class);
 });
 
 Route::prefix('v1/vendor')->name('api.vendor.')->middleware(['auth:sanctum', 'vendor'])->group(function () {
@@ -62,9 +64,12 @@ Route::prefix('v1/vendor')->name('api.vendor.')->middleware(['auth:sanctum', 've
 });
 
 Route::prefix('v1/mobile')->name('api.mobile.')->group(function () {
-    Route::post('/auth/login', [MobileAuthController::class, 'login'])->name('auth.login');
+    Route::post('/auth/login', [MobileAuthController::class, 'login'])->middleware('throttle:10,1')->name('auth.login');
+    Route::post('/auth/register', [MobileAuthController::class, 'register'])->name('auth.register');
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/auth/me', [MobileAuthController::class, 'me'])->name('auth.me');
+        Route::put('/auth/profile', [MobileAuthController::class, 'update'])->name('auth.profile');
         Route::post('/auth/logout', [MobileAuthController::class, 'logout'])->name('auth.logout');
     });
 });

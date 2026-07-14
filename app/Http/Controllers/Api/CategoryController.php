@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -20,20 +21,16 @@ class CategoryController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $categories,
+            'data' => CategoryResource::collection($categories),
             'message' => 'Categories retrieved successfully',
         ]);
     }
 
     public function show(Category $category)
     {
-        $category->load(['products' => function ($query) {
-            $query->where('is_active', true)->take(10);
-        }]);
-
         return response()->json([
             'success' => true,
-            'data' => $category,
+            'data' => new CategoryResource($category),
             'message' => 'Category retrieved successfully',
         ]);
     }

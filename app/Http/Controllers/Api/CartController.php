@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
@@ -20,7 +21,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $cart,
+            'data' => new CartResource($cart),
             'message' => 'Cart retrieved successfully',
         ]);
     }
@@ -102,7 +103,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $cart,
+            'data' => new CartResource($cart),
             'message' => 'Item added to cart successfully',
         ], 201);
     }
@@ -151,7 +152,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $cart,
+            'data' => new CartResource($cart),
             'message' => 'Cart updated successfully',
         ]);
     }
@@ -172,7 +173,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $cart,
+            'data' => new CartResource($cart),
             'message' => 'Item removed from cart successfully',
         ]);
     }
