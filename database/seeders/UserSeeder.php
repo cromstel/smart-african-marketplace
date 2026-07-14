@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
             return;
         }
 
-        $demoPassword = (string) env('DEMO_USER_PASSWORD', 'Password123!');
+        $demoPassword = (string) env('DEMO_USER_PASSWORD', 'changeme');
         $vendorPassword = (string) env('VENDOR_DEMO_PASSWORD', $demoPassword);
 
         $demoUsers = [

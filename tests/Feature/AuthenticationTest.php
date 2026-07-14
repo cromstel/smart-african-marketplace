@@ -25,7 +25,7 @@ class AuthenticationTest extends TestCase
     {
         return User::factory()->create(array_merge([
             'email' => 'auth_test_'.uniqid().'@example.com',
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'is_active' => true,
         ], $attrs));
     }
@@ -44,7 +44,7 @@ class AuthenticationTest extends TestCase
 
         $response = $this->post(route('login'), [
             'email' => $user->email,
-            'password' => 'Password123!',
+            'password' => 'changeme',
         ]);
 
         $this->assertAuthenticated();
@@ -116,11 +116,11 @@ class AuthenticationTest extends TestCase
                 $this->post(route('password.store'), [
                     'token' => $notification->token,
                     'email' => $user->email,
-                    'password' => 'NewPassword123!',
-                    'password_confirmation' => 'NewPassword123!',
+                    'password' => 'NewSecurePass!99',
+                    'password_confirmation' => 'NewSecurePass!99',
                 ]);
 
-                $this->assertTrue(Hash::check('NewPassword123!', $user->fresh()->password));
+                $this->assertTrue(Hash::check('NewSecurePass!99', $user->fresh()->password));
                 $this->assertGuest();
 
                 return true;
@@ -131,13 +131,13 @@ class AuthenticationTest extends TestCase
     public function test_admin_can_login(): void
     {
         $admin = User::factory()->admin()->create([
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'is_active' => true,
         ]);
 
         $response = $this->post(route('admin.login'), [
             'email' => $admin->email,
-            'password' => 'Password123!',
+            'password' => 'changeme',
         ]);
 
         $this->assertAuthenticated();
@@ -150,7 +150,7 @@ class AuthenticationTest extends TestCase
 
         $response = $this->post(route('admin.login'), [
             'email' => $user->email,
-            'password' => 'Password123!',
+            'password' => 'changeme',
         ]);
 
         $this->assertGuest();
@@ -166,8 +166,8 @@ class AuthenticationTest extends TestCase
             'firstname' => 'Jane',
             'lastname' => 'Doe',
             'email' => $email,
-            'password' => 'Password123!',
-            'password_confirmation' => 'Password123!',
+            'password' => 'changeme',
+            'password_confirmation' => 'changeme',
         ]);
 
         $this->assertAuthenticated();
@@ -189,8 +189,8 @@ class AuthenticationTest extends TestCase
             'firstname' => 'Jane',
             'lastname' => 'Doe',
             'email' => $email,
-            'password' => 'Password123!',
-            'password_confirmation' => 'Password123!',
+            'password' => 'changeme',
+            'password_confirmation' => 'changeme',
             'register_as_vendor' => '1',
             'business_name' => 'Test Business',
             'business_email' => 'biz@example.com',
@@ -211,13 +211,13 @@ class AuthenticationTest extends TestCase
     public function test_unverified_user_can_browse_but_is_gated_on_sensitive_actions(): void
     {
         $user = User::factory()->unverified()->create([
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'is_active' => true,
         ]);
 
         $this->post(route('login'), [
             'email' => $user->email,
-            'password' => 'Password123!',
+            'password' => 'changeme',
         ]);
 
         $this->assertAuthenticated();

@@ -258,7 +258,16 @@
 
     @include('components.site-footer')
 
-    @if((\App\Models\Setting::getValue('chatbot_enabled', true)) && (\App\Models\Setting::getValue('chatbot_show_on_vendor_storefront', true)))
+    @php
+        try {
+            $chatbotEnabled = \App\Models\Setting::getValue('chatbot_enabled', true);
+            $chatbotVendorStorefront = \App\Models\Setting::getValue('chatbot_show_on_vendor_storefront', true);
+        } catch (\Throwable $e) {
+            $chatbotEnabled = true;
+            $chatbotVendorStorefront = true;
+        }
+    @endphp
+    @if($chatbotEnabled && $chatbotVendorStorefront)
         @include('components.chatbot-widget')
     @endif
 
