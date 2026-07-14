@@ -15,6 +15,7 @@ use App\Observers\VendorObserver;
 use App\Services\QrCodeService;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -47,6 +48,12 @@ class AppServiceProvider extends ServiceProvider
 
         // Configure SMTP from database settings
         $this->configureMail();
+
+        // Route all outgoing mail to the dev/test catch-all address
+        // when MAIL_TO is set. Leave MAIL_TO empty in production.
+        if ($mailTo = config('mail.to.address')) {
+            Mail::alwaysTo($mailTo);
+        }
     }
 
     /**
