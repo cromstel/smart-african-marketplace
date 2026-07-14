@@ -2,19 +2,35 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     @php
-        $themePreset = \App\Models\Setting::getValue('theme_preset', 'modern-commerce');
-        $brandColorFrom = \App\Models\Setting::getValue('brand_color_from', '#ea580c');
-        $brandColorTo = \App\Models\Setting::getValue('brand_color_to', '#dc2626');
-        $accentColor = \App\Models\Setting::getValue('theme_accent_color', '#f97316');
-        $linkColor = \App\Models\Setting::getValue('theme_link_color', '#ea580c');
-        $mutedText = \App\Models\Setting::getValue('theme_muted_text_color', '#6b7280');
-        $containerWidth = (int) \App\Models\Setting::getValue('theme_container_width', 1600);
-        $fontBody = \App\Models\Setting::getValue('theme_font_body', 'Inter');
-        $fontHeading = \App\Models\Setting::getValue('theme_font_heading', 'Poppins');
-        $buttonRadius = (int) \App\Models\Setting::getValue('theme_button_radius', 12);
-        $surfaceStyle = \App\Models\Setting::getValue('theme_surface_style', 'soft');
-        $stickyHeader = \App\Models\Setting::getValue('theme_sticky_header', true);
-        $headerPreset = \App\Models\Setting::getValue('theme_header_preset', 'centered');
+        try {
+            $themePreset = \App\Models\Setting::getValue('theme_preset', 'modern-commerce');
+            $brandColorFrom = \App\Models\Setting::getValue('brand_color_from', '#ea580c');
+            $brandColorTo = \App\Models\Setting::getValue('brand_color_to', '#dc2626');
+            $accentColor = \App\Models\Setting::getValue('theme_accent_color', '#f97316');
+            $linkColor = \App\Models\Setting::getValue('theme_link_color', '#ea580c');
+            $mutedText = \App\Models\Setting::getValue('theme_muted_text_color', '#6b7280');
+            $containerWidth = (int) \App\Models\Setting::getValue('theme_container_width', 1600);
+            $fontBody = \App\Models\Setting::getValue('theme_font_body', 'Inter');
+            $fontHeading = \App\Models\Setting::getValue('theme_font_heading', 'Poppins');
+            $buttonRadius = (int) \App\Models\Setting::getValue('theme_button_radius', 12);
+            $surfaceStyle = \App\Models\Setting::getValue('theme_surface_style', 'soft');
+            $stickyHeader = \App\Models\Setting::getValue('theme_sticky_header', true);
+            $headerPreset = \App\Models\Setting::getValue('theme_header_preset', 'centered');
+        } catch (\Throwable $e) {
+            $themePreset = 'modern-commerce';
+            $brandColorFrom = '#ea580c';
+            $brandColorTo = '#dc2626';
+            $accentColor = '#f97316';
+            $linkColor = '#ea580c';
+            $mutedText = '#6b7280';
+            $containerWidth = 1600;
+            $fontBody = 'Inter';
+            $fontHeading = 'Poppins';
+            $buttonRadius = 12;
+            $surfaceStyle = 'soft';
+            $stickyHeader = true;
+            $headerPreset = 'centered';
+        }
     @endphp
     <x-seo 
         :title="$seoTitle ?? null"
@@ -205,7 +221,7 @@
                     </div>
 
                     @auth
-                        @php $notificationCount = auth()->user()->unreadUserNotifications()->count(); @endphp
+                        @php $notificationCount = auth()->user()?->unreadUserNotifications()?->count() ?? 0; @endphp
                         <a href="{{ route('wishlist.index') }}" class="hidden sm:inline-block relative text-gray-700 hover:text-orange-600" title="{{ __('ui.common.wishlist') }}">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>

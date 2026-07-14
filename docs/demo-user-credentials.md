@@ -13,11 +13,14 @@ In automated tests, seeded demo accounts use `password`.
 ## Available Demo Accounts
 =========================
 
-- admin@africanmarket.com / Password123!
-- vendor@africanmarket.com / Password123!
-- salon@africanmarket.com / Password123!
-- customer@africanmarket.com / Password123!
-- customer2@africanmarket.com / Password123!
+Set `DEMO_USER_PASSWORD` in your `.env` before seeding to use a known password.
+All accounts use the same password as defined in the `DEMO_USER_PASSWORD` env var.
+
+- admin@africanmarket.com
+- vendor@africanmarket.com
+- salon@africanmarket.com
+- customer@africanmarket.com
+- customer2@africanmarket.com
 
 ## Login Portals
 =================

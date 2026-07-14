@@ -17,7 +17,7 @@
                     name="loyalty_points_per_dollar"
                     min="1"
                     max="100"
-                    value="{{ old('loyalty_points_per_dollar', \App\Models\Setting::get('loyalty_points_per_dollar', 1)) }}"
+                    value="{{ old('loyalty_points_per_dollar', \App\Models\Setting::getValue('loyalty_points_per_dollar', 1)) }}"
                     class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                     required
                 >
@@ -31,7 +31,7 @@
                     step="0.001"
                     min="0.001"
                     max="1"
-                    value="{{ old('loyalty_points_value', \App\Models\Setting::get('loyalty_points_value', 0.01)) }}"
+                    value="{{ old('loyalty_points_value', \App\Models\Setting::getValue('loyalty_points_value', 0.01)) }}"
                     class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                     required
                 >
