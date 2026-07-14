@@ -42,7 +42,6 @@
                                 </svg>
                             </button>
                         </div>
-                        <x-form-hint text="Enter your current account password to continue." />
 
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>

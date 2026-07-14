@@ -48,7 +48,6 @@
                                 <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
                                     class="block w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="John Doe">
-                                <x-form-hint text="Enter your full name as you want it shown in your account." />
                             </div>
                             <x-input-error :messages="$errors->get('name')" class="mt-1" />
                         </div>
@@ -59,7 +58,6 @@
                                 <input id="modal-email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
                                     class="block w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                                     placeholder="you@example.com">
-                                <x-form-hint text="Use a valid email to verify and recover your account." />
                             </div>
                             <x-input-error :messages="$errors->get('email')" class="mt-1" />
                         </div>
@@ -86,7 +84,7 @@
                                 </div>
                                 <p class="text-xs font-semibold text-gray-500" data-password-strength-label>Very Weak</p>
                             </div>
-                            <x-form-hint text="Use 8+ characters with a strong combination." />
+                            <x-password-requirements for="modal-password" />
                             <x-input-error :messages="$errors->get('password')" class="mt-1" />
                         </div>
 
@@ -106,7 +104,6 @@
                                     </svg>
                                 </button>
                             </div>
-                            <x-form-hint text="Repeat the same password to complete registration." />
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1" />
                         </div>
 

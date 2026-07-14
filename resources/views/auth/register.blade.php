@@ -27,7 +27,6 @@
                                 <input id="firstname" type="text" name="firstname" value="{{ old('firstname') }}" required autofocus autocomplete="given-name"
                                     class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                                     placeholder="First name">
-                                <x-form-hint text="Enter your legal or preferred first name." />
                             </div>
                             <x-input-error :messages="$errors->get('firstname')" class="mt-2" />
                         </div>
@@ -43,7 +42,6 @@
                                 <input id="lastname" type="text" name="lastname" value="{{ old('lastname') }}" required autocomplete="family-name"
                                     class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                                     placeholder="Last name">
-                                <x-form-hint text="Enter your family name or surname." />
                             </div>
                             <x-input-error :messages="$errors->get('lastname')" class="mt-2" />
                         </div>
@@ -61,7 +59,6 @@
                                 <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
                                     class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                                     placeholder="e-mail@domain.com">
-                                <x-form-hint text="Use an email you can access for verification and password recovery." />
                             </div>
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
@@ -77,7 +74,6 @@
                                 <input id="email_confirmation" type="email" name="email_confirmation" value="{{ old('email_confirmation') }}" required autocomplete="email"
                                     class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                                     placeholder="Confirm your email">
-                                <x-form-hint text="Repeat the same email to avoid typos." />
                             </div>
                             <x-input-error :messages="$errors->get('email_confirmation')" class="mt-2" />
                         </div>
@@ -104,7 +100,6 @@
                                     </svg>
                                 </button>
                             </div>
-                            <x-form-hint text="Use at least 8 characters with a mix of letters, numbers, and symbols." />
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
 
@@ -129,12 +124,12 @@
                                     </svg>
                                 </button>
                             </div>
-                            <x-form-hint text="Re-enter the exact same password to confirm." />
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                         </div>
                     </div>
 
                     {{-- Password strength meter spans both columns --}}
+                    <x-password-requirements for="password" />
                     <div data-password-strength-for="password" data-password-confirm-for="password_confirmation" class="mt-1 space-y-1">
                         <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                             <div data-password-strength-fill class="h-full w-0 rounded-full bg-gradient-to-r from-orange-500 via-yellow-500 to-rose-500 transition-all duration-200"></div>

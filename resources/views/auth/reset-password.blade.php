@@ -27,8 +27,7 @@
                             </div>
                             <input id="email" type="email" name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username"
                                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                                   placeholder="you@example.com">
-                            <x-form-hint text="Use the same email where you received your reset link." />
+                                    placeholder="you@example.com">
                         </div>
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
@@ -58,11 +57,12 @@
                             <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                                 <div data-password-strength-fill class="h-full w-0 rounded-full bg-gradient-to-r from-orange-500 via-yellow-500 to-rose-500 transition-all duration-200"></div>
                             </div>
-                            <p class="text-xs font-semibold text-gray-500" data-password-strength-label>Very Weak</p>
+                            <p class="text-xs font-semibold text-gray-500" data-password-strength-label>Very Weak                            </p>
                         </div>
-                        <x-form-hint text="Create a new strong password with at least 8 characters." />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
+
+                    <x-password-requirements for="password" />
 
                     <div>
                         <label for="password_confirmation" class="sr-only">Confirm New Password</label>
@@ -85,7 +85,6 @@
                                 </svg>
                             </button>
                         </div>
-                        <x-form-hint text="Repeat the exact same password to avoid mismatch errors." />
                         <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                     </div>
 

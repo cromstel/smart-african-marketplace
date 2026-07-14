@@ -119,7 +119,6 @@
                                 placeholder="Your Business Name"
                             >
                         </div>
-                        <x-form-hint text="Enter the public name customers will see on your store." />
                         @if ($modalErrors->has('business_name'))
                             <p class="mt-2 text-xs text-red-600">{{ $modalErrors->first('business_name') }}</p>
                         @endif
@@ -150,7 +149,6 @@
                                 @endforelse
                             </select>
                         </div>
-                        <x-form-hint text="Choose the category that best matches what your business sells." />
                         @if ($modalErrors->has('vendor_category_id'))
                             <p class="mt-2 text-xs text-red-600">{{ $modalErrors->first('vendor_category_id') }}</p>
                         @endif
@@ -176,7 +174,6 @@
                                     placeholder="business@domain.com"
                                 >
                             </div>
-                            <x-form-hint text="Use the main email customers should use for business communication." />
                             @if ($modalErrors->has('business_email'))
                                 <p class="mt-2 text-xs text-red-600">{{ $modalErrors->first('business_email') }}</p>
                             @endif
@@ -200,7 +197,6 @@
                                     placeholder="+1234567890"
                                 >
                             </div>
-                            <x-form-hint text="Include country code so support and customers can reach you." />
                             @if ($modalErrors->has('business_phone'))
                                 <p class="mt-2 text-xs text-red-600">{{ $modalErrors->first('business_phone') }}</p>
                             @endif
@@ -226,7 +222,6 @@
                                 placeholder="Full business address"
                             >{{ old('business_address') }}</textarea>
                         </div>
-                        <x-form-hint class="top-3 !inset-y-auto items-start" text="Enter the physical business location used for verification and operations." />
                         @if ($modalErrors->has('business_address'))
                             <p class="mt-2 text-xs text-red-600">{{ $modalErrors->first('business_address') }}</p>
                         @endif
