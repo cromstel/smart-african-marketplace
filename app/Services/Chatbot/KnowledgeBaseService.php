@@ -41,9 +41,9 @@ class KnowledgeBaseService
 
         // Static page sources
         $staticPages = collect([
-            ['source_id' => 1, 'title' => 'About', 'content' => 'African Market platform information, mission, and support details.'],
+            ['source_id' => 1, 'title' => 'About', 'content' => 'Smart African Marketplace platform information, mission, and support details.'],
             ['source_id' => 2, 'title' => 'FAQ', 'content' => 'Frequently asked questions for orders, payments, shipping, and returns.'],
-            ['source_id' => 3, 'title' => 'Terms', 'content' => 'Terms and conditions for using African Market services and purchases.'],
+            ['source_id' => 3, 'title' => 'Terms', 'content' => 'Terms and conditions for using Smart African Marketplace services and purchases.'],
             ['source_id' => 4, 'title' => 'Privacy', 'content' => 'Privacy policy for personal data, cookies, and communications.'],
         ]);
 

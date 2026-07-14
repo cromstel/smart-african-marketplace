@@ -1,7 +1,7 @@
-# African Market - E-commerce Platform
+# Smart African Marketplace - E-commerce Platform
 
 <p align="center">
-  <img src="./public/assets/hero-banner.svg" alt="African Market Hero Banner" width="100%">
+  <img src="./public/assets/hero-banner.svg" alt="Smart African Marketplace Hero Banner" width="100%">
 </p>
 
 > CMS-style installable e-commerce platform for African food products, clothing, and salon services.
@@ -16,7 +16,7 @@
 
 ## 🌍 About
 
-**African Market** is a comprehensive e-commerce platform specializing in:
+**Smart African Marketplace** is a comprehensive e-commerce platform specializing in:
 
 - **African Food Products**: Authentic ingredients, spices, ready-to-eat meals
 - **African Clothing & Fashion**: Traditional and modern African apparel
@@ -105,7 +105,7 @@ zip, gd, fileinfo, openssl, tokenizer, json
 
 ### Option 1: Web Installer (Production - Like CMS)
 
-1. **Download** the African Market package
+1. **Download** the Smart African Marketplace package
 2. **Upload** files to your web server via FTP/SFTP
 3. **Navigate** to `http://yourdomain.com/install`
 4. **Follow** the installation wizard:
@@ -494,7 +494,7 @@ php artisan serve
 # Visit: http://localhost:8000
 ```
 
-**That's it! Start building your African Market!** 🎉
+**That's it! Start building your Smart African Marketplace!** 🎉
 
 ---
 

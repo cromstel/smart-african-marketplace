@@ -44,7 +44,7 @@ class BlogSeeder extends Seeder
             [
                 'name' => 'Business & Trade',
                 'slug' => 'business-trade',
-                'description' => 'Trade insights and business opportunities in African markets',
+                'description' => 'Trade insights and business opportunities in Smart African Marketplace',
             ],
             [
                 'name' => 'Beauty & Wellness',
@@ -97,17 +97,17 @@ class BlogSeeder extends Seeder
                 <h3>3. Contemporary African Luxury</h3>
                 <p>Luxury African brands are gaining international recognition, combining traditional craftsmanship with contemporary design aesthetics that appeal to global audiences.</p>
                 
-                <p>Shop these trends and more on our African Market platform, where you can connect directly with talented African designers and vendors.</p>',
+                <p>Shop these trends and more on our Smart African Marketplace platform, where you can connect directly with talented African designers and vendors.</p>',
                 'categories' => [$categoryModels[1]->id],
                 'tags' => [$tagModels[1]->id, $tagModels[5]->id],
                 'published_at' => Carbon::now()->subDays(5),
             ],
             [
-                'title' => 'How to Start Selling on African Market: A Complete Guide',
+                'title' => 'How to Start Selling on Smart African Marketplace: A Complete Guide',
                 'slug' => 'how-to-start-selling-african-market-guide',
                 'excerpt' => 'Ready to become a vendor? Learn everything you need to know about setting up your store and reaching customers across Africa and beyond.',
                 'content' => '<h2>Your Journey to Becoming a Successful Vendor</h2>
-                <p>African Market is more than just an e-commerce platform—it\'s a community of entrepreneurs, artisans, and businesses connecting African products with the world. Whether you\'re a small artisan or an established business, our platform provides the tools you need to succeed.</p>
+                <p>Smart African Marketplace is more than just an e-commerce platform—it\'s a community of entrepreneurs, artisans, and businesses connecting African products with the world. Whether you\'re a small artisan or an established business, our platform provides the tools you need to succeed.</p>
                 
                 <h3>Step 1: Create Your Vendor Account</h3>
                 <p>Getting started is simple. Sign up for a vendor account, complete your business profile, and verify your identity. Our streamlined onboarding process ensures you can start selling quickly.</p>
@@ -121,7 +121,7 @@ class BlogSeeder extends Seeder
                 <h3>Marketing Your Store</h3>
                 <p>Take advantage of our promotional features, including featured listings, discount coupons, and seasonal campaigns to boost your visibility and sales.</p>
                 
-                <p>Join thousands of successful vendors already selling on African Market. <a href="/register">Start your journey today!</a></p>',
+                <p>Join thousands of successful vendors already selling on Smart African Marketplace. <a href="/register">Start your journey today!</a></p>',
                 'categories' => [$categoryModels[0]->id, $categoryModels[2]->id],
                 'tags' => [$tagModels[3]->id, $tagModels[6]->id, $tagModels[7]->id],
                 'published_at' => Carbon::now()->subDays(10),
@@ -164,10 +164,10 @@ class BlogSeeder extends Seeder
                 <p>As e-commerce continues to grow across Africa, it\'s important to stay informed about safe shopping practices. Follow these essential tips to protect yourself while enjoying the convenience of online shopping.</p>
                 
                 <h3>1. Verify Vendor Authenticity</h3>
-                <p>Always check vendor profiles, ratings, and reviews before making a purchase. On African Market, we verify all our vendors to ensure authenticity and quality.</p>
+                <p>Always check vendor profiles, ratings, and reviews before making a purchase. On Smart African Marketplace, we verify all our vendors to ensure authenticity and quality.</p>
                 
                 <h3>2. Use Secure Payment Methods</h3>
-                <p>Choose platforms that offer secure payment options and buyer protection. African Market supports multiple trusted payment gateways including mobile money, card payments, and bank transfers.</p>
+                <p>Choose platforms that offer secure payment options and buyer protection. Smart African Marketplace supports multiple trusted payment gateways including mobile money, card payments, and bank transfers.</p>
                 
                 <h3>3. Read Product Descriptions Carefully</h3>
                 <p>Review all product details, including dimensions, materials, and specifications. Don\'t hesitate to contact vendors with questions before purchasing.</p>
@@ -184,7 +184,7 @@ class BlogSeeder extends Seeder
                 <h3>7. Watch for Deal Red Flags</h3>
                 <p>If a deal seems too good to be true, it probably is. Be cautious of unrealistic discounts and suspicious vendor behavior.</p>
                 
-                <p>At African Market, customer safety is our priority. We implement robust security measures and vendor verification processes to ensure a safe shopping environment for all our users.</p>',
+                <p>At Smart African Marketplace, customer safety is our priority. We implement robust security measures and vendor verification processes to ensure a safe shopping environment for all our users.</p>',
                 'categories' => [$categoryModels[0]->id],
                 'tags' => [$tagModels[0]->id, $tagModels[6]->id],
                 'published_at' => Carbon::now()->subDays(7),
@@ -209,7 +209,7 @@ class BlogSeeder extends Seeder
                 <p>This distinctive printed cotton fabric, featuring intricate geometric patterns, has been part of South African culture since the 19th century. It\'s particularly significant in Xhosa, Sotho, and Tswana cultures.</p>
                 
                 <h3>Preserving Traditional Crafts</h3>
-                <p>By purchasing authentic African textiles through platforms like African Market, you\'re supporting artisans who keep these ancient traditions alive. Each piece connects you to centuries of cultural heritage and skilled craftsmanship.</p>
+                <p>By purchasing authentic African textiles through platforms like Smart African Marketplace, you\'re supporting artisans who keep these ancient traditions alive. Each piece connects you to centuries of cultural heritage and skilled craftsmanship.</p>
                 
                 <p>Browse our collection of authentic African textiles and bring home a piece of Africa\'s rich cultural tapestry.</p>',
                 'categories' => [$categoryModels[1]->id],
@@ -217,11 +217,11 @@ class BlogSeeder extends Seeder
                 'published_at' => Carbon::now()->subDays(1),
             ],
             [
-                'title' => 'Maximizing Your Salon Business on African Market',
+                'title' => 'Maximizing Your Salon Business on Smart African Marketplace',
                 'slug' => 'maximizing-salon-business-african-market',
                 'excerpt' => 'Salon owners, take your business to the next level! Discover strategies to attract more clients, manage bookings efficiently, and grow your beauty business online.',
                 'content' => '<h2>Digital Transformation for Salon Businesses</h2>
-                <p>The beauty industry in Africa is thriving, and digital platforms are opening new opportunities for salon owners to reach clients and grow their businesses. African Market\'s salon booking system provides the tools you need to succeed in the digital age.</p>
+                <p>The beauty industry in Africa is thriving, and digital platforms are opening new opportunities for salon owners to reach clients and grow their businesses. Smart African Marketplace\'s salon booking system provides the tools you need to succeed in the digital age.</p>
                 
                 <h3>Create an Attractive Service Portfolio</h3>
                 <p>Showcase your services with high-quality photos and detailed descriptions. Highlight your specialties, whether it\'s traditional African hairstyles, modern cuts, natural hair care, or spa treatments. Clear pricing and duration information help clients make informed booking decisions.</p>
@@ -236,7 +236,7 @@ class BlogSeeder extends Seeder
                 <p>Create special packages combining multiple services at discounted rates. Seasonal promotions and loyalty discounts can help attract new clients and encourage repeat bookings.</p>
                 
                 <h3>Expand Your Reach</h3>
-                <p>African Market connects you with clients beyond your immediate neighborhood. With clear location information and service descriptions, you can attract clients from across your city and beyond.</p>
+                <p>Smart African Marketplace connects you with clients beyond your immediate neighborhood. With clear location information and service descriptions, you can attract clients from across your city and beyond.</p>
                 
                 <h3>Professional Growth</h3>
                 <p>Stay updated on beauty trends, invest in training, and continuously expand your service offerings. Clients appreciate salons that stay current with the latest techniques and products.</p>

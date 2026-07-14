@@ -1,4 +1,4 @@
-# African Market Documentation v2
+# Smart African Marketplace Documentation v2
 
 This is the polished v2 documentation set with:
 

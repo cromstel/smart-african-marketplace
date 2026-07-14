@@ -1,6 +1,6 @@
-# African Market User Documentation
+# Smart African Marketplace User Documentation
 
-This folder contains the user-facing documentation for the African Market app.
+This folder contains the user-facing documentation for the Smart African Marketplace app.
 
 ## Start Here
 

@@ -19,9 +19,9 @@ class PageController extends Controller
         }
 
         $seo = app(SeoService::class);
-        $seo->setTitle('African Market - Authentic African Products & Services', false)
+        $seo->setTitle('Smart African Marketplace - Authentic African Products & Services', false)
             ->setDescription('Shop authentic African food, clothing, and book salon services. Supporting African culture worldwide through our multi-vendor marketplace.')
-            ->setKeywords(['african market', 'african products', 'african food', 'african clothing', 'african salon', 'african marketplace'])
+            ->setKeywords(['Smart African Marketplace', 'african products', 'african food', 'african clothing', 'african salon', 'african marketplace'])
             ->setCanonical(route('home'));
 
         $seo->addStructuredData($seo->generateOrganizationSchema());
@@ -39,8 +39,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('About Us')
-            ->setDescription('Learn about African Market - connecting cultures through authentic African products and services. Supporting vendors across Africa and the diaspora.')
-            ->setKeywords(['about african market', 'african marketplace', 'african vendors', 'african diaspora'])
+            ->setDescription('Learn about Smart African Marketplace - connecting cultures through authentic African products and services. Supporting vendors across Africa and the diaspora.')
+            ->setKeywords(['about Smart African Marketplace', 'african marketplace', 'african vendors', 'african diaspora'])
             ->setCanonical(route('about'));
 
         $contents = AboutPageContent::active()->ordered()->get();
@@ -52,8 +52,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('Frequently Asked Questions')
-            ->setDescription('Find answers to common questions about shopping, selling, and booking services on African Market.')
-            ->setKeywords(['faq', 'help', 'support', 'questions', 'african market help'])
+            ->setDescription('Find answers to common questions about shopping, selling, and booking services on Smart African Marketplace.')
+            ->setKeywords(['faq', 'help', 'support', 'questions', 'Smart African Marketplace help'])
             ->setCanonical(route('faq'));
 
         return view('pages.faq');
@@ -63,8 +63,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('Terms of Service')
-            ->setDescription('Read the terms and conditions for using African Market platform.')
-            ->setKeywords(['terms of service', 'terms and conditions', 'legal', 'african market terms'])
+            ->setDescription('Read the terms and conditions for using Smart African Marketplace platform.')
+            ->setKeywords(['terms of service', 'terms and conditions', 'legal', 'Smart African Marketplace terms'])
             ->setCanonical(route('terms'));
 
         return view('pages.terms');
@@ -74,8 +74,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('Privacy Policy')
-            ->setDescription('Learn how African Market protects your privacy and handles your personal information.')
-            ->setKeywords(['privacy policy', 'data protection', 'privacy', 'african market privacy'])
+            ->setDescription('Learn how Smart African Marketplace protects your privacy and handles your personal information.')
+            ->setKeywords(['privacy policy', 'data protection', 'privacy', 'Smart African Marketplace privacy'])
             ->setCanonical(route('privacy'));
 
         return view('pages.privacy');
@@ -85,8 +85,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('Become a Vendor - Complete Guide')
-            ->setDescription('Learn how to become a successful vendor on African Market. Step-by-step guide to creating your vendor profile, adding products, and growing your business.')
-            ->setKeywords(['become a vendor', 'vendor guide', 'sell on african market', 'vendor registration', 'how to sell'])
+            ->setDescription('Learn how to become a successful vendor on Smart African Marketplace. Step-by-step guide to creating your vendor profile, adding products, and growing your business.')
+            ->setKeywords(['become a vendor', 'vendor guide', 'sell on Smart African Marketplace', 'vendor registration', 'how to sell'])
             ->setCanonical(route('vendor.guide'));
 
         return view('pages.vendor-guide');

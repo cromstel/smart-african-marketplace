@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <x-seo
-        :title="'Site Under Maintenance - ' . config('app.name', 'African Market')"
+        :title="'Site Under Maintenance - ' . config('app.name', 'Smart African Marketplace')"
         :description="'Smart African Marketplace is temporarily unavailable for maintenance'"
         :index="false"
         :follow="false"
@@ -151,7 +151,7 @@
             <div class="navbar-content">
                 <a href="{{ route('home') }}" class="logo">
                     <div class="logo-icon">
-                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'African Market') }} logo">
+                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Marketplace') }} logo">
                     </div>
                     <span class="logo-text">Smart African<br><span>Marketplace</span></span>
                 </a>

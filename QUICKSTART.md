@@ -1,4 +1,4 @@
-# African Market - Quick Start Guide
+# Smart African Marketplace - Quick Start Guide
 
 **Project Status**: ✅ **READY TO INSTALL LARAVEL**
 
@@ -170,7 +170,7 @@ php artisan inspire            # Get inspired!
 
 ### Environment (.env)
 ```env
-APP_NAME="African Market"
+APP_NAME="Smart African Marketplace"
 DB_DATABASE=african_market
 DB_USERNAME=root
 DB_PASSWORD=your_password
@@ -292,7 +292,7 @@ PAYSTACK_PUBLIC_KEY=pk_test_...
 
 ## 🚀 You're All Set!
 
-Your African Market platform is ready for development!
+Your Smart African Marketplace platform is ready for development!
 
 ```bash
 # Start coding:
@@ -303,7 +303,7 @@ npm run dev
 http://localhost:8000
 ```
 
-**Welcome to African Market! 🌍🎉**
+**Welcome to Smart African Marketplace! 🌍🎉**
 
 ---
 

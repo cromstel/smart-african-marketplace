@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <x-seo
-        :title="'404 - Page Not Found | ' . config('app.name', 'African Market')"
+        :title="'404 - Page Not Found | ' . config('app.name', 'Smart African Marketplace')"
         :index="false"
         :follow="false"
     />
@@ -149,21 +149,21 @@
                         href="{{ route('shop.index') }}" 
                         class="group px-6 py-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105 text-gray-700 hover:text-orange-600 border border-transparent hover:border-orange-200"
                     >
-                        <span class="text-2xl group-hover:scale-110 inline-block transition-transform">•</span>
+                        <span class="text-2xl group-hover:scale-110 inline-block transition-transform">ï¿½</span>
                         <span class="ml-2 font-medium">Food & Groceries</span>
                     </a>
                     <a 
                         href="{{ route('shop.index') }}" 
                         class="group px-6 py-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105 text-gray-700 hover:text-orange-600 border border-transparent hover:border-orange-200"
                     >
-                        <span class="text-2xl group-hover:scale-110 inline-block transition-transform">•</span>
+                        <span class="text-2xl group-hover:scale-110 inline-block transition-transform">ï¿½</span>
                         <span class="ml-2 font-medium">Fashion & Clothing</span>
                     </a>
                     <a 
                         href="{{ route('salon.index') }}" 
                         class="group px-6 py-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-105 text-gray-700 hover:text-orange-600 border border-transparent hover:border-orange-200"
                     >
-                        <span class="text-2xl group-hover:scale-110 inline-block transition-transform">•</span>
+                        <span class="text-2xl group-hover:scale-110 inline-block transition-transform">ï¿½</span>
                         <span class="ml-2 font-medium">Salon Services</span>
                     </a>
                 </div>

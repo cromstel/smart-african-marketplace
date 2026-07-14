@@ -123,7 +123,7 @@ return [
         'location_fallback' => 'Location not specified',
     ],
     'home' => [
-        'hero_title' => 'Welcome to African Marketplace',
+        'hero_title' => 'Welcome to Smart African Marketplace',
         'hero_subtitle' => 'Discover Authentic African Products & Services',
         'feature_food_title' => 'African Cuisine',
         'feature_food_body' => 'Explore authentic ingredients and ready-to-cook meals from across Africa.',
@@ -293,7 +293,7 @@ return [
         'title' => 'Terms of Service',
         'last_updated' => 'Last updated: :date',
         'section_1_title' => 'Introduction',
-        'section_1_body' => 'Welcome to African Marketplace. By accessing our platform, you agree to these terms.',
+        'section_1_body' => 'Welcome to Smart African Marketplace. By accessing our platform, you agree to these terms.',
         'section_2_title' => 'User Accounts',
         'section_2_intro' => 'When you create an account, you must:',
         'section_2_body' => 'Provide accurate information and keep it updated.',

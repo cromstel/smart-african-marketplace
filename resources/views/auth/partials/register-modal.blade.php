@@ -29,7 +29,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h3 class="text-3xl font-bold text-gray-900">Create Account</h3>
-                            <p class="mt-1 text-sm text-gray-600">Join African Market today</p>
+                            <p class="mt-1 text-sm text-gray-600">Join Smart African Marketplace today</p>
                         </div>
                         <button @click="open = false" class="text-gray-400 hover:text-gray-500">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

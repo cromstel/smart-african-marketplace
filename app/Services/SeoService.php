@@ -16,7 +16,7 @@ class SeoService
 
     public function setTitle(string $title, bool $appendSiteName = true): self
     {
-        $siteName = config('app.name', 'African Market');
+        $siteName = config('app.name', 'Smart African Marketplace');
         $this->meta['title'] = $appendSiteName ? "{$title} - {$siteName}" : $title;
         $this->og['title'] = $title;
         $this->twitter['title'] = $title;
@@ -82,7 +82,7 @@ class SeoService
 
     public function getTitle(): ?string
     {
-        return $this->meta['title'] ?? config('app.name', 'African Market');
+        return $this->meta['title'] ?? config('app.name', 'Smart African Marketplace');
     }
 
     public function getDescription(): ?string
@@ -92,7 +92,7 @@ class SeoService
 
     public function getKeywords(): ?string
     {
-        return $this->meta['keywords'] ?? env('SEO_KEYWORDS', 'african food, african clothing, african salon, african marketplace');
+        return $this->meta['keywords'] ?? env('SEO_KEYWORDS', 'african food, african clothing, african salon, african marketplace, smart african marketplace');
     }
 
     public function getCanonical(): ?string
@@ -103,7 +103,7 @@ class SeoService
     public function getOpenGraph(): array
     {
         return array_merge([
-            'site_name' => config('app.name', 'African Market'),
+            'site_name' => config('app.name', 'Smart African Marketplace'),
             'type' => 'website',
             'locale' => 'en_US',
         ], $this->og);
@@ -187,7 +187,7 @@ class SeoService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
-            'name' => config('app.name', 'African Market'),
+            'name' => config('app.name', 'Smart African Marketplace'),
             'url' => url('/'),
             'logo' => asset(config('branding.logo')),
             'sameAs' => array_filter([
@@ -215,11 +215,11 @@ class SeoService
             'dateModified' => $article->updated_at->toIso8601String(),
             'author' => [
                 '@type' => 'Person',
-                'name' => $article->author->name ?? 'African Market Team',
+                'name' => $article->author->name ?? 'Smart African Marketplace Team',
             ],
             'publisher' => [
                 '@type' => 'Organization',
-                'name' => config('app.name', 'African Market'),
+                'name' => config('app.name', 'Smart African Marketplace'),
                 'logo' => [
                     '@type' => 'ImageObject',
                     'url' => asset(config('branding.logo')),

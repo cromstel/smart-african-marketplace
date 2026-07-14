@@ -2,7 +2,7 @@
 
 return [
     'brand' => [
-        'name' => 'Smart African Market',
+        'name' => 'Smart African Marketplace',
         'tagline' => 'Knyter samman kulturer med autentiska afrikanska produkter och tjanster.',
     ],
     'nav' => [
@@ -78,7 +78,7 @@ return [
     'home' => [
         'hero_title' => 'Valkommen till multileverantor<br>Afrikansk marknad',
         'hero_subtitle' => 'Din enhetliga plattform for autentiska afrikanska livsmedel, traditionella klader och professionella salongstjanster.',
-        'why_choose' => 'Varfor valja African Market?',
+        'why_choose' => 'Varfor valja Smart African Marketplace?',
         'feature_food_title' => 'Autentisk mat',
         'feature_food_body' => 'Farska afrikanska ingredienser, kryddor och fardigratter fran hela kontinenten.',
         'feature_clothing_title' => 'Traditionella klader',
@@ -218,21 +218,21 @@ return [
         'title' => 'Anvandarvillkor',
         'last_updated' => 'Senast uppdaterad: :date',
         'section_1_title' => '1. Godkannande av villkor',
-        'section_1_body' => 'Genom att anvanda African Market godkanner du dessa anvandarvillkor och tillampliga lagar. Om du inte godkanner villkoren far du inte anvanda webbplatsen.',
+        'section_1_body' => 'Genom att anvanda Smart African Marketplace godkanner du dessa anvandarvillkor och tillampliga lagar. Om du inte godkanner villkoren far du inte anvanda webbplatsen.',
         'section_2_title' => '2. Licens for anvandning',
-        'section_2_body' => 'Tillatelse ges att tillfalligt komma at material pa African Market for personligt, icke-kommersiellt bruk. Detta ar en licens, inte en overforing av aganderatt.',
+        'section_2_body' => 'Tillatelse ges att tillfalligt komma at material pa Smart African Marketplace for personligt, icke-kommersiellt bruk. Detta ar en licens, inte en overforing av aganderatt.',
         'section_3_title' => '3. Produktinformation',
         'section_3_body' => 'Vi forsoker ge korrekt produktinformation, men garanterar inte att beskrivningar, priser eller annat innehall ar exakt, komplett eller uppdaterat.',
         'section_4_title' => '4. Bestallningar och betalning',
         'section_4_body' => 'Alla bestallningar ar beroende av acceptans och tillganglighet. Vi forbehaller oss ratten att neka eller avbryta bestallningar. Betalning maste tas emot innan behandling och leverans.',
         'section_5_title' => '5. Frakt och leverans',
-        'section_5_body' => 'Leveranstider ar uppskattningar och garanteras inte. African Market ansvarar inte for forseningar utanfor var kontroll.',
+        'section_5_body' => 'Leveranstider ar uppskattningar och garanteras inte. Smart African Marketplace ansvarar inte for forseningar utanfor var kontroll.',
         'section_6_title' => '6. Returer och aterbetalningar',
         'section_6_body' => 'Returer accepteras inom 14 dagar for oanvanda varor i originalforpackning. Aterbetalningar behandlas inom 7-10 arbetsdagar efter mottagande.',
         'section_7_title' => '7. Anvandar konton',
         'section_7_body' => 'Du ansvarar for att halla dina kontouppgifter hemliga och for all aktivitet pa kontot.',
         'section_8_title' => '8. Ansvarsbegransning',
-        'section_8_body' => 'African Market ansvarar inte for indirekta eller speciella skador som uppstar vid anvandning eller oformaga att anvanda tjansten.',
+        'section_8_body' => 'Smart African Marketplace ansvarar inte for indirekta eller speciella skador som uppstar vid anvandning eller oformaga att anvanda tjansten.',
         'section_9_title' => '9. Andringar av villkor',
         'section_9_body' => 'Vi forbehaller oss ratten att andra villkoren nar som helst. Fortsatt anvandning innebar att du accepterar andringarna.',
         'section_10_title' => '10. Kontaktinformation',
@@ -279,8 +279,8 @@ return [
     'vendor' => [
         'hero_title' => 'Bli leverantor',
         'hero_subtitle' => 'Ga med i var marketplace och utveckla ditt afrikanska foretag',
-        'why_title' => 'Varfor salja pa African Market?',
-        'why_body' => 'African Market ar en blomstrande multileverantorsmarknad for autentiska afrikanska produkter och tjanster. Oavsett om du saljer traditionell mat, hantverk, mode eller salongstjanster kopplar vi dig till kunder over hela varlden.',
+        'why_title' => 'Varfor salja pa Smart African Marketplace?',
+        'why_body' => 'Smart African Marketplace ar en blomstrande multileverantorsmarknad for autentiska afrikanska produkter och tjanster. Oavsett om du saljer traditionell mat, hantverk, mode eller salongstjanster kopplar vi dig till kunder over hela varlden.',
         'benefits' => [
             'global_title' => 'Global rackvidd',
             'global_body' => 'Naa kunder over hela varlden som ar intresserade av autentiska afrikanska produkter',
@@ -389,7 +389,7 @@ return [
         'commission_title' => 'Provision och betalningar',
         'commission' => [
             'how_title' => 'Sa fungerar provisioner',
-            'how_body' => 'African Market tar en provision pa varje salj for att driva plattformen och ge support. Provisionen varierar beroende pa plan och visas i din panel.',
+            'how_body' => 'Smart African Marketplace tar en provision pa varje salj for att driva plattformen och ge support. Provisionen varierar beroende pa plan och visas i din panel.',
             'how_list' => [
                 'Provisionen beraknas automatiskt for varje salj',
                 'Du far nettointakt (saljpris minus provision)',
@@ -407,7 +407,7 @@ return [
             ],
         ],
         'cta_title' => 'Redo att komma igang?',
-        'cta_body' => 'Ga med hundratals leverantorer som redan saljer pa African Market',
+        'cta_body' => 'Ga med hundratals leverantorer som redan saljer pa Smart African Marketplace',
         'cta_primary' => 'Registrera dig som leverantor',
         'cta_secondary' => 'Kontakta support',
         'help_title' => 'Beh�ver du hjalp?',

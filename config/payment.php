@@ -6,7 +6,7 @@ return [
     | Payment Configuration
     |--------------------------------------------------------------------------
     |
-    | Configure payment gateways for African Market
+    | Configure payment gateways for Smart African Marketplace
     |
     */
 

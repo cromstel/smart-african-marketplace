@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide helps you begin using African Market quickly.
+This guide helps you begin using Smart African Marketplace quickly.
 
 ## Account Types
 

@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-## African Market - E-commerce Platform
+## Smart African Marketplace - E-commerce Platform
 
 **Version:** 1.0  
 **Last Updated:** February 13, 2026  
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-**African Market** is u
+**Smart African Marketplace** is u
 
 ### Vision
 To create the premier online marketplace for authentic African products and services, accessible globally while maintaining cultural authenticity.

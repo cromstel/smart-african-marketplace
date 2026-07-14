@@ -129,8 +129,8 @@
     <div class="min-h-screen flex flex-col lg:flex-row">
         <aside id="sidebar" class="lg:sticky lg:top-0 lg:h-screen overflow-hidden z-40 w-64 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
             <div class="p-6 border-b border-gray-700">
-                <a href="{{ route('home') }}" class="flex items-center space-x-2" aria-label="{{ config('app.name', 'African Market') }} - Go to homepage">
-                    <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'African Market') }}" class="h-8 w-8">
+                <a href="{{ route('home') }}" class="flex items-center space-x-2" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
+                    <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Marketplace') }}" class="h-8 w-8">
                     <div class="sidebar-brand-text">
                         <h1 class="text-sm font-bold uppercase">Smart <span class="text-brand-from">African</span></h1>
                         <p class="text-xs text-gray-300">MARKETPLACE</p>
