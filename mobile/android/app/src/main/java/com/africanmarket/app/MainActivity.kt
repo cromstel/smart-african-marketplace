@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         settings.allowFileAccess = false
         settings.allowContentAccess = true
         settings.loadsImagesAutomatically = true
-        settings.userAgentString = settings.userAgentString + " AfricanMarketAndroid/0.1.0"
+        settings.userAgentString = settings.userAgentString + " AfricanMarketAndroid/${BuildConfig.VERSION_NAME}"
 
         CookieManager.getInstance().setAcceptCookie(true)
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
