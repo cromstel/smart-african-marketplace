@@ -30,13 +30,13 @@ class AntiSpamTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'antispam_'.uniqid().'@example.com',
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'is_active' => true,
         ]);
 
         $response = $this->post(route('login'), [
             'email' => $user->email,
-            'password' => 'Password123!',
+            'password' => 'changeme',
         ]);
 
         $this->assertAuthenticated();
@@ -47,13 +47,13 @@ class AntiSpamTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'antispam_'.uniqid().'@example.com',
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'is_active' => true,
         ]);
 
         $response = $this->post(route('login'), [
             'email' => $user->email,
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'website_url' => 'http://spam.example',
         ]);
 
@@ -66,14 +66,14 @@ class AntiSpamTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'antispam_'.uniqid().'@example.com',
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'is_active' => true,
         ]);
 
         // form_loaded_at == now => elapsed 0s < minimum fill time.
         $response = $this->post(route('login'), [
             'email' => $user->email,
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'form_loaded_at' => time(),
         ]);
 
@@ -90,8 +90,8 @@ class AntiSpamTest extends TestCase
             'firstname' => 'Jane',
             'lastname' => 'Doe',
             'email' => $email,
-            'password' => 'Password123!',
-            'password_confirmation' => 'Password123!',
+            'password' => 'changeme',
+            'password_confirmation' => 'changeme',
             'website_url' => 'http://spam.example',
         ]);
 
@@ -105,7 +105,7 @@ class AntiSpamTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'antispam_'.uniqid().'@example.com',
-            'password' => 'Password123!',
+            'password' => 'changeme',
             'is_active' => true,
         ]);
 

@@ -18,7 +18,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => 'Password123!',
+            'password' => (string) env('TEST_USER_PASSWORD', 'changeme'),
             'remember_token' => Str::random(10),
             'role' => 'customer',
         ];

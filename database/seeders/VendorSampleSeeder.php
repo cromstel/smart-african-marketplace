@@ -41,7 +41,7 @@ class VendorSampleSeeder extends Seeder
                     ['email' => $email],
                     [
                         'name' => $name,
-                        'password' => Hash::make('Password123!'),
+                        'password' => Hash::make((string) env('DEMO_USER_PASSWORD', 'changeme')),
                         'role' => 'vendor',
                         'is_active' => true,
                         'email_verified_at' => now(),
