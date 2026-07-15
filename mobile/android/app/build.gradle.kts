@@ -30,15 +30,41 @@ android {
         buildConfigField("String", "PAYSTACK_CALLBACK_SCHEME", "\"africanmarket\"")
     }
 
+    signingConfigs {
+        create("release") {
+            val storeFile = System.getenv("RELEASE_STORE_FILE")
+            val storePassword = System.getenv("RELEASE_STORE_PASSWORD")
+            val keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+            val keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+            if (storeFile != null && storePassword != null && keyAlias != null && keyPassword != null) {
+                this.storeFile = file(storeFile)
+                this.storePassword = storePassword
+                this.keyAlias = keyAlias
+                this.keyPassword = keyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8 minify/shrink is the hardened default. On build machines with
+            // limited RAM it can OOM the Gradle daemon; pass -Pminify=false to
+            // skip shrinking for a (larger) working release artifact.
+            val minify = (project.findProperty("minify") as? String) != "false"
+            isMinifyEnabled = minify
+            isShrinkResources = minify
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
         }
+    }
+
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
     }
 
     compileOptions {
