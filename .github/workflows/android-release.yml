@@ -1,0 +1,87 @@
+name: Android Release
+
+# Builds a minified, signed release AAB on every push/tag/PR (where signing
+# secrets are configured) and optionally publishes to the Play Store Internal
+# track when a version tag (v*) is pushed and the Play service-account secret
+# exists.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build signed release AAB
+    runs-on: ubuntu-latest
+    # Only attempt a signed build when the keystore secret is present.
+    # PRs from forks (no secrets) are skipped for the AAB step.
+    if: ${{ secrets.SIGNING_KEY != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK packages
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+
+      - name: Decode signing keystore
+        run: echo "${{ secrets.SIGNING_KEY }}" | base64 -d > "${{ github.workspace }}/release-key.jks"
+
+      - name: Make gradlew executable
+        working-directory: mobile/android
+        run: chmod +x gradlew
+
+      - name: Build release bundle (R8 minified)
+        working-directory: mobile/android
+        env:
+          RELEASE_STORE_FILE: ${{ github.workspace }}/release-key.jks
+          RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: ./gradlew bundleRelease --no-daemon
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: mobile/android/app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
+  publish:
+    name: Publish to Play Store (Internal)
+    needs: build
+    if: ${{ startsWith(github.ref, 'refs/tags/v') && secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Download AAB
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release-aab
+          path: artifact
+
+      - name: Publish to Play Internal track
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.africanmarket.app
+          releaseFiles: artifact/*.aab
+          track: internal
+          status: completed
