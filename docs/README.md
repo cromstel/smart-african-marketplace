@@ -104,6 +104,7 @@ Filenames are `kebab-case.md` throughout.
 | [Configuration Reference](reference/configuration.md) | Every environment variable, grouped and explained |
 | [API Reference](reference/api.md) | REST endpoints, auth, rate limits, errors |
 | [Artisan Commands](reference/commands.md) | Custom console commands and schedules |
+| [Dependencies](reference/dependencies.md) | Packages, versions, extensions, security posture |
 | [Command Lines](reference/command-lines.md) | Frequently used shell snippets |
 | [Demo User Credentials](reference/demo-user-credentials.md) | Seeded accounts for local testing |
 
