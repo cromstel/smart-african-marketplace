@@ -4,9 +4,11 @@ namespace Tests\Feature\Api;
 
 use App\Models\Address;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -21,7 +23,7 @@ class CheckoutApiTest extends TestCase
             ->where('stock_quantity', '>', 0)
             ->whereNotNull('vendor_id')
             ->where('vendor_id', '>', 0)
-            ->firstOrFail();
+            ->first() ?? $this->createSellableProduct();
 
         $cart = Cart::create([
             'user_id' => $user->id,
@@ -42,6 +44,48 @@ class CheckoutApiTest extends TestCase
         $cart->calculateTotals();
 
         return $cart;
+    }
+
+    /**
+     * Creates a vendor-owned, in-stock product.
+     *
+     * These tests previously called firstOrFail() against the catalogue, so
+     * they only passed on a seeded database and failed in CI, which migrates
+     * but does not seed. Building the fixture here makes them self-sufficient
+     * while still preferring real seed data when it is present.
+     */
+    private function createSellableProduct(): Product
+    {
+        $owner = User::factory()->create();
+
+        $vendor = Vendor::create([
+            'user_id' => $owner->id,
+            'business_name' => 'Test Vendor '.uniqid(),
+            'slug' => 'test-vendor-'.uniqid(),
+            'business_email' => 'vendor'.uniqid().'@example.com',
+            'business_phone' => '+15550000000',
+            'business_address' => '1 Test Street',
+            'status' => 'approved',
+            'is_active' => true,
+        ]);
+
+        $category = Category::create([
+            'name' => 'Test Category '.uniqid(),
+            'slug' => 'test-category-'.uniqid(),
+        ]);
+
+        return Product::create([
+            'vendor_id' => $vendor->id,
+            'category_id' => $category->id,
+            'name' => 'Test Product '.uniqid(),
+            'slug' => 'test-product-'.uniqid(),
+            'sku' => 'SKU-'.strtoupper(uniqid()),
+            'description' => 'A product created for checkout tests.',
+            'price' => 25.00,
+            'stock_quantity' => 100,
+            'stock_status' => 'in_stock',
+            'is_active' => true,
+        ]);
     }
 
     private function makeAddress(User $user, string $type): Address

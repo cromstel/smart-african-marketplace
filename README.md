@@ -159,13 +159,21 @@ documents that cited verification which had never been written. The
 [Roadmap](docs/product/roadmap.md) sequences the work: close the integrity gaps, make the
 payment path provable, build a real test foundation, then extend.
 
+Recently closed:
+
+- [x] Registration endpoint throttled; SEO config no longer breaks under `config:cache`
+- [x] Webhook fixtures, signature and replay-idempotency tests — **passing**
+- [x] Six defects that stopped a clean clone from installing, migrating or
+      running at all (see [Finding 10](docs/product/documentation-audit.md#finding-10--the-application-could-not-be-installed-or-migrated-from-a-clean-clone))
+
+`php artisan migrate` now runs all 150 migrations clean and `php artisan test`
+reports **56 passed, 190 assertions**.
+
 Next up:
 
-- [ ] Resolve the CRLF-protection claim in the security patch log
-- [ ] Throttle the mobile registration endpoint
-- [ ] Move `env()` calls out of `app/` so `config:cache` is safe
-- [ ] Write the webhook fixtures and signature/idempotency tests
 - [ ] Vendor-isolation tests across all 32 vendor controllers
+- [ ] Mobile-money webhook coverage
+- [ ] Decide on the four available major dependency upgrades
 
 ---
 

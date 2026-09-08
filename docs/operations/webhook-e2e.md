@@ -7,10 +7,11 @@
 > `tests/Feature/WebhookE2ETest.php` now do, so the replay command has payloads
 > to load.
 >
-> Two caveats. The mobile-money tests (MobileMoneyWebhookTest,
-> MobileMoneyCheckoutFlowTest) are still outstanding. And the new tests have
-> not yet run — see the
-> [Pending Closure Matrix](../security/pending-closure-matrix.md).
+> **The tests have now been run and pass** — all 8 webhook cases, within a full
+> suite of 56 passing tests on PHP 8.3 / MySQL 10.11.
+>
+> One caveat remains: the mobile-money tests (MobileMoneyWebhookTest,
+> MobileMoneyCheckoutFlowTest) are still outstanding.
 
 # Deterministic Webhook E2E Verification
 

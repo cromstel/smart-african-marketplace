@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\PreventCrlfInjection;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\Request;
 use Tests\TestCase;
 
 /**
@@ -56,8 +58,8 @@ class CrlfInjectionTest extends TestCase
     {
         // customer_notes is genuinely multi-line; blocking it would break
         // ordinary use. The middleware must not treat it as single-line.
-        $middleware = new \App\Http\Middleware\PreventCrlfInjection;
-        $request = \Illuminate\Http\Request::create('/checkout', 'POST', [
+        $middleware = new PreventCrlfInjection;
+        $request = Request::create('/checkout', 'POST', [
             'customer_notes' => "Leave at the back door.\nRing twice.",
         ]);
 
@@ -68,8 +70,8 @@ class CrlfInjectionTest extends TestCase
 
     public function test_it_allows_a_clean_single_line_value_through(): void
     {
-        $middleware = new \App\Http\Middleware\PreventCrlfInjection;
-        $request = \Illuminate\Http\Request::create('/contact', 'POST', [
+        $middleware = new PreventCrlfInjection;
+        $request = Request::create('/contact', 'POST', [
             'email' => 'someone@example.com',
             'subject' => 'A perfectly ordinary subject',
         ]);
@@ -81,8 +83,8 @@ class CrlfInjectionTest extends TestCase
 
     public function test_it_inspects_nested_fields(): void
     {
-        $middleware = new \App\Http\Middleware\PreventCrlfInjection;
-        $request = \Illuminate\Http\Request::create('/checkout', 'POST', [
+        $middleware = new PreventCrlfInjection;
+        $request = Request::create('/checkout', 'POST', [
             'billing' => ['email' => "buyer@example.com\r\nBcc: attacker@example.com"],
         ]);
         $request->headers->set('Accept', 'application/json');
