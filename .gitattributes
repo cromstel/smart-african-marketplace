@@ -1,0 +1,38 @@
+# Normalise line endings so the same checkout looks identical on Windows, macOS
+# and Linux. Without this, a repository cloned on Windows (CRLF working tree,
+# LF index) reports every text file as modified when inspected from a Linux
+# environment such as WSL, a container, or a mounted drive.
+
+* text=auto eol=lf
+
+# Windows-native tooling expects CRLF
+*.ps1   text eol=crlf
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+
+# Binary — never touch
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.avif   binary
+*.webp   binary
+*.ico    binary
+*.pdf    binary
+*.zip    binary
+*.ttf    binary
+*.woff   binary
+*.woff2  binary
+*.eot    binary
+*.otf    binary
+*.jar    binary
+*.keystore binary
+*.apk    binary
+*.aab    binary
+
+# Keep generated and vendored files out of diffs and language statistics
+composer.lock       -diff linguist-generated
+package-lock.json   -diff linguist-generated
+public/build/**     linguist-generated
+vendor/**           linguist-vendored
+node_modules/**     linguist-vendored
