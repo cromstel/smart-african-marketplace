@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\BookingStatusChanged;
 use App\Http\Controllers\Controller;
 use App\Mail\BookingReminder;
 use App\Models\Booking;
+use App\Models\SalonService;
+use App\Models\User;
 use App\Services\SmsService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -50,8 +54,8 @@ class BookingController extends Controller
 
         $bookings = $query->latest()->paginate(20)->withQueryString();
 
-        $vendors = \App\Models\User::where('role', 'vendor')->orderBy('name')->get();
-        $services = \App\Models\SalonService::orderBy('name')->get();
+        $vendors = User::where('role', 'vendor')->orderBy('name')->get();
+        $services = SalonService::orderBy('name')->get();
 
         return view('admin.bookings.index', compact('bookings', 'vendors', 'services'));
     }
@@ -66,7 +70,7 @@ class BookingController extends Controller
     public function calendar(Request $request)
     {
         $month = $request->query('month', now()->format('Y-m'));
-        $startOfMonth = \Carbon\Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
         $endOfMonth = $startOfMonth->copy()->endOfMonth();
 
         $bookings = Booking::with(['user', 'salonService'])
@@ -96,7 +100,7 @@ class BookingController extends Controller
         ]);
 
         if ($oldStatus !== $validated['status']) {
-            event(new \App\Events\BookingStatusChanged($booking, $oldStatus, $validated['status']));
+            event(new BookingStatusChanged($booking, $oldStatus, $validated['status']));
         }
 
         if ($validated['status'] === 'confirmed' && $booking->user->phone) {
@@ -119,7 +123,7 @@ class BookingController extends Controller
         ]);
 
         if ($oldStatus !== 'confirmed') {
-            event(new \App\Events\BookingStatusChanged($booking, $oldStatus, 'confirmed'));
+            event(new BookingStatusChanged($booking, $oldStatus, 'confirmed'));
         }
 
         if ($booking->user->phone) {
@@ -145,7 +149,7 @@ class BookingController extends Controller
             app(SmsService::class)->sendBookingReminder(
                 $booking->user->phone,
                 $booking->salonService->name,
-                $booking->booking_date->format('M d, Y').' '.\Carbon\Carbon::parse($booking->booking_time)->format('g:i A')
+                $booking->booking_date->format('M d, Y').' '.Carbon::parse($booking->booking_time)->format('g:i A')
             );
         }
 

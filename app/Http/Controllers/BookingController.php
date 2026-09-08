@@ -6,6 +6,7 @@ use App\Events\BookingStatusChanged;
 use App\Models\Booking;
 use App\Models\BookingResource;
 use App\Models\SalonService;
+use App\Models\Vendor;
 use App\Services\BookingPricingService;
 use App\Services\BookingResourceService;
 use App\Services\BookingService;
@@ -395,7 +396,7 @@ class BookingController extends Controller
         $ics = implode("\r\n", [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//' . config('app.name') . ' Booking//EN',
+            'PRODID:-//'.config('app.name').' Booking//EN',
             'BEGIN:VEVENT',
             'UID:booking-'.uniqid(),
             'DTSTAMP:'.$start->format('Ymd\\THis').'Z',
@@ -433,7 +434,7 @@ class BookingController extends Controller
     /**
      * Show vendor booking page with all booking types
      */
-    public function vendorBooking(\App\Models\Vendor $vendor)
+    public function vendorBooking(Vendor $vendor)
     {
         // Get booking types enabled for this vendor
         $bookingTypes = $this->bookingService->getAvailableBookingTypes();

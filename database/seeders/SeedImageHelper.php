@@ -14,7 +14,7 @@ class SeedImageHelper
         $hash = crc32($label);
         $color = sprintf('#%06x', $hash & 0xFFFFFF);
 
-        $image = (new ImageManager(new Driver()))->create($width, $height)->fill($color);
+        $image = (new ImageManager(new Driver))->create($width, $height)->fill($color);
         $tempPath = tempnam(sys_get_temp_dir(), 'seed-img-');
         $path = $tempPath.'.jpg';
 

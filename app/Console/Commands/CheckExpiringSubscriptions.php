@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\UserSubscription;
+use App\Models\VendorSubscription;
+use App\Notifications\SubscriptionExpiringNotification;
 use Illuminate\Console\Command;
 
 class CheckExpiringSubscriptions extends Command
@@ -34,7 +36,7 @@ class CheckExpiringSubscriptions extends Command
                 return $daysLeft <= 7 && $daysLeft >= 0;
             });
 
-        $legacyExpiringSubscriptions = \App\Models\VendorSubscription::where('status', 'trialing')
+        $legacyExpiringSubscriptions = VendorSubscription::where('status', 'trialing')
             ->orWhere('status', 'active')
             ->get()
             ->filter(function ($subscription) {
@@ -55,7 +57,7 @@ class CheckExpiringSubscriptions extends Command
             $daysLeft = max(0, now()->diffInDays($endDate, false));
 
             if ($user) {
-                $user->notify(new \App\Notifications\SubscriptionExpiringNotification(
+                $user->notify(new SubscriptionExpiringNotification(
                     $subscription->plan?->name ?? 'Subscription',
                     $daysLeft,
                     $subscription->id
@@ -71,7 +73,7 @@ class CheckExpiringSubscriptions extends Command
             $daysLeft = $subscription->daysUntilExpiry();
 
             if ($vendor && $vendor->user) {
-                $vendor->user->notify(new \App\Notifications\SubscriptionExpiringNotification(
+                $vendor->user->notify(new SubscriptionExpiringNotification(
                     $subscription->plan_name ?? 'Subscription',
                     $daysLeft,
                     $subscription->id

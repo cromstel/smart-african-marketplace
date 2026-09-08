@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\BookingStatusChanged;
 use App\Mail\BookingConfirmed;
 use App\Services\SmsService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
 class SendBookingConfirmation
@@ -25,7 +26,7 @@ class SendBookingConfirmation
             app(SmsService::class)->sendBookingConfirmation(
                 $booking->user->phone,
                 $booking->salonService->name,
-                $booking->booking_date->format('M d, Y').' '.\Carbon\Carbon::parse($booking->booking_time)->format('g:i A')
+                $booking->booking_date->format('M d, Y').' '.Carbon::parse($booking->booking_time)->format('g:i A')
             );
         }
     }

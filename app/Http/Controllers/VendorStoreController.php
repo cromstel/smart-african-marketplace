@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Vendor;
 use App\Services\SeoService;
 use Illuminate\Http\Request;
@@ -76,7 +77,7 @@ class VendorStoreController extends Controller
             ->published()
             ->distinct()
             ->pluck('category_id')
-            ->map(fn ($id) => \App\Models\Category::find($id))
+            ->map(fn ($id) => Category::find($id))
             ->filter();
 
         $followers = $vendor->followers()->count();

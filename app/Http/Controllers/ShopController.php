@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Services\GeolocationService;
 use App\Services\SeoService;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
 class ShopController extends Controller
@@ -120,7 +121,7 @@ class ShopController extends Controller
 
             $perPage = 12;
             $currentPage = $request->get('page', 1);
-            $products = new \Illuminate\Pagination\LengthAwarePaginator(
+            $products = new LengthAwarePaginator(
                 $products->forPage($currentPage, $perPage),
                 $products->count(),
                 $perPage,

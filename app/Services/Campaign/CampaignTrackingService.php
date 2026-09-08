@@ -6,6 +6,7 @@ use App\Models\CampaignEvent;
 use App\Models\CampaignRecipient;
 use App\Models\LeadAttribution;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CampaignTrackingService
@@ -62,7 +63,7 @@ class CampaignTrackingService
             return;
         }
 
-        $clickedAt = isset($lastClick['clicked_at']) ? \Carbon\Carbon::parse($lastClick['clicked_at']) : null;
+        $clickedAt = isset($lastClick['clicked_at']) ? Carbon::parse($lastClick['clicked_at']) : null;
         if (! $clickedAt || $clickedAt->lt(now()->subDays(30))) {
             return;
         }

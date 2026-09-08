@@ -19,7 +19,7 @@ class PageController extends Controller
         }
 
         $seo = app(SeoService::class);
-        $seo->setTitle(config('app.name') . ' - Authentic African Products & Services', false)
+        $seo->setTitle(config('app.name').' - Authentic African Products & Services', false)
             ->setDescription('Shop authentic African food, clothing, and book salon services. Supporting African culture worldwide through our multi-vendor marketplace.')
             ->setKeywords([config('app.name'), 'african products', 'african food', 'african clothing', 'african salon', 'african marketplace'])
             ->setCanonical(route('home'));
@@ -39,8 +39,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('About Us')
-            ->setDescription('Learn about ' . config('app.name') . ' - connecting cultures through authentic African products and services. Supporting vendors across Africa and the diaspora.')
-            ->setKeywords(['about ' . config('app.name'), 'african marketplace', 'african vendors', 'african diaspora'])
+            ->setDescription('Learn about '.config('app.name').' - connecting cultures through authentic African products and services. Supporting vendors across Africa and the diaspora.')
+            ->setKeywords(['about '.config('app.name'), 'african marketplace', 'african vendors', 'african diaspora'])
             ->setCanonical(route('about'));
 
         $contents = AboutPageContent::active()->ordered()->get();
@@ -52,8 +52,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('Frequently Asked Questions')
-            ->setDescription('Find answers to common questions about shopping, selling, and booking services on ' . config('app.name') . '.')
-            ->setKeywords(['faq', 'help', 'support', 'questions', config('app.name') . ' help'])
+            ->setDescription('Find answers to common questions about shopping, selling, and booking services on '.config('app.name').'.')
+            ->setKeywords(['faq', 'help', 'support', 'questions', config('app.name').' help'])
             ->setCanonical(route('faq'));
 
         return view('pages.faq');
@@ -63,8 +63,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('Terms of Service')
-            ->setDescription('Read the terms and conditions for using ' . config('app.name') . ' platform.')
-            ->setKeywords(['terms of service', 'terms and conditions', 'legal', config('app.name') . ' terms'])
+            ->setDescription('Read the terms and conditions for using '.config('app.name').' platform.')
+            ->setKeywords(['terms of service', 'terms and conditions', 'legal', config('app.name').' terms'])
             ->setCanonical(route('terms'));
 
         return view('pages.terms');
@@ -74,8 +74,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('Privacy Policy')
-            ->setDescription('Learn how ' . config('app.name') . ' protects your privacy and handles your personal information.')
-            ->setKeywords(['privacy policy', 'data protection', 'privacy', config('app.name') . ' privacy'])
+            ->setDescription('Learn how '.config('app.name').' protects your privacy and handles your personal information.')
+            ->setKeywords(['privacy policy', 'data protection', 'privacy', config('app.name').' privacy'])
             ->setCanonical(route('privacy'));
 
         return view('pages.privacy');
@@ -85,8 +85,8 @@ class PageController extends Controller
     {
         $seo = app(SeoService::class);
         $seo->setTitle('Become a Vendor - Complete Guide')
-            ->setDescription('Learn how to become a successful vendor on ' . config('app.name') . '. Step-by-step guide to creating your vendor profile, adding products, and growing your business.')
-            ->setKeywords(['become a vendor', 'vendor guide', 'sell on ' . config('app.name'), 'vendor registration', 'how to sell'])
+            ->setDescription('Learn how to become a successful vendor on '.config('app.name').'. Step-by-step guide to creating your vendor profile, adding products, and growing your business.')
+            ->setKeywords(['become a vendor', 'vendor guide', 'sell on '.config('app.name'), 'vendor registration', 'how to sell'])
             ->setCanonical(route('vendor.guide'));
 
         return view('pages.vendor-guide');

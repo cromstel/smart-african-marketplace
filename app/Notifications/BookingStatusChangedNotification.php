@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -37,7 +38,7 @@ class BookingStatusChangedNotification extends Notification implements ShouldQue
         match ($this->newStatus) {
             'confirmed' => $mail
                 ->line('Great news! Your booking has been confirmed!')
-                ->line('**Date:** '.\Carbon\Carbon::parse($booking->booking_date)->format('l, F j, Y'))
+                ->line('**Date:** '.Carbon::parse($booking->booking_date)->format('l, F j, Y'))
                 ->line("**Time:** {$booking->booking_time}"),
 
             'cancelled' => $mail
