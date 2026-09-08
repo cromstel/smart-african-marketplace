@@ -5,7 +5,7 @@
 [Documentation Hub](../README.md) › Guides › Getting Started
 
 From a fresh clone to a running application. For deployment see the
-[Deployment Runbook](../DEPLOYMENT_RUNBOOK.md).
+[Deployment Runbook](../operations/deployment-runbook.md).
 
 ---
 
@@ -22,7 +22,7 @@ From a fresh clone to a running application. For deployment see the
 PHP extensions: `pdo_mysql`, `mbstring`, `xml`, `curl`, `zip`, `gd`, `fileinfo`,
 `openssl`, `tokenizer`, `json`.
 
-Windows users: see [Localhost on Apache (Windows)](../../documentation/localhost-apache-windows.md).
+Windows users: see [Localhost on Apache (Windows)](localhost-apache-windows.md).
 
 ---
 
@@ -77,7 +77,7 @@ php artisan db:seed
 php artisan storage:link
 ```
 
-`db:seed` creates demo accounts — see [Demo User Credentials](../demo-user-credentials.md).
+`db:seed` creates demo accounts — see [Demo User Credentials](../reference/demo-user-credentials.md).
 
 > Seeder passwords come from `DEMO_USER_PASSWORD` and `VENDOR_DEMO_PASSWORD`.
 > Never set those in production.
@@ -111,7 +111,7 @@ None are required for day-to-day development.
 
 | Service | Needed for | Setup |
 |---|---|---|
-| Soketi | Realtime notifications, live auction bids | [Soketi Setup](../../documentation/soketi-websockets-setup.md) |
+| Soketi | Realtime notifications, live auction bids | [Soketi Setup](soketi-websockets-setup.md) |
 | Stripe / Paystack / Swish | Checkout work | Test keys — [Configuration](../reference/configuration.md#payments) |
 | Twilio | SMS | Set `SMS_ENABLED=false` to skip |
 | OpenAI | Chatbot and knowledge base | `OPENAI_API_KEY` |
@@ -146,7 +146,7 @@ Read in this order:
 | Config changes ignored | Cached config | `php artisan config:clear` |
 | Tests fail on connection | Test DB missing | Create `african_market_test` |
 
-Full list: [Troubleshooting](../../documentation/troubleshooting.md).
+Full list: [Troubleshooting](../user-guide/troubleshooting.md).
 
 ### Clearing caches
 
@@ -162,7 +162,7 @@ php artisan optimize:clear   # config, route, view, cache in one
 
 ## See also
 
-- [Quickstart](../../QUICKSTART.md)
-- [Setup Guide](../../SETUP_GUIDE.md)
+- [Quickstart](quickstart.md)
+- [Setup Guide](setup-guide.md)
 - [Configuration Reference](../reference/configuration.md)
 - [Artisan Commands](../reference/commands.md)

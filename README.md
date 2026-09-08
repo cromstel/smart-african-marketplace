@@ -71,7 +71,7 @@ Plus cash on delivery. All webhook handlers verify signatures and are idempotent
 | Permissions | spatie/laravel-permission |
 | Queue & cache | Database drivers by default — no Redis required ([why](docs/architecture/decisions/0004-database-queue-driver.md)) |
 
-Details: [TECH_STACK.md](TECH_STACK.md) · [Architecture Overview](docs/architecture/overview.md)
+Details: [TECH_STACK.md](docs/architecture/tech-stack.md) · [Architecture Overview](docs/architecture/overview.md)
 
 ---
 
@@ -100,7 +100,7 @@ Full walkthrough, prerequisites and troubleshooting:
 
 Upload the files, open `http://yourdomain.com/install`, and follow the wizard
 (requirements check → database → admin account → site settings). Then work
-through the [Deployment Runbook](docs/DEPLOYMENT_RUNBOOK.md).
+through the [Deployment Runbook](docs/operations/deployment-runbook.md).
 
 ---
 
@@ -115,7 +115,7 @@ through the [Deployment Runbook](docs/DEPLOYMENT_RUNBOOK.md).
 **Build tools:** Composer 2.x, Node.js 18+.
 
 > CI currently runs PHP 8.3 while `composer.json` requires `^8.2`. Reconciling
-> this is [Roadmap 0.4](docs/ROADMAP.md#04-reconcile-the-php-version-low).
+> this is [Roadmap 0.4](docs/product/roadmap.md#04-reconcile-the-php-version-low).
 
 ---
 
@@ -134,25 +134,25 @@ pages:
 | [Artisan Commands](docs/reference/commands.md) | The 23 custom commands |
 | [Testing Guide](docs/guides/testing.md) | Running and writing tests |
 | [Contributing](CONTRIBUTING.md) | How to land a change |
-| [Roadmap](docs/ROADMAP.md) | What we are building next, and why |
-| [Documentation Audit](docs/DOCUMENTATION_AUDIT.md) | Docs-vs-code findings |
+| [Roadmap](docs/product/roadmap.md) | What we are building next, and why |
+| [Documentation Audit](docs/product/documentation-audit.md) | Docs-vs-code findings |
 | [Decision Records](docs/architecture/decisions/README.md) | Why things are the way they are |
-| [User Documentation](documentation/README.md) | For customers, vendors and admins |
+| [User Documentation](docs/user-guide/README.md) | For customers, vendors and admins |
 
 ---
 
 ## Project status
 
-Phases 1 and 2 of the original [Implementation Plan](IMPLEMENTATION_PLAN.md) are
+Phases 1 and 2 of the original [Implementation Plan](docs/product/implementation-plan.md) are
 substantially delivered: authentication, catalogue, cart and checkout, payments,
 orders, the admin panel, the installer, multi-vendor, bookings, reviews,
 delivery, and a native Android app are all in the codebase.
 
 **Current focus is verification, not new features.** A
-[documentation audit](docs/DOCUMENTATION_AUDIT.md) found a feature-rich but
+[documentation audit](docs/product/documentation-audit.md) found a feature-rich but
 under-tested platform — 6 test files against 146 controllers — and several
 documents that cited verification which had never been written. The
-[Roadmap](docs/ROADMAP.md) sequences the work: close the integrity gaps, make the
+[Roadmap](docs/product/roadmap.md) sequences the work: close the integrity gaps, make the
 payment path provable, build a real test foundation, then extend.
 
 Next up:
@@ -195,7 +195,7 @@ Eloquent's parameter binding throughout, escapes output in Blade, authenticates
 the API with Sanctum, rate-limits public endpoints, and verifies every payment
 webhook signature with timing-safe comparison.
 
-> **Read the [Documentation Audit](docs/DOCUMENTATION_AUDIT.md) before relying on
+> **Read the [Documentation Audit](docs/product/documentation-audit.md) before relying on
 > any security claim in this repository.** It identifies one logged control that
 > was never implemented, and several verification tests that do not exist. The
 > controls listed above were confirmed present in code; the audit says exactly

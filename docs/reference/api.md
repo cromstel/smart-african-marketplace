@@ -232,13 +232,13 @@ Test locally without a provider:
 php artisan webhooks:replay-fixture stripe-charge-succeeded
 ```
 
-See [Webhook E2E](../WEBHOOK_E2E.md).
+See [Webhook E2E](../operations/webhook-e2e.md).
 
 ---
 
 ## Known gaps
 
-Scheduled in the [Roadmap](../ROADMAP.md).
+Scheduled in the [Roadmap](../product/roadmap.md).
 
 1. **`POST /mobile/auth/register` is unthrottled.** Login is limited to 10/min;
    registration has no limit and creates rows. *(Roadmap 0.2)*
@@ -259,4 +259,4 @@ Scheduled in the [Roadmap](../ROADMAP.md).
 - [Architecture Overview](../architecture/overview.md)
 - [Configuration Reference](configuration.md)
 - [Testing Guide](../guides/testing.md)
-- [Mobile App Implementation](../../documentation/mobile-app-implementation.md)
+- [Mobile App Implementation](../mobile/implementation.md)

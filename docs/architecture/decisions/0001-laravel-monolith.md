@@ -10,7 +10,7 @@ and set up through a web wizard, in the manner of a CMS. The intended operators
 are small businesses across Sweden and West Africa, not teams with a DevOps
 function.
 
-Early planning documents (`TODO.md`) contemplated a NestJS API with a Next.js
+Early planning documents (`docs/product/todo.md`) contemplated a NestJS API with a Next.js
 frontend, and those entries survive marked *N/A*.
 
 ## Decision

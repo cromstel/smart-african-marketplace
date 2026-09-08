@@ -15,7 +15,7 @@ New to the codebase? Start with
 
 - **Understand the existing pattern before adding a new one.** This is a mature
   codebase with established conventions. Consistency beats personal preference.
-- **Check the [Roadmap](docs/ROADMAP.md).** Phases 0 and 1 are higher priority
+- **Check the [Roadmap](docs/product/roadmap.md).** Phases 0 and 1 are higher priority
   than new features, and say why.
 - **Know the frontend is Blade + Alpine**, not Livewire, despite what older
   documents said — see
@@ -126,14 +126,27 @@ Two rules, both enforceable and both learned the hard way:
 
 Where things go:
 
+All documentation lives under `docs/`, grouped by audience:
+
 | Content | Location |
 |---|---|
-| Architecture, decisions | `docs/architecture/` |
+| Architecture, decisions, tech stack | `docs/architecture/` |
 | Env vars, API, commands | `docs/reference/` |
 | Developer how-to | `docs/guides/` |
-| Runbooks, policies | `docs/` |
-| Customer/vendor/admin guides | `documentation/` |
-| Unbuilt feature designs | `plans/` — with a **Status: Plan** banner |
+| Deploy, monitoring, backups, queues | `docs/operations/` |
+| Security policy, audits, findings | `docs/security/` |
+| GDPR, payments, tax, regional | `docs/compliance/` |
+| Marketing, SEO, content calendars | `docs/growth/` |
+| Support SOPs, refunds, moderation | `docs/support/` |
+| PRD, roadmap, backlog, audits | `docs/product/` |
+| Feature module docs | `docs/modules/` |
+| Unbuilt feature designs | `docs/plans/` — with a **Status: Plan** banner |
+| Customer/vendor/admin guides | `docs/user-guide/` |
+| Android and iOS | `docs/mobile/` |
+| Superseded documents | `docs/archive/` |
+
+Only `README.md`, `CONTRIBUTING.md`, `SECURITY.md` and `LICENSE` stay at the
+repository root, where GitHub expects them.
 
 New documents carry a status banner: **Current**, **Plan — not yet implemented**,
 **Historical**, or **Needs review**.
@@ -178,6 +191,6 @@ Be direct about problems and kind about people.
 ## See also
 
 - [Documentation Hub](docs/README.md)
-- [Roadmap](docs/ROADMAP.md)
+- [Roadmap](docs/product/roadmap.md)
 - [Testing Guide](docs/guides/testing.md)
 - [AI Agent Instructions](.github/agents.md)

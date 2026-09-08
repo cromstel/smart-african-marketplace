@@ -6,7 +6,7 @@
 
 The 23 custom console commands this application defines, beyond Laravel's
 built-ins. Most are intended to run on a schedule — see
-[Queue Workers & Background Jobs](../QUEUE_WORKERS_AND_BACKGROUND_JOBS.md).
+[Queue Workers & Background Jobs](../operations/queue-workers.md).
 
 ```bash
 php artisan list          # everything, including framework commands
@@ -48,7 +48,7 @@ provider callback.
 
 > **That fixtures directory does not currently exist**, so the command has
 > nothing to replay. Creating the fixtures is
-> [Roadmap 1.1](../ROADMAP.md#11-create-the-missing-webhook-fixtures).
+> [Roadmap 1.1](../product/roadmap.md#11-create-the-missing-webhook-fixtures).
 
 ---
 
@@ -114,7 +114,7 @@ when set it redirects every message to one inbox
 
 Run `chatbot:reindex-knowledge` after changing knowledge documents, or answers
 will be served from a stale index. `chatbot:purge-old` supports data-retention
-obligations — see [GDPR Checklist](../GDPR_COMPLIANCE_CHECKLIST.md).
+obligations — see [GDPR Checklist](../compliance/gdpr-checklist.md).
 
 ---
 
@@ -151,13 +151,13 @@ The scheduler needs one cron entry:
 > Work currently runs **inside these commands** rather than as queued jobs
 > (`app/Jobs/` is empty), so a long command blocks its schedule slot and cannot
 > be retried. Moving heavy work to queued jobs is
-> [Roadmap 3.2](../ROADMAP.md#32-introduce-real-queued-jobs).
+> [Roadmap 3.2](../product/roadmap.md#32-introduce-real-queued-jobs).
 
 ---
 
 ## See also
 
 - [Configuration Reference](configuration.md)
-- [Queue Workers & Background Jobs](../QUEUE_WORKERS_AND_BACKGROUND_JOBS.md)
-- [Deployment Runbook](../DEPLOYMENT_RUNBOOK.md)
-- [Command Lines](../command-lines.md)
+- [Queue Workers & Background Jobs](../operations/queue-workers.md)
+- [Deployment Runbook](../operations/deployment-runbook.md)
+- [Command Lines](command-lines.md)

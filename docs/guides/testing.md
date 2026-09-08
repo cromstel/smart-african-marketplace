@@ -5,7 +5,7 @@
 [Documentation Hub](../README.md) › Guides › Testing
 
 How to run, write and structure tests. Read
-[Roadmap Phase 2](../ROADMAP.md#phase-2--establish-a-real-test-foundation-46-weeks)
+[Roadmap Phase 2](../product/roadmap.md#phase-2--establish-a-real-test-foundation-46-weeks)
 for what needs covering and in what order.
 
 ---
@@ -60,7 +60,7 @@ The suite overrides: `APP_ENV=testing`, `BCRYPT_ROUNDS=4`, `CACHE_DRIVER=array`,
 
 `phpunit.xml` currently defines **only a Feature suite**. There is no Unit suite,
 so service classes cannot be tested without booting the framework. Adding one is
-[Roadmap 2.1](../ROADMAP.md#21-split-the-test-suites):
+[Roadmap 2.1](../product/roadmap.md#21-split-the-test-suites):
 
 ```xml
 <testsuites>
@@ -153,7 +153,7 @@ the resource exists, which is itself a small leak.
 
 ## Testing webhooks
 
-The highest-priority gap ([Roadmap 1.1–1.3](../ROADMAP.md#phase-1--make-the-payment-path-provable-2-weeks)).
+The highest-priority gap ([Roadmap 1.1–1.3](../product/roadmap.md#phase-1--make-the-payment-path-provable-2-weeks)).
 
 Fixtures belong at `tests/Fixtures/webhooks/`, which is where
 `ReplayWebhookFixtureCommand` resolves them:
@@ -197,7 +197,7 @@ php artisan webhooks:replay-fixture paystack-charge-success
 
 ## What to test first
 
-From [Roadmap 2.2](../ROADMAP.md#22-cover-the-money-and-trust-paths-in-this-order),
+From [Roadmap 2.2](../product/roadmap.md#22-cover-the-money-and-trust-paths-in-this-order),
 in order:
 
 1. **Vendor isolation** — leak risk
@@ -248,13 +248,13 @@ service, `composer install`, `key:generate`, `migrate --force`, `php artisan tes
 Also `.github/workflows/security-audit.yml` and `android-release.yml`.
 
 > CI pins **PHP 8.3** while `composer.json` requires `^8.2`. Reconcile
-> deliberately ([Roadmap 0.4](../ROADMAP.md#04-reconcile-the-php-version-low)) so
+> deliberately ([Roadmap 0.4](../product/roadmap.md#04-reconcile-the-php-version-low)) so
 > you are testing what you deploy.
 
 ### Worth adding to CI
 
 The two audit scripts from
-[Documentation Audit](../DOCUMENTATION_AUDIT.md#reproducing-this-audit) — broken
+[Documentation Audit](../product/documentation-audit.md#reproducing-this-audit) — broken
 links, and docs citing files that do not exist. Both are dependency-free and
 would have caught the fictional-evidence problem before it shipped.
 
@@ -276,6 +276,6 @@ A change is ready for review when:
 ## See also
 
 - [Contributing](../../CONTRIBUTING.md)
-- [Roadmap](../ROADMAP.md)
+- [Roadmap](../product/roadmap.md)
 - [Architecture Overview](../architecture/overview.md)
-- [Webhook E2E](../WEBHOOK_E2E.md)
+- [Webhook E2E](../operations/webhook-e2e.md)

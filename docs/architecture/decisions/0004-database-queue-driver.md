@@ -32,7 +32,7 @@ deliberate escape hatch, not an oversight.
 **Related:** `app/Jobs/` is currently empty — background work runs inside
 scheduled Artisan commands rather than queued jobs, so the queue is barely used
 at present. Moving heavy work into real jobs is
-[Roadmap 3.2](../../ROADMAP.md#32-introduce-real-queued-jobs), and will make this
+[Roadmap 3.2](../../product/roadmap.md#32-introduce-real-queued-jobs), and will make this
 decision matter more than it does today.
 
 Revisit when database queue latency shows up in monitoring.
