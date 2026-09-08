@@ -14,12 +14,20 @@ for what needs covering and in what order.
 
 | Metric | Count |
 |---|---|
-| Test files | 6 |
+| Test files | 10 |
+| Tests passing | **56 (190 assertions)** |
 | Controllers | 146 |
 | Models | 98 |
 
-Existing tests: `AuthenticationTest`, `AuthorizationTest`, `AntiSpamTest`,
-`Api/RegistrationTest`, `Api/AddressApiTest`, `Api/CheckoutApiTest`.
+Verified 2026-09-08 on PHP 8.3 / MariaDB 10.11: `php artisan test` → 56 passed.
+
+Tests: `AuthenticationTest`, `AuthorizationTest`, `AntiSpamTest`,
+`CrlfInjectionTest`, `WebhookE2ETest`, `Api/RegistrationTest`,
+`Api/RegistrationThrottleTest`, `Api/AddressApiTest`, `Api/CheckoutApiTest`.
+
+> **Build assets before running the suite.** Blade views use `@vite`, so without
+> the generated public/build/manifest.json every view-rendering test fails with "Vite
+> manifest not found". Run `npm ci && npm run build` first — CI now does this.
 
 Payments, subscriptions, auctions, bookings, payouts and vendor isolation have
 no automated coverage. Treat that as the context for every change you make: if

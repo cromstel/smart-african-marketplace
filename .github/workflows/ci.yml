@@ -67,6 +67,20 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate --force
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      # Blade views use @vite; without public/build/manifest.json every test
+      # that renders a view fails with "Vite manifest not found".
+      - name: Build frontend assets
+        run: npm run build
+
       - name: Run database migrations
         env:
           DB_HOST: 127.0.0.1

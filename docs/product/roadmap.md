@@ -24,10 +24,16 @@ new capability.
 
 ## Phase 0 — Close the integrity gaps (1 week)
 
-> **Delivered 2026-09-08.** All four items below are implemented. The tests
-> accompanying them have not yet been executed — they were written in an
-> environment without PHP, Composer or MySQL — so Phase 0 closes on the first
-> green CI run, not on this commit.
+> **Delivered and verified 2026-09-08.** All four items implemented, and the
+> suite has now been executed: **56 passed, 190 assertions** on PHP 8.3 /
+> MariaDB 10.11.
+>
+> Running it required first fixing six defects that stopped a clean clone from
+> installing at all — a missing Sanctum migration (all API auth broken), a
+> missing spatie/laravel-permission migration, a migration with a year typo, an
+> unquoted `.env.example` value, a removed `APP_URL` default, and untracked
+> `storage/framework` directories. See
+> [Finding 10](documentation-audit.md#finding-10--the-application-could-not-be-installed-or-migrated-from-a-clean-clone).
 
 Small, high-severity items. Nothing else should start until these land.
 
@@ -107,8 +113,9 @@ deployed.
 
 ## Phase 1 — Make the payment path provable (2 weeks)
 
-> **Partially delivered 2026-09-08.** 1.1 and 1.2 are done; 1.3 (mobile money)
-> and 1.4 (matrix correction, pending a green run) remain.
+> **Delivered 2026-09-08.** 1.1, 1.2 and 1.4 are done and the webhook tests pass
+> — signature acceptance, rejection, tampered body, and replay idempotency for
+> both providers. Only 1.3 (mobile money) remains.
 
 The platform moves money across Stripe, Paystack and Swish. The signature checks
 are implemented; the tests asserting they work are not.

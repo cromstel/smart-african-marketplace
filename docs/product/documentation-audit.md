@@ -238,6 +238,55 @@ CI pins 8.3.
 
 ---
 
+## Finding 10 — The application could not be installed or migrated from a clean clone
+
+**Severity: Critical.** Added 2026-09-08, after actually running the project
+rather than only reading it.
+
+Every issue below was invisible to static review and to the documentation
+checks. They surfaced within minutes of a real `composer install` → `migrate` →
+`test` on a clean checkout, and each one alone stops a new developer, a CI run,
+and the web installer.
+
+| # | Defect | Effect |
+|---|---|---|
+| 10a | `config/app.php` had `'url' => env('APP_URL')` with no default (Laravel ships `'http://localhost'`) | `composer install` fails at `package:discover` on a fresh clone — null passed to `Request::create()` |
+| 10b | `.env.example` line 333: `MAIL_SENDMAIL_PATH=/usr/sbin/sendmail -bs -i`, unquoted | Copying the example file makes the app unbootable: "Failed to parse dotenv file" |
+| 10c | `storage/framework/{cache/data,sessions,views,testing}` not tracked in git | `php artisan` fails with "Please provide a valid cache path" |
+| 10d | A migration dated `2025_03_20_210000` among an otherwise 2026 set — a year typo | Sorted before `create_users_table`; altered `vendors` before it existed, so `migrate` failed immediately |
+| 10e | `laravel/sanctum` migration never published — no `personal_access_tokens` table | **All API token authentication broken.** Mobile login and registration returned 500 |
+| 10f | `spatie/laravel-permission` migration never published — no `permissions`, `model_has_permissions`, `model_has_roles` | `migrate` failed on a foreign key to a table that is never created |
+
+### What this implies about CI
+
+`.github/workflows/ci.yml` runs `php artisan migrate --force` followed by
+`php artisan test`. Given 10d and 10f, that migrate step **cannot have
+succeeded** on a clean database. Either the workflow has been failing, or it has
+not run. The green-looking "0 vulnerabilities" security badge in the old README
+pointed the same way, which is why it was removed.
+
+Two further CI gaps, both found the same way:
+
+- No `npm ci` / `npm run build` step. Blade views use `@vite`, so every
+  view-rendering test failed with "Vite manifest not found".
+- `ext-bcmath` was absent from the extension list, though Cashier requires it
+  transitively.
+
+### After the fixes
+
+`php artisan migrate` runs all 150 migrations clean (117 tables), and
+`php artisan test` reports **56 passed, 190 assertions** on PHP 8.3 /
+MariaDB 10.11.
+
+### The lesson
+
+The first nine findings came from reading the repository against itself and were
+worth having. None of them found a defect that stopped the application from
+starting. **Running the thing found six in under an hour.** Static checks and
+documentation audits are complements to execution, not substitutes for it.
+
+---
+
 ## Disposition
 
 | # | Finding | Severity | Action |
@@ -251,6 +300,7 @@ CI pins 8.3.
 | 3 | External-services claim | Medium | Corrected in docs |
 | 4 | Roadmap stale | Medium | Corrected in docs |
 | 5 | Undocumented domains | Medium | Corrected in docs |
+| 10 | Fresh-install and migration defects | **Critical** | All six fixed; suite now runs |
 | 9 | Structure and links | Low | Hub added; cleanup scheduled |
 | 1c | Unmarked plans | Low | Status banners |
 
