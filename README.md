@@ -109,8 +109,12 @@ through the [Deployment Runbook](docs/operations/deployment-runbook.md).
 **Server:** PHP 8.2+, MySQL 8.0+ (or MariaDB 10.6+), Apache 2.4+ with
 `mod_rewrite`, 512 MB RAM minimum (2 GB recommended), 1 GB disk.
 
-**PHP extensions:** `pdo_mysql`, `mbstring`, `xml`, `curl`, `zip`, `gd`,
-`fileinfo`, `openssl`, `tokenizer`, `json`.
+**PHP extensions:** `bcmath`, `pdo_mysql`, `mbstring`, `xml`, `curl`, `zip`,
+`gd`, `fileinfo`, `openssl`, `tokenizer`, `json`.
+
+> `bcmath` is not optional: Laravel Cashier depends on `moneyphp/money`, which
+> requires it. Without it `composer install` fails outright. It was missing from
+> every documented list until 2026-09-08.
 
 **Build tools:** Composer 2.x, Node.js 18+.
 

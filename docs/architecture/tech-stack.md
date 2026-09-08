@@ -144,6 +144,7 @@ each one needs.
 - 512MB RAM (2GB recommended)
 
 **PHP Extensions:**
+- bcmath *(required by moneyphp/money via Laravel Cashier)*
 - pdo_mysql, mysqli
 - mbstring, xml, curl
 - zip, gd, fileinfo

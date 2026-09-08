@@ -19,8 +19,11 @@ From a fresh clone to a running application. For deployment see the
 | Node.js | 18+ | For Vite asset builds |
 | Apache | 2.4+ | With `mod_rewrite`. Optional for local — `artisan serve` is enough |
 
-PHP extensions: `pdo_mysql`, `mbstring`, `xml`, `curl`, `zip`, `gd`, `fileinfo`,
-`openssl`, `tokenizer`, `json`.
+PHP extensions: `bcmath`, `pdo_mysql`, `mbstring`, `xml`, `curl`, `zip`, `gd`,
+`fileinfo`, `openssl`, `tokenizer`, `json`.
+
+`bcmath` is required by `moneyphp/money` (a Laravel Cashier dependency) — without
+it `composer install` fails. On Debian/Ubuntu: `sudo apt install php8.2-bcmath`.
 
 Windows users: see [Localhost on Apache (Windows)](localhost-apache-windows.md).
 
