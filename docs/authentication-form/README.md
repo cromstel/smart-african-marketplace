@@ -16,7 +16,8 @@ This project uses a storefront-auth overlay layout for customer and vendor authe
 
 - `resources/views/auth/login.blade.php`
 - `resources/views/auth/register.blade.php`
-- `resources/views/auth/forgot-password.blade.php`
+- the forgot-password screen — **no standalone view**; `auth/forgot-password`
+  redirects to `login?forgot=1` and the modal partial supplies the form
 - `resources/views/auth/reset-password.blade.php`
 - `resources/views/auth/confirm-password.blade.php`
 - `resources/views/auth/verify-email.blade.php`

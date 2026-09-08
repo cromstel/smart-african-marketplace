@@ -1,3 +1,25 @@
+> **Status: Needs review** — one entry below records a control that does not exist.
+>
+> [Documentation Hub](README.md) › Security Patch Log
+>
+> ## ⚠️ Unimplemented entry
+>
+> This log records CRLF-injection protection delivered by
+> `app/Http/Middleware/PreventCrlfInjection.php` and
+> `app/Providers/CrlfEmailValidationServiceProvider.php`.
+>
+> **Neither file exists, and neither ever did** (`git log --all` returns no
+> history). A repository-wide search for `Crlf`/`CRLF` in `app/` and `config/`
+> returns nothing: **there is no CRLF protection in this codebase.**
+>
+> Unlike the webhook entries in the
+> [Pending Closure Matrix](PENDING_CLOSURE_MATRIX.md) — where the control is real
+> and only the test is missing — here there is no control at all.
+>
+> Resolution is [Roadmap 0.1](ROADMAP.md#01-resolve-the-crlf-protection-claim--high):
+> either implement the protection, or retract this entry. Do not leave it as-is —
+> a security log that overstates coverage stops someone doing the work.
+
 # Security Patch & Major Upgrade Log - July 11, 2026
 
 ## Final Summary
@@ -131,3 +153,13 @@ found 0 vulnerabilities.
 *Document created: July 11, 2026*  
 *Last updated: July 11, 2026*  
 *Status: ALL VULNERABILITIES FIXED — ZERO REMAINING*
+
+
+---
+
+## See also
+
+- [Documentation Audit](DOCUMENTATION_AUDIT.md#1b-a-security-patch-is-logged-that-was-never-applied)
+- [Roadmap Phase 0](ROADMAP.md#phase-0--close-the-integrity-gaps-1-week)
+- [Security Policies Baseline](SECURITY_POLICIES_BASELINE.md)
+- [Security Policy](../SECURITY.md)

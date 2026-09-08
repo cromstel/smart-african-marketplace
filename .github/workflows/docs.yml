@@ -1,0 +1,26 @@
+name: Documentation
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  check:
+    name: Integrity checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Fails when a document links to a missing file, or cites a repository
+      # file that does not exist -- e.g. a test named as evidence for completed
+      # security work that was never written.
+      - name: Check documentation integrity
+        run: python3 scripts/docs/check-docs.py

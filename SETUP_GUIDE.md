@@ -1,3 +1,19 @@
+> **Status: Needs review** — superseded in part by
+> [Getting Started](docs/guides/getting-started.md).
+>
+> [Documentation Hub](docs/README.md) › Setup Guide
+>
+> Two cautions:
+>
+> 1. The walkthrough sections build a **Livewire** `ProductList` component. Files
+>    such as `app/Livewire/ProductList.php` and `resources/views/welcome.blade.php`
+>    are files the tutorial asks you to *create*; they are not part of the
+>    repository. Livewire is also no longer the default UI pattern — see
+>    [ADR 0002](docs/architecture/decisions/0002-blade-over-livewire.md).
+> 2. For setting up an existing clone, follow
+>    [Getting Started](docs/guides/getting-started.md) instead. This guide remains
+>    useful for the deeper environment and Apache notes.
+
 # Smart African Marketplace - Setup Guide
 
 **Status**: Project structure initialized ✅  

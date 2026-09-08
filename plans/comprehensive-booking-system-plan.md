@@ -1,3 +1,17 @@
+> **Status: Largely implemented.**
+>
+> [Documentation Hub](../docs/README.md) › Plans › Booking System
+>
+> The booking system is built: `Booking`, `BookingType`, `BookingResource`,
+> `SalonService`, `SalonStylist` and `ServicePricingTier` models, five services
+> under `app/Services/`, `BookingController`, and the `booking:send-reminders`
+> command. Read this as design rationale; verify details against the code.
+>
+> Slot integrity has **no automated test coverage** — see
+> [Roadmap 2.2](../docs/ROADMAP.md#22-cover-the-money-and-trust-paths-in-this-order).
+> A condensed version lives at
+> [docs/Booking-System-Implementation-Plan.md](../docs/Booking-System-Implementation-Plan.md).
+
 # Comprehensive Booking System Implementation Plan
 
 ## Smart African Marketplace Multi-Service Booking System

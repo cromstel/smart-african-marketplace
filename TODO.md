@@ -1,3 +1,14 @@
+> **Status: Needs review** — last substantively updated 2026-03-05.
+>
+> [Documentation Hub](docs/README.md) › TODO
+>
+> This backlog predates the [Documentation Audit](docs/DOCUMENTATION_AUDIT.md) and
+> still carries entries from an abandoned NestJS/Next.js plan (marked *N/A*) and a
+> reference to `.zenflow/`, a tooling directory not present in this repository.
+>
+> For current priorities use the [Roadmap](docs/ROADMAP.md), which is
+> evidence-based and sequenced. Keep this file for historical task-level detail.
+
 # Multivendor Smart African Marketplace - Development TODO List
 
 **Project Status**: Laravel Implementation (Phases 1-3 Complete)  

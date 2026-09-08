@@ -1,3 +1,16 @@
+> **Status: Largely implemented.**
+>
+> [Documentation Hub](../docs/README.md) › Plans › Auction Module
+>
+> The auction module described here is built: `Auction`, `AuctionBid`,
+> `AuctionAutoBid`, `AuctionWinner` and `AuctionNotification` models,
+> `app/Services/Auction/`, `AuctionController`, and the `auction:process` command
+> all exist. Read this as design rationale rather than outstanding work, and
+> verify details against the code before relying on them.
+>
+> It has **no automated test coverage** — bidding is the most concurrency-sensitive
+> path in the platform. See [Roadmap 2.2](../docs/ROADMAP.md#22-cover-the-money-and-trust-paths-in-this-order).
+
 # Auction Service Module Implementation Plan
 
 ## Executive Summary
