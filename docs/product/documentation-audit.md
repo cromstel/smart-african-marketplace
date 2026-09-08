@@ -62,7 +62,29 @@ implemented. `WebhookController.php` verifies Stripe signatures via
 `SwishPaymentController.php` does the same. The controls are real; the *proof*
 is missing. The risk is that a reader trusts the matrix and skips a real check.
 
-### 1b. A security patch is logged that was never applied
+### 1b. A security patch is logged that was never applied — **RETRACTED**
+
+> **This finding was wrong.** See the correction at the top of
+> [the patch log](../security/patch-log.md).
+>
+> The two filenames sit under a heading reading *Manual Patches (Removed After
+> Upgrade)*, struck through, in a section stating they were written for Laravel
+> 10.x and removed once CVE-2026-48019 was fixed upstream in Laravel 12.60.0+.
+> The log was recording a removal. It was never claiming the files were present.
+>
+> The automated check flagged the filenames; the write-up below treated that
+> flag as the finding without reading the surrounding section. That is a
+> reviewer error, and it is the reason the original text is struck through
+> rather than deleted — an audit that quietly edits away its own mistakes is
+> not worth reading.
+>
+> What survives: `git log --all` genuinely shows no history for either file in
+> this repository, and there is genuinely no CRLF handling in `app/` or
+> `config/`. Both are consistent with a deliberate removal plus a squashed
+> import, and neither supports the original claim.
+
+*Original finding, retained for the record:*
+
 
 `docs/security/patch-log.md` records CRLF-injection protection via:
 
@@ -220,7 +242,7 @@ CI pins 8.3.
 
 | # | Finding | Severity | Action |
 |---|---|---|---|
-| 1b | CRLF protection logged but absent | **High** | Implement or retract the log entry |
+| 1b | ~~CRLF protection logged but absent~~ | **Retracted** | Finding was a misreading — see above |
 | 1a | Webhook test evidence fictional | **High** | Write the tests and fixtures |
 | 6 | Test coverage | **High** | Phased test programme |
 | 8 | Unthrottled registration | **Medium** | Add throttle middleware |

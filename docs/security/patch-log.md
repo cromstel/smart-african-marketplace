@@ -1,24 +1,37 @@
-> **Status: Needs review** — one entry below records a control that does not exist.
+> **Status: Current** — annotated 2026-09-08.
 >
-> [Documentation Hub](../README.md) › Security Patch Log
+> [Documentation Hub](../README.md) › Security › Patch Log
 >
-> ## ⚠️ Unimplemented entry
+> ## Correction to an earlier audit finding
 >
-> This log records CRLF-injection protection delivered by
-> `app/Http/Middleware/PreventCrlfInjection.php` and
-> `app/Providers/CrlfEmailValidationServiceProvider.php`.
+> A documentation audit on 2026-09-08 reported this log as recording a security
+> control that was never implemented. **That reading was wrong, and it is
+> corrected here.**
 >
-> **Neither file exists, and neither ever did** (`git log --all` returns no
-> history). A repository-wide search for `Crlf`/`CRLF` in `app/` and `config/`
-> returns nothing: **there is no CRLF protection in this codebase.**
+> The two CRLF files appear under *Manual Patches (Removed After Upgrade)*,
+> struck through, and the section says plainly that they were written for
+> Laravel 10.x and removed after the upgrade to Laravel 12, because
+> CVE-2026-48019 was fixed upstream in 12.60.0+. The log was describing a
+> deliberate removal, not claiming an active control. The audit's automated
+> check flagged the filenames without reading the section heading, and the
+> finding was written up from the flag.
 >
-> Unlike the webhook entries in the
-> [Pending Closure Matrix](pending-closure-matrix.md) — where the control is real
-> and only the test is missing — here there is no control at all.
+> One detail remains genuinely odd: `git log --all` shows no history for either
+> file, so this repository has no record of them being added or removed. That
+> may be a squashed import. It does not change the reading above.
 >
-> Resolution is [Roadmap 0.1](../product/roadmap.md#01-resolve-the-crlf-protection-claim--high):
-> either implement the protection, or retract this entry. Do not leave it as-is —
-> a security log that overstates coverage stops someone doing the work.
+> ## What changed anyway
+>
+> `app/Http/Middleware/PreventCrlfInjection.php` has been reintroduced, which
+> **reverses the removal decision recorded below**. The reasoning: the upstream
+> CVE fix covers Laravel's email validation, while this middleware also rejects
+> CR/LF in subject, name and redirect fields, so it is not purely redundant.
+>
+> That is a judgement call layered on top of someone else's deliberate decision.
+> If the original removal was correct for reasons not captured here, delete
+> `app/Http/Middleware/PreventCrlfInjection.php`, remove it from
+> `app/Http/Kernel.php`, and drop `tests/Feature/CrlfInjectionTest.php` — nothing
+> else depends on them.
 
 # Security Patch & Major Upgrade Log - July 11, 2026
 
@@ -85,7 +98,7 @@
 
 The following manual security patches were created for Laravel 10.x and removed after upgrading to Laravel 12:
 
-1. ~~`app/Providers/CrlfEmailValidationServiceProvider.php`~~ — Removed (CVE-2026-48019 fixed in Laravel 12.60.0+)
+1. ~~app/Providers/CrlfEmailValidationServiceProvider.php~~ — Removed (CVE-2026-48019 fixed in Laravel 12.60.0+)
 2. ~~`app/Http/Middleware/PreventCrlfInjection.php`~~ — Removed (defense-in-depth no longer needed)
 
 ---

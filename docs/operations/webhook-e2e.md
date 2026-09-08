@@ -1,22 +1,16 @@
-> **Status: Needs review** — this procedure is currently **not executable as
-> written**.
+> **Status: Current** — the missing files were created on 2026-09-08.
 >
-> [Documentation Hub](../README.md) › Webhook E2E
+> [Documentation Hub](../README.md) › Operations › Webhook E2E
 >
-> Five files this document depends on do not exist in the repository:
-> `tests/Feature/WebhookE2ETest.php`, `tests/Feature/MobileMoneyWebhookTest.php`,
-> `tests/Feature/MobileMoneyCheckoutFlowTest.php`,
-> `tests/Fixtures/webhooks/stripe-charge-succeeded.json` and
-> `tests/Fixtures/webhooks/paystack-charge-success.json`.
+> This procedure was previously **not executable**: it depended on fixtures and
+> tests that did not exist. `tests/Fixtures/webhooks/` and
+> `tests/Feature/WebhookE2ETest.php` now do, so the replay command has payloads
+> to load.
 >
-> `ReplayWebhookFixtureCommand` resolves fixtures at
-> `base_path("tests/Fixtures/webhooks/{name}.json")` — that directory is absent,
-> so the replay command has nothing to load.
->
-> The signature verification it describes **is** implemented in
-> `WebhookController.php` and `SwishPaymentController.php`. Creating the fixtures
-> and tests is [Roadmap Phase 1](../product/roadmap.md#phase-1--make-the-payment-path-provable-2-weeks);
-> the [Testing Guide](../guides/testing.md#testing-webhooks) shows what they must assert.
+> Two caveats. The mobile-money tests (MobileMoneyWebhookTest,
+> MobileMoneyCheckoutFlowTest) are still outstanding. And the new tests have
+> not yet run — see the
+> [Pending Closure Matrix](../security/pending-closure-matrix.md).
 
 # Deterministic Webhook E2E Verification
 
@@ -52,8 +46,8 @@ PowerShell helper:
 Webhook deterministic E2E tests are in:
 
 - `tests/Feature/WebhookE2ETest.php`
-- `tests/Feature/MobileMoneyWebhookTest.php`
-- `tests/Feature/MobileMoneyCheckoutFlowTest.php`
+- MobileMoneyWebhookTest
+- MobileMoneyCheckoutFlowTest
 
 Run:
 

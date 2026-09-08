@@ -77,7 +77,7 @@ Route-level throttles:
 | Route | Throttle |
 |---|---|
 | `POST /api/v1/mobile/auth/login` | `10,1` |
-| `POST /api/v1/mobile/auth/register` | **none** — see [Known gaps](#known-gaps) |
+| `POST /api/v1/mobile/auth/register` | `5,1` |
 
 Exceeding a limit returns `429 Too Many Requests` with a `Retry-After` header.
 
@@ -240,10 +240,11 @@ See [Webhook E2E](../operations/webhook-e2e.md).
 
 Scheduled in the [Roadmap](../product/roadmap.md).
 
-1. **`POST /mobile/auth/register` is unthrottled.** Login is limited to 10/min;
-   registration has no limit and creates rows. *(Roadmap 0.2)*
-2. **No automated webhook tests.** The signature checks are implemented, but the
-   tests cited as evidence do not exist. *(Roadmap 1.1–1.3)*
+1. ~~`POST /mobile/auth/register` is unthrottled.~~ **Fixed** — now
+   `throttle:5,1`, covered by `tests/Feature/Api/RegistrationThrottleTest.php`.
+2. **Webhook tests written but not yet run.** Signature and idempotency tests now
+   exist in `tests/Feature/WebhookE2ETest.php`; they await their first CI run.
+   Mobile-money coverage is still outstanding. *(Roadmap 1.3)*
 3. **No pagination contract.** List endpoints do not document page size, cursors
    or envelope shape.
 4. **No generated OpenAPI spec.** This page is maintained by hand and can drift.

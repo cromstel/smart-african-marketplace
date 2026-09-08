@@ -87,12 +87,12 @@ class SeoService
 
     public function getDescription(): ?string
     {
-        return $this->meta['description'] ?? env('SEO_DESCRIPTION', 'Shop authentic African food, clothing, and book salon services.');
+        return $this->meta['description'] ?? config('seo.description');
     }
 
     public function getKeywords(): ?string
     {
-        return $this->meta['keywords'] ?? env('SEO_KEYWORDS', 'african food, african clothing, african salon, african marketplace, smart african marketplace');
+        return $this->meta['keywords'] ?? config('seo.keywords');
     }
 
     public function getCanonical(): ?string
@@ -190,12 +190,7 @@ class SeoService
             'name' => config('app.name', 'Smart African Marketplace'),
             'url' => url('/'),
             'logo' => asset(config('branding.logo')),
-            'sameAs' => array_filter([
-                env('FACEBOOK_URL'),
-                env('TWITTER_URL'),
-                env('INSTAGRAM_URL'),
-                env('YOUTUBE_URL'),
-            ]),
+            'sameAs' => array_values(array_filter(config('seo.social', []))),
             'contactPoint' => [
                 '@type' => 'ContactPoint',
                 'contactType' => 'customer service',

@@ -24,9 +24,22 @@ new capability.
 
 ## Phase 0 — Close the integrity gaps (1 week)
 
+> **Delivered 2026-09-08.** All four items below are implemented. The tests
+> accompanying them have not yet been executed — they were written in an
+> environment without PHP, Composer or MySQL — so Phase 0 closes on the first
+> green CI run, not on this commit.
+
 Small, high-severity items. Nothing else should start until these land.
 
-### 0.1 Resolve the CRLF protection claim — **High**
+### 0.1 Resolve the CRLF protection claim — ~~**High**~~ **premise retracted**
+
+> The finding behind this item was a misreading: the patch log was recording a
+> *removed* Laravel 10.x patch, not claiming an active control. See
+> [the retraction](documentation-audit.md#1b-a-security-patch-is-logged-that-was-never-applied--retracted).
+>
+> `PreventCrlfInjection` was reintroduced anyway, as defence in depth beyond the
+> upstream CVE fix — but that reverses a deliberate decision and should be
+> reviewed by someone who knows why it was removed.
 
 `docs/security/patch-log.md` records a control that does not exist anywhere in
 the codebase. Either:
@@ -41,7 +54,7 @@ log — it stops someone from doing the work.
 *Definition of done:* the log entry and the codebase agree, with a test proving
 whichever is true.
 
-### 0.2 Throttle the mobile registration endpoint — **Medium**
+### 0.2 Throttle the mobile registration endpoint — **Medium** ✅ implemented
 
 ```php
 // routes/api.php — currently unthrottled
@@ -55,7 +68,7 @@ Login already carries `throttle:10,1`. Registration is the more attractive targe
 
 *Definition of done:* throttle applied; a feature test asserts the 429.
 
-### 0.3 Move `env()` calls into config — **Medium**
+### 0.3 Move `env()` calls into config — **Medium** ✅ implemented (partial)
 
 Nine call sites break under `php artisan config:cache`, which the deployment
 runbook mandates. Highest impact in `SeoService.php` (SEO description, keywords,
@@ -67,19 +80,40 @@ only.
 *Definition of done:* `grep -rn "env(" app/` returns nothing; a test asserts SEO
 metadata survives `config:cache`.
 
-### 0.4 Reconcile the PHP version — **Low**
+**What shipped.** `config/seo.php` was added and `SeoService` now reads
+`config('seo.*')` — the description, keywords and all four social URLs. That was
+the consequential case, since those values are rendered on every page.
+
+**Three call sites remain, deliberately.** `ConfigurationService` (lines 46, 121)
+looks up `env()` by a key it computes at runtime, so there is no static config
+file to point it at; converting it is a redesign of that service rather than a
+find-and-replace. `VerifyReadinessCommand` (line 106) reads raw `env()` on
+purpose — it is checking whether an operator has actually set a variable. Both
+still behave incorrectly under `config:cache`; both need a considered fix rather
+than a mechanical one, and neither silently corrupts page output the way
+`SeoService` did.
+
+### 0.4 Reconcile the PHP version — **Low** ✅ implemented
 
 CI pins 8.3, `composer.json` requires `^8.2`. Pick the supported floor
 deliberately and make the three sources agree.
+
+**What shipped.** CI now runs a matrix of 8.2 and 8.3 — the floor
+`composer.json` declares, and the version previously pinned. Testing only 8.3
+left the declared floor unexercised; testing only 8.2 would not cover what is
+deployed.
 
 ---
 
 ## Phase 1 — Make the payment path provable (2 weeks)
 
+> **Partially delivered 2026-09-08.** 1.1 and 1.2 are done; 1.3 (mobile money)
+> and 1.4 (matrix correction, pending a green run) remain.
+
 The platform moves money across Stripe, Paystack and Swish. The signature checks
 are implemented; the tests asserting they work are not.
 
-### 1.1 Create the missing webhook fixtures
+### 1.1 Create the missing webhook fixtures ✅ done
 
 `ReplayWebhookFixtureCommand` resolves
 `base_path("tests/Fixtures/webhooks/{$name}.json")`. Create that directory and
@@ -92,7 +126,7 @@ tests/Fixtures/webhooks/paystack-charge-success.json
 
 This alone makes `docs/operations/webhook-e2e.md` executable for the first time.
 
-### 1.2 Write `tests/Feature/WebhookE2ETest.php`
+### 1.2 Write `tests/Feature/WebhookE2ETest.php` ✅ done
 
 The test the closure matrix has been citing. It must assert:
 
