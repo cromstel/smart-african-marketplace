@@ -193,7 +193,7 @@
                         <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-10 w-10">
                         <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent truncate max-w-[10.5rem] sm:max-w-none" style="background-image: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));">{{ config('app.name') }}</span>
                     </a>
-                    <div class="hidden md:flex md:space-x-8 lg:space-x-10">
+                    <div class="hidden md:flex md:space-x-5 lg:space-x-8 min-w-0">
                         <a href="{{ route('shop.index') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('shop.*') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.shop') }}
                         </a>
@@ -215,8 +215,8 @@
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-4 md:space-x-6">
-                    <div class="hidden md:block">
+                <div class="flex items-center space-x-4 md:space-x-6 min-w-0">
+                    <div class="hidden md:block min-w-0 shrink">
                         @livewire('live-search')
                     </div>
 

@@ -24,7 +24,7 @@
             autocomplete="off"
             wire:model.live.debounce.300ms="query" 
             placeholder="Search products, services, blog..." 
-            class="w-full md:w-64 lg:w-80 px-4 py-2 pl-10 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+            class="w-full md:w-52 lg:w-72 max-w-full px-4 py-2 pl-10 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
             @focus="if ($wire.query.length >= 2) open = true"
         >
         <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

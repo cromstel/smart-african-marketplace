@@ -34,10 +34,11 @@ class ImageOptimizationService
             $absolutePath = Storage::disk('public')->path($media->file_path);
             $source = $this->manager->read($absolutePath);
 
-            // WebP stays WebP; every other format is converted to AVIF.
-            // A single optimized file is stored (no derivative variations).
+            // WebP stays WebP; every other format is converted to the best
+            // format this server can actually encode. A single optimized file
+            // is stored (no derivative variations).
             $currentExtension = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION) ?: 'jpg');
-            $outputExtension = $currentExtension === 'webp' ? 'webp' : 'avif';
+            $outputExtension = $this->outputExtension($currentExtension);
 
             $newPath = dirname($media->file_path).'/'.pathinfo($media->file_path, PATHINFO_FILENAME).'.'.$outputExtension;
             $encoded = $source->encodeByExtension($outputExtension, quality: 82)->toString();
@@ -57,7 +58,7 @@ class ImageOptimizationService
             $media->file_path = $newPath;
             $media->file_name = basename($newPath);
             $media->webp_path = null;
-            $media->mime_type = $outputExtension === 'webp' ? 'image/webp' : 'image/avif';
+            $media->mime_type = $this->mimeTypeFor($outputExtension);
             $media->file_size = Storage::disk('public')->size($newPath);
             $media->width = $source->width();
             $media->height = $source->height();
@@ -85,7 +86,7 @@ class ImageOptimizationService
         // A single optimized file is stored (no derivative variations) to save
         // disk space and improve page performance.
         $inputExtension = strtolower($image->getClientOriginalExtension() ?: 'jpg');
-        $outputExtension = $inputExtension === 'webp' ? 'webp' : 'avif';
+        $outputExtension = $this->outputExtension($inputExtension);
 
         $filename = Str::random(20).'.'.$outputExtension;
         $storagePath = $path.'/'.$filename;
@@ -95,7 +96,7 @@ class ImageOptimizationService
         $encoded = $img->encodeByExtension($outputExtension, quality: 82)->toString();
         Storage::disk('public')->put($storagePath, $encoded);
 
-        $mimeType = $outputExtension === 'webp' ? 'image/webp' : 'image/avif';
+        $mimeType = $this->mimeTypeFor($outputExtension);
         $widthPx = $img->width();
         $heightPx = $img->height();
         $fileSize = Storage::disk('public')->size($storagePath);
