@@ -8,6 +8,7 @@ use App\Models\DataExportRequest;
 use App\Models\Order;
 use App\Models\ProductEnquiry;
 use App\Models\RmaRequest;
+use App\Models\VendorBalance;
 use App\Models\VendorFollower;
 use App\Models\VendorVerification;
 use App\Models\Withdrawal;
@@ -76,7 +77,7 @@ class DashboardController extends Controller
 
         $availableBalance -= $totalWithdrawals;
 
-        $balanceRecord = \App\Models\VendorBalance::where('vendor_id', $vendor->id)->first();
+        $balanceRecord = VendorBalance::where('vendor_id', $vendor->id)->first();
         if ($balanceRecord) {
             $availableBalance = (float) $balanceRecord->available;
         }

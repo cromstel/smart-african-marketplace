@@ -7,6 +7,7 @@ use App\Models\Address;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\OrderGroup;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Services\Campaign\CampaignTrackingService;
@@ -112,7 +113,7 @@ class CheckoutController extends Controller
             $calculatedTotal = max(0, (float) $cart->subtotal + (float) $cart->tax + $calculatedShippingCost - (float) $cart->discount);
 
             $groupNumber = 'GRP-'.strtoupper(Str::random(8));
-            $orderGroup = \App\Models\OrderGroup::create([
+            $orderGroup = OrderGroup::create([
                 'group_number' => $groupNumber,
                 'user_id' => auth()->id(),
                 'subtotal' => $cart->subtotal,

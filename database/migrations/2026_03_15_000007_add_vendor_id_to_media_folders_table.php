@@ -38,7 +38,7 @@ return new class extends Migration
                     $table->index(['owner_type', 'owner_id']);
                 });
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Index might already exist, ignore error
         }
     }

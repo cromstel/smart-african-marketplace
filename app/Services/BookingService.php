@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\BookingType;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 class BookingService
@@ -278,7 +279,7 @@ class BookingService
     /**
      * Get upcoming bookings for a user
      */
-    public function getUserUpcomingBookings(int $userId, int $limit = 10): \Illuminate\Database\Eloquent\Collection
+    public function getUserUpcomingBookings(int $userId, int $limit = 10): Collection
     {
         return Booking::where('user_id', $userId)
             ->where('booking_date', '>=', Carbon::today())
@@ -336,7 +337,7 @@ class BookingService
     /**
      * Get available booking types
      */
-    public function getAvailableBookingTypes(): \Illuminate\Database\Eloquent\Collection
+    public function getAvailableBookingTypes(): Collection
     {
         return BookingType::where('is_active', true)
             ->orderBy('sort_order')

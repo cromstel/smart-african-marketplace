@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -36,7 +37,7 @@ class BookingReminderNotification extends Notification implements ShouldQueue
             ->line('**Booking Details:**')
             ->line("Booking #: {$booking->booking_number}")
             ->line('Service: '.($booking->salonService?->name ?? 'N/A'))
-            ->line('Date: '.\Carbon\Carbon::parse($booking->booking_date)->format('l, F j, Y'))
+            ->line('Date: '.Carbon::parse($booking->booking_date)->format('l, F j, Y'))
             ->line("Time: {$booking->booking_time}")
             ->line('Location: '.($booking->salonService?->user?->vendor?->address ?? 'See booking details'))
             ->line('Please arrive 10 minutes early.')
@@ -51,7 +52,7 @@ class BookingReminderNotification extends Notification implements ShouldQueue
             'message' => "Your booking #{$this->booking->booking_number} is in {$this->hoursUntilBooking} hours.",
             'booking_id' => $this->booking->id,
             'booking_number' => $this->booking->booking_number,
-            'booking_date' => \Carbon\Carbon::parse($this->booking->booking_date)->toDateString(),
+            'booking_date' => Carbon::parse($this->booking->booking_date)->toDateString(),
             'booking_time' => $this->booking->booking_time,
             'action_url' => route('bookings.show', $this->booking),
         ];

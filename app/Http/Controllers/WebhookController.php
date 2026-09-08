@@ -9,6 +9,7 @@ use App\Models\Setting;
 use App\Models\UserSubscription;
 use App\Services\LoyaltyPointsService;
 use App\Services\SubscriptionService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -558,8 +559,8 @@ class WebhookController extends Controller
 
         $userSubscription->update([
             'status' => $status,
-            'current_period_start' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_start),
-            'current_period_end' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
+            'current_period_start' => Carbon::createFromTimestamp($subscription->current_period_start),
+            'current_period_end' => Carbon::createFromTimestamp($subscription->current_period_end),
             'cancel_at_period_end' => $subscription->cancel_at_period_end ?? false,
         ]);
 

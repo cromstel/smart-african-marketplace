@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Order;
 use App\Models\SalonService;
 use App\Models\User;
 use App\Models\Vendor;
@@ -107,7 +108,7 @@ class VendorController extends Controller
             'booking_revenue' => $bookingRevenue,
         ];
 
-        $vendorOrders = \App\Models\Order::whereHas('items', function ($query) use ($vendor) {
+        $vendorOrders = Order::whereHas('items', function ($query) use ($vendor) {
             $query->where('vendor_id', $vendor->id);
         });
 

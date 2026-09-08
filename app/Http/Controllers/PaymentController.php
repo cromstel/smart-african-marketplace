@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Stripe\Charge;
+use Stripe\Stripe;
 
 class PaymentController extends Controller
 {
@@ -52,9 +54,9 @@ class PaymentController extends Controller
         }
 
         try {
-            \Stripe\Stripe::setApiKey($stripeSecretKey);
+            Stripe::setApiKey($stripeSecretKey);
 
-            $charge = \Stripe\Charge::create([
+            $charge = Charge::create([
                 'amount' => $order->total * 100,
                 'currency' => $order->currency ?? 'usd',
                 'description' => 'Order #'.$order->order_number,

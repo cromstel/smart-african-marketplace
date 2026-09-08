@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -206,7 +207,7 @@ class Booking extends Model
      */
     public function isMultiDay(): bool
     {
-        return $this->end_date && \Carbon\Carbon::parse($this->booking_date)->ne(\Carbon\Carbon::parse($this->end_date));
+        return $this->end_date && Carbon::parse($this->booking_date)->ne(Carbon::parse($this->end_date));
     }
 
     /**

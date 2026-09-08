@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller
@@ -17,14 +18,14 @@ class CouponController extends Controller
         }
 
         $coupons = $query->latest()->paginate(20)->withQueryString();
-        $vendors = \App\Models\Vendor::orderBy('business_name')->get();
+        $vendors = Vendor::orderBy('business_name')->get();
 
         return view('admin.coupons.index', compact('coupons', 'vendors'));
     }
 
     public function create()
     {
-        $vendors = \App\Models\Vendor::orderBy('business_name')->get();
+        $vendors = Vendor::orderBy('business_name')->get();
 
         return view('admin.coupons.create', compact('vendors'));
     }
@@ -57,7 +58,7 @@ class CouponController extends Controller
 
     public function edit(Coupon $coupon)
     {
-        $vendors = \App\Models\Vendor::orderBy('business_name')->get();
+        $vendors = Vendor::orderBy('business_name')->get();
 
         return view('admin.coupons.edit', compact('coupon', 'vendors'));
     }

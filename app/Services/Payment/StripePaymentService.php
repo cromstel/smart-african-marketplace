@@ -7,6 +7,13 @@ use App\Models\SubscriptionPlan;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Stripe\Customer;
+use Stripe\PaymentIntent;
+use Stripe\PaymentMethod;
+use Stripe\Refund;
+use Stripe\Stripe;
+use Stripe\Subscription;
+use Stripe\Webhook;
 
 class StripePaymentService
 {
@@ -25,7 +32,7 @@ class StripePaymentService
         $this->webhookSecret = Setting::get('stripe_webhook_secret');
 
         if ($this->secretKey) {
-            \Stripe\Stripe::setApiKey($this->secretKey);
+            Stripe::setApiKey($this->secretKey);
         }
     }
 
@@ -39,7 +46,7 @@ class StripePaymentService
         $this->ensureConfigured();
 
         try {
-            $customer = \Stripe\Customer::create([
+            $customer = Customer::create([
                 'email' => $user->email,
                 'name' => $user->name,
                 'metadata' => [
@@ -66,11 +73,11 @@ class StripePaymentService
             }
 
             if ($paymentMethodId) {
-                \Stripe\PaymentMethod::retrieve($paymentMethodId)->attach([
+                PaymentMethod::retrieve($paymentMethodId)->attach([
                     'customer' => $customerId,
                 ]);
 
-                \Stripe\Customer::update($customerId, [
+                Customer::update($customerId, [
                     'invoice_settings' => [
                         'default_payment_method' => $paymentMethodId,
                     ],
@@ -104,7 +111,7 @@ class StripePaymentService
                 $subscriptionData['trial_period_days'] = $plan->trial_days;
             }
 
-            $subscription = \Stripe\Subscription::create($subscriptionData);
+            $subscription = Subscription::create($subscriptionData);
 
             return [
                 'subscription_id' => $subscription->id,
@@ -124,12 +131,12 @@ class StripePaymentService
 
         try {
             if ($immediately) {
-                \Stripe\Subscription::update($subscriptionId, [
+                Subscription::update($subscriptionId, [
                     'cancel_at_period_end' => false,
                 ]);
-                \Stripe\Subscription::retrieve($subscriptionId)->cancel();
+                Subscription::retrieve($subscriptionId)->cancel();
             } else {
-                \Stripe\Subscription::update($subscriptionId, [
+                Subscription::update($subscriptionId, [
                     'cancel_at_period_end' => true,
                 ]);
             }
@@ -147,7 +154,7 @@ class StripePaymentService
         $this->ensureConfigured();
 
         try {
-            \Stripe\Subscription::update($subscriptionId, [
+            Subscription::update($subscriptionId, [
                 'cancel_at_period_end' => false,
             ]);
 
@@ -164,9 +171,9 @@ class StripePaymentService
         $this->ensureConfigured();
 
         try {
-            $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+            $subscription = Subscription::retrieve($subscriptionId);
 
-            \Stripe\Subscription::update($subscriptionId, [
+            Subscription::update($subscriptionId, [
                 'items' => [[
                     'id' => $subscription->items->data[0]->id,
                     'price_data' => [
@@ -198,7 +205,7 @@ class StripePaymentService
         }
 
         try {
-            \Stripe\Webhook::constructEvent($payload, $signature, $this->webhookSecret);
+            Webhook::constructEvent($payload, $signature, $this->webhookSecret);
 
             return true;
         } catch (Exception $e) {
@@ -210,7 +217,7 @@ class StripePaymentService
 
     public function constructWebhookEvent(string $payload, string $signature)
     {
-        return \Stripe\Webhook::constructEvent($payload, $signature, $this->webhookSecret);
+        return Webhook::constructEvent($payload, $signature, $this->webhookSecret);
     }
 
     /**
@@ -221,7 +228,7 @@ class StripePaymentService
         $this->ensureConfigured();
 
         try {
-            $paymentIntent = \Stripe\PaymentIntent::create([
+            $paymentIntent = PaymentIntent::create([
                 'amount' => $data['amount'],
                 'currency' => strtolower($data['currency'] ?? 'usd'),
                 'description' => $data['description'] ?? null,
@@ -247,7 +254,7 @@ class StripePaymentService
         $this->ensureConfigured();
 
         try {
-            $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+            $paymentIntent = PaymentIntent::retrieve($paymentIntentId);
 
             return [
                 'status' => $paymentIntent->status,
@@ -267,7 +274,7 @@ class StripePaymentService
         $this->ensureConfigured();
 
         try {
-            $refund = \Stripe\Refund::create([
+            $refund = Refund::create([
                 'payment_intent' => $data['payment_intent'],
                 'amount' => $data['amount'] ?? null,
             ]);
@@ -290,7 +297,7 @@ class StripePaymentService
         $this->ensureConfigured();
 
         try {
-            $paymentIntent = \Stripe\PaymentIntent::retrieve($payment->transaction_id);
+            $paymentIntent = PaymentIntent::retrieve($payment->transaction_id);
 
             return $paymentIntent->hosted_violation_url ?? '';
         } catch (Exception $e) {

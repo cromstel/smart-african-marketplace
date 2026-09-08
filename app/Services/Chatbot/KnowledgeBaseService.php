@@ -3,6 +3,7 @@
 namespace App\Services\Chatbot;
 
 use App\Models\BlogPost;
+use App\Models\KnowledgeChunk;
 use App\Models\KnowledgeDocument;
 use App\Models\Product;
 use App\Models\SalonService;
@@ -16,7 +17,7 @@ class KnowledgeBaseService
 {
     public function ensureIndexed(): void
     {
-        if (\App\Models\KnowledgeChunk::query()->exists()) {
+        if (KnowledgeChunk::query()->exists()) {
             return;
         }
 
@@ -41,9 +42,9 @@ class KnowledgeBaseService
 
         // Static page sources
         $staticPages = collect([
-            ['source_id' => 1, 'title' => 'About', 'content' => config('app.name') . ' platform information, mission, and support details.'],
+            ['source_id' => 1, 'title' => 'About', 'content' => config('app.name').' platform information, mission, and support details.'],
             ['source_id' => 2, 'title' => 'FAQ', 'content' => 'Frequently asked questions for orders, payments, shipping, and returns.'],
-            ['source_id' => 3, 'title' => 'Terms', 'content' => 'Terms and conditions for using ' . config('app.name') . ' services and purchases.'],
+            ['source_id' => 3, 'title' => 'Terms', 'content' => 'Terms and conditions for using '.config('app.name').' services and purchases.'],
             ['source_id' => 4, 'title' => 'Privacy', 'content' => 'Privacy policy for personal data, cookies, and communications.'],
         ]);
 
@@ -89,7 +90,7 @@ class KnowledgeBaseService
         if ($terms->isEmpty()) {
             return collect();
         }
-        $queryBuilder = \App\Models\KnowledgeChunk::query();
+        $queryBuilder = KnowledgeChunk::query();
 
         $queryBuilder->where(function ($q) use ($terms) {
             foreach ($terms as $term) {

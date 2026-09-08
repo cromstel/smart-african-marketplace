@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -35,7 +36,7 @@ class BookingCreatedNotification extends Notification implements ShouldQueue
             ->line('**Booking Details:**')
             ->line("Booking #: {$booking->booking_number}")
             ->line("Service: {$serviceName}")
-            ->line('Date: '.\Carbon\Carbon::parse($booking->booking_date)->format('l, F j, Y'))
+            ->line('Date: '.Carbon::parse($booking->booking_date)->format('l, F j, Y'))
             ->line("Time: {$booking->booking_time}")
             ->line('Price: $'.number_format((float) $booking->price, 2))
             ->line('Status: '.ucfirst($booking->status))

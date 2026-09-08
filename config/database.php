@@ -25,9 +25,9 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                \PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
-                \PDO::ATTR_TIMEOUT => env('DB_CONNECTION_TIMEOUT', 5),
-                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
+                PDO::ATTR_TIMEOUT => env('DB_CONNECTION_TIMEOUT', 5),
+                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
             ]) : [],
         ],
     ],

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
@@ -227,7 +228,7 @@ class Setting extends Model
      */
     public static function getMany(array $keys, array $defaults = []): array
     {
-        /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Setting> $settings */
+        /** @var Collection<int, Setting> $settings */
         $settings = static::query()->whereIn('key', $keys)->get()->keyBy('key');
 
         $result = [];

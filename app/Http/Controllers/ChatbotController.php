@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Events\ChatbotMessageCreated;
 use App\Models\ChatbotMessage;
+use App\Models\ChatbotSession;
+use App\Models\Setting;
 use App\Services\Chatbot\ChatbotService;
 use App\Services\Chatbot\KnowledgeBaseService;
 use App\Services\Support\SupportTicketService;
@@ -14,7 +16,7 @@ class ChatbotController extends Controller
 {
     public function session(Request $request, ChatbotService $chatbot): JsonResponse
     {
-        if (! \App\Models\Setting::get('chatbot_enabled', true)) {
+        if (! Setting::get('chatbot_enabled', true)) {
             return response()->json(['message' => 'Chatbot disabled'], 403);
         }
 
@@ -52,7 +54,7 @@ class ChatbotController extends Controller
 
     public function message(Request $request, ChatbotService $chatbot, KnowledgeBaseService $knowledge, SupportTicketService $tickets): JsonResponse
     {
-        if (! \App\Models\Setting::get('chatbot_enabled', true)) {
+        if (! Setting::get('chatbot_enabled', true)) {
             return response()->json(['message' => 'Chatbot disabled'], 403);
         }
 
@@ -99,7 +101,7 @@ class ChatbotController extends Controller
 
         $knowledge->ensureIndexed();
         $contextChunks = $knowledge->search($redactedMessage, 4);
-        $historyLimit = (int) \App\Models\Setting::get('chatbot_context_message_limit', 8);
+        $historyLimit = (int) Setting::get('chatbot_context_message_limit', 8);
         $history = $session->messages()
             ->whereIn('role', ['user', 'assistant'])
             ->orderByDesc('id')
@@ -203,7 +205,7 @@ class ChatbotController extends Controller
         ]);
     }
 
-    private function canAccessSession(\App\Models\ChatbotSession $session, ?int $userId): bool
+    private function canAccessSession(ChatbotSession $session, ?int $userId): bool
     {
         if ($session->user_id && $userId !== $session->user_id) {
             return false;

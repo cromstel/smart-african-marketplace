@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\Vendor;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -20,9 +22,9 @@ return new class extends Migration
         }
 
         // Generate slugs for existing vendors
-        $vendors = \App\Models\Vendor::whereNull('slug')->orWhere('slug', '')->get();
+        $vendors = Vendor::whereNull('slug')->orWhere('slug', '')->get();
         foreach ($vendors as $vendor) {
-            $vendor->slug = \Illuminate\Support\Str::slug($vendor->business_name);
+            $vendor->slug = Str::slug($vendor->business_name);
             $vendor->save();
         }
 

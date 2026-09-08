@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -38,7 +39,7 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): \Illuminate\Http\RedirectResponse
+    public function create(): RedirectResponse
     {
         return redirect()->route('admin.orders.index')->with('error', 'Orders are created through customer or vendor checkout flows.');
     }

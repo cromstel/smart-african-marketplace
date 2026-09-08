@@ -7,6 +7,7 @@ use App\Mail\OrderDelivered;
 use App\Mail\OrderShipped;
 use App\Models\Order;
 use App\Models\Shipment;
+use App\Services\Shipping\ShippingLabelService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -129,7 +130,7 @@ class ShipmentController extends Controller
             $q->where('vendor_id', $vendorId);
         })->with(['order.shippingAddress'])->findOrFail($id);
 
-        $result = app(\App\Services\Shipping\ShippingLabelService::class)->generateLabel($shipment);
+        $result = app(ShippingLabelService::class)->generateLabel($shipment);
         if (! $result['success']) {
             return redirect()->back()->with('error', $result['message']);
         }

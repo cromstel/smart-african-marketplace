@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Salon;
 use App\Models\SalonService;
+use App\Models\SalonServiceCategory;
 use App\Models\SalonStylist;
 use App\Services\ImageOptimizationService;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class SalonServiceController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $salonCategories = \App\Models\SalonServiceCategory::active()->orderBy('sort_order')->orderBy('name')->get();
+        $salonCategories = SalonServiceCategory::active()->orderBy('sort_order')->orderBy('name')->get();
         $salons = Salon::orderBy('name')->get();
         $stylists = SalonStylist::orderBy('name')->get();
 
@@ -67,7 +68,7 @@ class SalonServiceController extends Controller
     public function edit(SalonService $salonService)
     {
         $categories = Category::all();
-        $salonCategories = \App\Models\SalonServiceCategory::active()->orderBy('sort_order')->orderBy('name')->get();
+        $salonCategories = SalonServiceCategory::active()->orderBy('sort_order')->orderBy('name')->get();
         $salons = Salon::orderBy('name')->get();
         $stylists = SalonStylist::orderBy('name')->get();
 

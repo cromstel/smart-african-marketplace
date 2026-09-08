@@ -7,6 +7,7 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductTag;
 use App\Models\ProductVariation;
+use App\Models\Vendor;
 use App\Services\ImageOptimizationService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -105,7 +106,7 @@ class ProductCatalogController extends Controller
         }
 
         $brands = $brandsQuery->paginate(25)->withQueryString();
-        $vendors = \App\Models\Vendor::orderBy('business_name')->get(['id', 'business_name']);
+        $vendors = Vendor::orderBy('business_name')->get(['id', 'business_name']);
 
         return view('admin.products.brands', compact('brands', 'vendors'));
     }

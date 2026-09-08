@@ -8,6 +8,7 @@ use App\Models\AuctionBid;
 use App\Models\AuctionNotification;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class BiddingService
@@ -98,7 +99,7 @@ class BiddingService
     /**
      * Get user's bids.
      */
-    public function getUserBids(User $user, int $perPage = 15): \Illuminate\Pagination\LengthAwarePaginator
+    public function getUserBids(User $user, int $perPage = 15): LengthAwarePaginator
     {
         return AuctionBid::where('user_id', $user->id)
             ->with(['auction.vendor'])

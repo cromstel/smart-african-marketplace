@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -35,7 +36,7 @@ class VerifyReadinessCommand extends Command
         }
 
         try {
-            /** @var \Illuminate\Database\Migrations\Migrator $migrator */
+            /** @var Migrator $migrator */
             $migrator = app('migrator');
             $files = $migrator->getMigrationFiles(database_path('migrations'));
             $ran = $migrator->getRepository()->getRan();

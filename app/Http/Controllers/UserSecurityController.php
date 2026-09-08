@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\UserActivityService;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -122,7 +123,7 @@ class UserSecurityController extends Controller
                         'id' => $session->id,
                         'ip_address' => $session->ip_address,
                         'user_agent' => $session->user_agent,
-                        'last_activity' => \Carbon\Carbon::createFromTimestamp($session->last_activity)->toIso8601String(),
+                        'last_activity' => Carbon::createFromTimestamp($session->last_activity)->toIso8601String(),
                         'is_current' => $session->id === $request->session()->getId(),
                     ];
                 });
@@ -300,7 +301,7 @@ class UserSecurityController extends Controller
                         'id' => $session->id,
                         'ip_address' => $session->ip_address,
                         'user_agent' => $session->user_agent,
-                        'last_activity' => \Carbon\Carbon::createFromTimestamp($session->last_activity)->toIso8601String(),
+                        'last_activity' => Carbon::createFromTimestamp($session->last_activity)->toIso8601String(),
                         'is_current' => $session->id === $request->session()->getId(),
                     ];
                 });

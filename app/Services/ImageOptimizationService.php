@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\MediaFolder;
 use App\Models\MediaLibrary;
 use App\Models\Setting;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,7 +17,7 @@ class ImageOptimizationService
 
     public function __construct()
     {
-        $this->manager = new ImageManager(new Driver());
+        $this->manager = new ImageManager(new Driver);
     }
 
     public function optimizeMediaLibraryItem(MediaLibrary $media): bool

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\MediaFolder;
 use App\Models\MediaLibrary;
 use App\Models\Setting;
+use App\Models\Vendor;
 use App\Services\ImageOptimizationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class MediaController extends Controller
     /**
      * Get the current vendor or redirect.
      */
-    protected function getVendor(): ?\App\Models\Vendor
+    protected function getVendor(): ?Vendor
     {
         $user = auth()->user();
 

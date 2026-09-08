@@ -210,7 +210,7 @@ class SeoService
             'dateModified' => $article->updated_at->toIso8601String(),
             'author' => [
                 '@type' => 'Person',
-                'name' => $article->author->name ?? config('app.name') . ' Team',
+                'name' => $article->author->name ?? config('app.name').' Team',
             ],
             'publisher' => [
                 '@type' => 'Organization',

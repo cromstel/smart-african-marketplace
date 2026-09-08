@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Auction;
+use App\Models\Vendor;
 use App\Services\Auction\AuctionService;
 use App\Services\Auction\BiddingService;
 use Illuminate\Http\RedirectResponse;
@@ -20,7 +21,7 @@ class AuctionController extends Controller
     /**
      * Get the current user's vendor or redirect.
      */
-    protected function getVendor(): ?\App\Models\Vendor
+    protected function getVendor(): ?Vendor
     {
         $user = auth()->user();
 

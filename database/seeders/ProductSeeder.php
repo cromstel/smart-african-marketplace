@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\MediaFolder;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\User;
 use App\Models\Vendor;
 use App\Services\ImageOptimizationService;
 use Illuminate\Database\Seeder;
@@ -32,8 +33,8 @@ class ProductSeeder extends Seeder
             return;
         }
 
-        $admin = \App\Models\User::where('email', 'admin@africanmarket.com')->first()
-            ?? \App\Models\User::where('role', 'admin')->first();
+        $admin = User::where('email', 'admin@africanmarket.com')->first()
+            ?? User::where('role', 'admin')->first();
 
         if ($admin) {
             Auth::login($admin);
