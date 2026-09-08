@@ -49,8 +49,8 @@ BANNER_SCAN_LINES = 40
 
 # Documents whose subject matter *is* the missing files.
 CITATION_EXEMPT_FILES = {
-    os.path.normpath("docs/DOCUMENTATION_AUDIT.md"),
-    os.path.normpath("docs/ROADMAP.md"),
+    os.path.normpath("docs/product/documentation-audit.md"),
+    os.path.normpath("docs/product/roadmap.md"),
 }
 
 # Illustrative paths that are examples, not repository files.

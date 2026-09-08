@@ -39,7 +39,7 @@ forgotten `where` clause is not a display bug; it is a cross-tenant data leak.
 **The caveat:** this decision is only safe with the tests that enforce it, and
 those tests do not yet exist across the 32 vendor controllers. Writing them is
 the top priority of
-[Roadmap Phase 2](../../ROADMAP.md#23-vendor-isolation-as-a-first-class-test-pattern).
+[Roadmap Phase 2](../../product/roadmap.md#23-vendor-isolation-as-a-first-class-test-pattern).
 Until then the boundary rests entirely on reviewer attention.
 
 Revisit if a vendor requires contractual data isolation, or if a leak occurs.

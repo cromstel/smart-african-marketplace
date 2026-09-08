@@ -79,7 +79,7 @@ Config files: `app`, `auction`, `auth`, `branding`, `broadcasting`, `cache`,
 | `VENDOR_STORE_BASE_DOMAIN` | Base domain vendor stores hang off |
 | `VENDOR_STORE_DOMAIN_TARGET` | CNAME target for custom domains |
 
-See [Enterprise Custom Domains](../../documentation/enterprise-custom-domains.md).
+See [Enterprise Custom Domains](../user-guide/enterprise-custom-domains.md).
 
 ---
 
@@ -109,7 +109,7 @@ Defaults avoid Redis so the platform runs on commodity hosting.
 | `CACHE_DRIVER` | `database` | |
 | `CACHE_PREFIX` | — | Needed when several apps share a cache store |
 | `SETTINGS_CACHE_TTL` | — | `config/settings.php` cache lifetime |
-| `QUEUE_CONNECTION` | `database` | See [Queue Workers](../QUEUE_WORKERS_AND_BACKGROUND_JOBS.md) |
+| `QUEUE_CONNECTION` | `database` | See [Queue Workers](../operations/queue-workers.md) |
 | `QUEUE_FAILED_DRIVER` | `database-uuids` | Failed-job storage |
 
 Memcached, Redis, DynamoDB and SQS keys exist in `config/` for operators who want
@@ -163,7 +163,7 @@ Covers cards, bank transfer and mobile money (M-Pesa, MTN, Airtel).
 | `SWISH_PRODUCTION_URL` | Production endpoint |
 | `SWISH_SANDBOX_URL` | Sandbox endpoint |
 
-See [Swish Payment Integration](../swish-payment-integration.md).
+See [Swish Payment Integration](../modules/swish-payment-integration.md).
 
 ### Cash on delivery
 
@@ -202,7 +202,7 @@ Redirect URIs must match the provider console exactly, including scheme and port
 
 ## Broadcasting and realtime
 
-Self-hosted [Soketi](../../documentation/soketi-websockets-setup.md) speaking the
+Self-hosted [Soketi](../guides/soketi-websockets-setup.md) speaking the
 Pusher protocol.
 
 | Variable | Notes |
@@ -289,7 +289,7 @@ Reindex with `php artisan chatbot:reindex-knowledge`; purge with
 |---|---|
 | `INSTALLED` | Set `true` after the web installer completes |
 | `INSTALL_LOCK` | Blocks re-running the installer |
-| `BACKUP_ENABLED` / `BACKUP_FREQUENCY` / `BACKUP_RETENTION_DAYS` | See [Backup Runbook](../BACKUP_VERIFICATION_RUNBOOK.md) |
+| `BACKUP_ENABLED` / `BACKUP_FREQUENCY` / `BACKUP_RETENTION_DAYS` | See [Backup Runbook](../operations/backup-verification.md) |
 | `MAINTENANCE_ALLOWED_IPS` | Bypass list. *Not in `.env.example`* |
 | `MAINTENANCE_RETRY_AFTER` | `Retry-After` header |
 
@@ -300,7 +300,7 @@ Reindex with `php artisan chatbot:reindex-knowledge`; purge with
 
 ## Known configuration issues
 
-Tracked in the [Roadmap](../ROADMAP.md), Phase 0.
+Tracked in the [Roadmap](../product/roadmap.md), Phase 0.
 
 **1. `env()` called outside `config/`** — nine sites in `app/`, notably
 `SeoService.php`:
@@ -336,6 +336,6 @@ php artisan app:verify-readiness --strict   # production gate
 ## See also
 
 - [Architecture Overview](../architecture/overview.md)
-- [Deployment Runbook](../DEPLOYMENT_RUNBOOK.md)
+- [Deployment Runbook](../operations/deployment-runbook.md)
 - [API Reference](api.md)
-- [Generating App Keys & Tokens](../../commands/How%20to%20Generate%20App%20Keys%20%26%20Tokens.md)
+- [Generating App Keys & Tokens](../guides/generating-keys-and-tokens.md)

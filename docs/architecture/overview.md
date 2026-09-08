@@ -235,7 +235,7 @@ Custom Artisan commands under `app/Console/Commands/` handle recurring work:
 | Media | `BackfillMediaLibrary`, `OptimizePendingMediaCommand` |
 | Ops | `VerifyReadinessCommand`, `ReplayWebhookFixtureCommand`, `GenerateSitemap`, maintenance toggles |
 
-See [Queue Workers & Background Jobs](../QUEUE_WORKERS_AND_BACKGROUND_JOBS.md)
+See [Queue Workers & Background Jobs](../operations/queue-workers.md)
 for supervision, and [Artisan Commands](../reference/commands.md) for signatures.
 
 > Note: `app/Jobs/` is empty. Asynchronous work is currently driven by scheduled
@@ -262,10 +262,10 @@ All three verify webhook signatures before acting:
 Webhook handling is idempotent — replaying an event must not duplicate a payment.
 
 > **Verification gap.** The signature checks are implemented, but the automated
-> tests that [Webhook E2E](../WEBHOOK_E2E.md) and the
-> [Pending Closure Matrix](../PENDING_CLOSURE_MATRIX.md) cite as evidence do not
+> tests that [Webhook E2E](../operations/webhook-e2e.md) and the
+> [Pending Closure Matrix](../security/pending-closure-matrix.md) cite as evidence do not
 > exist in the repository. Closing that gap is the top item on the
-> [Roadmap](../ROADMAP.md).
+> [Roadmap](../product/roadmap.md).
 
 ---
 
@@ -290,7 +290,7 @@ Authorization lives in `app/Policies/` (4 policies) plus the middleware above.
 ## Known architectural debts
 
 Recorded here so they are visible rather than rediscovered. Scheduled in the
-[Roadmap](../ROADMAP.md).
+[Roadmap](../product/roadmap.md).
 
 1. **Legacy bootstrap on a modern framework.** `bootstrap/app.php` uses the
    Laravel 10-era structure (explicit `Http\Kernel`, `Console\Kernel`,

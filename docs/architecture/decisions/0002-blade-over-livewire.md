@@ -5,7 +5,7 @@
 
 ## Context
 
-`README.md` and `TECH_STACK.md` described Livewire 3 as the UI layer — *"real-time
+`README.md` and `docs/architecture/tech-stack.md` described Livewire 3 as the UI layer — *"real-time
 reactive components (no JavaScript frameworks needed)"*.
 
 The codebase says otherwise. Two Livewire components exist (`LiveSearch` and one
@@ -34,7 +34,7 @@ either Livewire or hand-written JavaScript plus the Echo/Soketi channel; there i
 no established component library, so consistency depends on discipline.
 
 **Follow-up:** extract a documented Blade component library
-([Roadmap 4.3](../../ROADMAP.md#43-frontend-consistency)) so the next hundred
+([Roadmap 4.3](../../product/roadmap.md#43-frontend-consistency)) so the next hundred
 views resemble the last three hundred.
 
 This record exists mainly to stop the documentation drifting back. The pattern

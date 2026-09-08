@@ -318,5 +318,5 @@ is valid.
 
 - [Architecture Overview](overview.md)
 - [Testing Guide](../guides/testing.md)
-- [Database Optimization Runbook](../DATABASE_OPTIMIZATION_AND_CLEANUP_RUNBOOK.md)
+- [Database Optimization Runbook](../operations/database-optimization.md)
 - [Configuration Reference](../reference/configuration.md)
