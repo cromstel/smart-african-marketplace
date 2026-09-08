@@ -68,7 +68,9 @@ Route::prefix('v1/vendor')->name('api.vendor.')->middleware(['auth:sanctum', 've
 
 Route::prefix('v1/mobile')->name('api.mobile.')->group(function () {
     Route::post('/auth/login', [MobileAuthController::class, 'login'])->middleware('throttle:10,1')->name('auth.login');
-    Route::post('/auth/register', [MobileAuthController::class, 'register'])->name('auth.register');
+    Route::post('/auth/register', [MobileAuthController::class, 'register'])
+        ->middleware('throttle:5,1')
+        ->name('auth.register');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/auth/me', [MobileAuthController::class, 'me'])->name('auth.me');

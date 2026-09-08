@@ -261,11 +261,10 @@ All three verify webhook signatures before acting:
 
 Webhook handling is idempotent — replaying an event must not duplicate a payment.
 
-> **Verification gap.** The signature checks are implemented, but the automated
-> tests that [Webhook E2E](../operations/webhook-e2e.md) and the
-> [Pending Closure Matrix](../security/pending-closure-matrix.md) cite as evidence do not
-> exist in the repository. Closing that gap is the top item on the
-> [Roadmap](../product/roadmap.md).
+> **Verification.** The signature checks are implemented, and as of 2026-09-08
+> `tests/Feature/WebhookE2ETest.php` covers acceptance, rejection and replay
+> idempotency for both providers. Those tests have not yet been executed — see
+> the [Pending Closure Matrix](../security/pending-closure-matrix.md).
 
 ---
 
@@ -302,19 +301,19 @@ Recorded here so they are visible rather than rediscovered. Scheduled in the
    `EnsureUserIsAdmin` coexist, as do `VendorMiddleware` and `EnsureUserIsVendor`.
    Two implementations of one security rule is a divergence risk.
 
-3. **`env()` called outside `config/`.** Nine call sites, notably in
-   `SeoService`. After `php artisan config:cache` — which the deployment runbook
-   instructs — `env()` returns null, so SEO descriptions, keywords and social
-   links silently fall back or empty in production.
+3. **`env()` called outside `config/`.** ~~Nine call sites.~~ Reduced to three
+   on 2026-09-08: `SeoService` now reads `config('seo.*')`. The remainder are
+   `ConfigurationService` (keys computed at runtime) and `VerifyReadinessCommand`
+   (deliberate environment inspection); both still misbehave under
+   `config:cache`.
 
 4. **Empty `app/Jobs/`.** Long-running work runs inside scheduled commands rather
    than queued jobs, so it cannot be retried or scaled independently.
 
 5. **Test coverage.** 6 test files against 146 controllers and 98 models.
 
-6. **PHP version drift.** CI pins 8.3, `composer.json` requires ^8.2, and the
-   README previously advertised 8.1. Corrected in the README; CI and composer
-   should be reconciled deliberately.
+6. ~~**PHP version drift.**~~ **Resolved** — CI runs a matrix of 8.2 (the
+   `composer.json` floor) and 8.3.
 
 ---
 

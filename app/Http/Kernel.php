@@ -12,6 +12,7 @@ use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserIsSalonOwner;
 use App\Http\Middleware\EnsureUserIsVendor;
 use App\Http\Middleware\MaintenanceMode;
+use App\Http\Middleware\PreventCrlfInjection;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\PreventSpamSubmissions;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -47,6 +48,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
+        PreventCrlfInjection::class,
     ];
 
     protected $middlewareGroups = [

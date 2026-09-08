@@ -15,9 +15,13 @@
 > `hash_equals()`; `SwishPaymentController.php` does the same. What is missing is
 > the automated proof that they keep working.
 >
-> Those rows are re-marked **Implemented, unverified** below. They return to
-> Complete when the tests exist and pass in CI — see
-> [Roadmap Phase 1](../product/roadmap.md#phase-1--make-the-payment-path-provable-2-weeks).
+> **Update, 2026-09-08:** the fixtures and tests now exist —
+> `tests/Fixtures/webhooks/` and `tests/Feature/WebhookE2ETest.php`, covering
+> signature acceptance, rejection of an invalid signature, rejection of a body
+> tampered after signing, and replay idempotency for both providers. They have
+> **not yet been executed**: they were written in an environment without PHP,
+> Composer or MySQL. The rows below therefore read **Implemented, tests written,
+> pending first CI run** and become Complete on a green run — not before.
 >
 > Going forward: **a row may not cite a file that does not exist.** The audit
 > script in [Documentation Audit](../product/documentation-audit.md#reproducing-this-audit)
@@ -27,10 +31,10 @@ This matrix tracks closure of Laravel-active pending tasks and separates code-co
 
 | Item | Status | Evidence | Notes |
 |---|---|---|---|
-| Stripe webhook signature validation | **Implemented, unverified** | Control: `app/Http/Controllers/WebhookController.php` (`constructEvent`). Test: _missing_ | Signature check present in code; no automated test. |
-| Paystack webhook signature validation | **Implemented, unverified** | Control: `app/Http/Controllers/WebhookController.php` (`hash_equals`). Test: _missing_ | Timing-safe HMAC check present; no automated test. |
-| Webhook idempotent replay behavior | **Unverified** | Test: _missing_ | Highest-risk gap: a regression here duplicates payments silently. |
-| Deterministic local webhook replay tooling | **Partially complete** | `app/Console/Commands/ReplayWebhookFixtureCommand.php`, `scripts/webhooks/replay-fixtures.ps1` | Tooling exists, but it resolves `tests/Fixtures/webhooks/` which is absent — nothing to replay. |
+| Stripe webhook signature validation | **Tests written, pending CI** | `app/Http/Controllers/WebhookController.php`; `tests/Feature/WebhookE2ETest.php` | Valid, invalid and tampered-body cases covered. |
+| Paystack webhook signature validation | **Tests written, pending CI** | `app/Http/Controllers/WebhookController.php`; `tests/Feature/WebhookE2ETest.php` | Valid, invalid and missing-signature cases covered. |
+| Webhook idempotent replay behavior | **Tests written, pending CI** | `tests/Feature/WebhookE2ETest.php` | Asserts a replayed event yields exactly one payment row, per provider. |
+| Deterministic local webhook replay tooling | **Complete** | `app/Console/Commands/ReplayWebhookFixtureCommand.php`, `tests/Fixtures/webhooks/` | Fixtures now exist at the path the command resolves, so replay is executable. |
 | Readiness verification command | Complete | `app/Console/Commands/VerifyReadinessCommand.php` | Supports `--strict` for production gate. |
 | Deployment runbook executable verification steps | Complete | `docs/operations/deployment-runbook.md` | Includes readiness and webhook E2E commands. |
 | CI non-strict readiness gate | Complete | `.github/workflows/ci.yml` | Always runs in CI. |

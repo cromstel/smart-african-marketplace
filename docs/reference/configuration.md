@@ -302,8 +302,15 @@ Reindex with `php artisan chatbot:reindex-knowledge`; purge with
 
 Tracked in the [Roadmap](../product/roadmap.md), Phase 0.
 
-**1. `env()` called outside `config/`** — nine sites in `app/`, notably
-`SeoService.php`:
+**1. `env()` called outside `config/`** — **largely fixed on 2026-09-08.**
+`SeoService` now reads `config('seo.*')` via the new `config/seo.php`, so SEO
+metadata and social links survive `config:cache`. Three call sites remain by
+design: `ConfigurationService` (runtime-computed keys) and
+`VerifyReadinessCommand` (deliberately inspecting raw environment). Both are
+still incorrect under `config:cache` and are tracked in
+[Roadmap 0.3](../product/roadmap.md#03-move-env-calls-into-config--medium--implemented-partial).
+
+The original problem, for the record:
 
 ```php
 return $this->meta['description'] ?? env('SEO_DESCRIPTION', '…');
