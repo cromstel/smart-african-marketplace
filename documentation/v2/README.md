@@ -1,5 +1,8 @@
 # Smart African Marketplace Documentation v2
 
+[Documentation Hub](../../docs/README.md) › [User Documentation](../README.md) › v2
+
+
 This is the polished v2 documentation set with:
 
 - Step-by-step UI flows

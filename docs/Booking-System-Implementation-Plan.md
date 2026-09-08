@@ -1,6 +1,6 @@
 ## Comprehensive Booking System Implementation Plan Created
 
-I've created a detailed implementation plan for expanding the current salon-only booking system into a universal multi-service booking platform. The plan has been saved to [`plans/comprehensive-booking-system-plan.md`](plans/comprehensive-booking-system-plan.md).
+I've created a detailed implementation plan for expanding the current salon-only booking system into a universal multi-service booking platform. The plan has been saved to [`plans/comprehensive-booking-system-plan.md`](../plans/comprehensive-booking-system-plan.md).
 
 ### Current System Analysis
 

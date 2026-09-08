@@ -1,4 +1,13 @@
-# Smart African Marketplace - Tech Stack Summary
+# Tech Stack
+
+**Status: Current** — corrected against the codebase on 2026-09-08.
+
+[Documentation Hub](docs/README.md) › Tech Stack
+
+> **What changed.** Earlier revisions of this page described Livewire as the UI
+> layer and claimed the platform used no external services. Neither was accurate.
+> Both are corrected below; see the
+> [Documentation Audit](docs/DOCUMENTATION_AUDIT.md) for the evidence.
 
 **Framework**: Laravel 12 (PHP 8.2+)  
 **Database**: MySQL 8.0+ (Your existing installation)  
@@ -17,11 +26,19 @@
   - Queue system for background jobs
   - File storage handling
   
-### UI/Frontend
-- **Livewire 3.8**: Real-time reactive components (no JavaScript frameworks needed)
-- **Alpine.js**: Minimal JavaScript for interactions
-- **Tailwind CSS 3**: Utility-first CSS framework
-- **DaisyUI / Flowbite**: Free Tailwind component libraries
+### UI / Frontend
+
+The UI is **server-rendered Blade**, styled with Tailwind and made interactive
+with Alpine.js. Livewire is present but used by exception.
+
+- **Blade**: the templating layer — ~330 views, the actual frontend
+- **Tailwind CSS 3**: utility-first styling
+- **Alpine.js**: lightweight interactivity
+- **Livewire 3**: 2 components (live search). Reach for it only when a component
+  genuinely needs stateful server round-trips — see
+  [ADR 0002](docs/architecture/decisions/0002-blade-over-livewire.md)
+- **Vite**: asset pipeline
+- **Chart.js**: admin analytics · **TinyMCE**: rich text editing
 
 ### Database
 - **MySQL 8.0+**: Your existing MySQL server
@@ -58,8 +75,13 @@
 ### Development Tools
 - **Composer**: PHP dependency manager
 - **NPM**: For Tailwind CSS compilation
-- **Laravel Telescope 5**: Debugging (free)
-- **Laravel Log Viewer**: Error tracking (free)
+- **Laravel Pint**: PHP formatting
+- **ESLint / Prettier**: JavaScript and CSS
+- **Playwright**: browser tests
+- **PHPUnit**: feature tests — see the [Testing Guide](docs/guides/testing.md)
+
+> Telescope must stay disabled in production (`TELESCOPE_ENABLED=false`); it
+> exposes request payloads.
 
 ---
 
@@ -73,13 +95,33 @@
 4. **Cross-platform** - Runs on Windows, Linux, Mac
 5. **Easy deployment** - FTP upload + web installer
 
-### ✅ No External Dependencies
+### ✅ Minimal Infrastructure Dependencies
 
-- **No Redis required** - Laravel Queue uses database driver
-- **No cloud storage** - Files stored locally
-- **No paid admin templates** - Custom Livewire components
-- **No SendGrid/Twilio required** - Use free SMTP/SMS alternatives
-- **No Docker** - Runs directly on Apache
+The goal is that the platform runs on commodity Apache/PHP/MySQL hosting. It
+does — but it is not dependency-free.
+
+**Not required:**
+
+- **No Redis** — queue, cache and session default to the database driver
+  ([ADR 0004](docs/architecture/decisions/0004-database-queue-driver.md))
+- **No cloud storage** — files are stored locally by default
+- **No paid admin templates** — the admin UI is custom Blade
+- **No Docker** — runs directly on Apache
+
+**Integrated external services** (most are optional and can be switched off):
+
+| Service | Used for | Optional |
+|---|---|---|
+| Stripe / Paystack / Swish | Payments | At least one is needed to take money |
+| Twilio | SMS | Yes — `SMS_ENABLED=false` |
+| Soketi | Realtime (self-hosted) | Yes — `BROADCAST_DRIVER=log` |
+| Firebase Cloud Messaging | Mobile push | Yes |
+| OpenAI | Chatbot and knowledge base | Yes |
+| Google / Facebook OAuth | Social login | Yes |
+| SMTP provider | Transactional email | Needed in production |
+
+See the [Configuration Reference](docs/reference/configuration.md) for the keys
+each one needs.
 
 ### ✅ Built-in Delivery System
 
@@ -125,9 +167,9 @@ Your existing environment works perfectly:
 # 1. Install Composer (if not already installed)
 # Download from: https://getcomposer.org/
 
-# 2. Install Laravel
-composer create-project laravel/laravel african-market
-cd african-market
+# 2. Clone this repository
+git clone https://github.com/cromstel/smart-african-marketplace.git
+cd smart-african-marketplace
 
 # 3. Install dependencies
 composer install
@@ -143,17 +185,10 @@ php artisan key:generate
 # 6. Run migrations
 php artisan migrate
 
-# 7. Install Livewire
-composer require livewire/livewire
-
-# 8. Install Tailwind
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init
-
-# 9. Compile assets
+# 7. Compile assets
 npm run dev
 
-# 10. Serve application
+# 8. Serve application
 php artisan serve
 # Visit: http://localhost:8000
 ```
@@ -245,5 +280,13 @@ PAYSTACK_PAYMENT_URL=https://api.paystack.co
 
 ---
 
-**Ready to start development!** 🚀
+---
+
+## See also
+
+- [Architecture Overview](docs/architecture/overview.md) — how the pieces interact
+- [Getting Started](docs/guides/getting-started.md) — the current setup guide
+- [Configuration Reference](docs/reference/configuration.md) — every env var
+- [Decision Records](docs/architecture/decisions/README.md) — why this stack
+- [Documentation Hub](docs/README.md)
 

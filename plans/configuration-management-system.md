@@ -1,3 +1,18 @@
+> **Status: Plan — not yet implemented.**
+>
+> [Documentation Hub](../docs/README.md) › Plans › Configuration Management
+>
+> This is a design document. Nine files it references — including
+> `app/Http/Controllers/Admin/ConfigurationController.php`, `app/Models/Notification.php`,
+> `routes/admin.php` and `config/pusher.php` — do not exist in the repository.
+> That is expected for a plan; it is noted here so the document is not mistaken
+> for a description of what is built.
+>
+> Some of this intent *has* shipped under different names: `ConfigurationSetting`,
+> `ConfigurationCategory`, `ConfigurationAudit`, `ConfigurationService` and
+> `ConfigurationEncryptionService` all exist. See
+> [Data Model](../docs/architecture/data-model.md#configuration-and-platform).
+
 # Configuration Management System - Implementation Plan
 
 ## Executive Summary

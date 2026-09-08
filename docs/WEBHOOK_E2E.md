@@ -1,3 +1,23 @@
+> **Status: Needs review** — this procedure is currently **not executable as
+> written**.
+>
+> [Documentation Hub](README.md) › Webhook E2E
+>
+> Five files this document depends on do not exist in the repository:
+> `tests/Feature/WebhookE2ETest.php`, `tests/Feature/MobileMoneyWebhookTest.php`,
+> `tests/Feature/MobileMoneyCheckoutFlowTest.php`,
+> `tests/Fixtures/webhooks/stripe-charge-succeeded.json` and
+> `tests/Fixtures/webhooks/paystack-charge-success.json`.
+>
+> `ReplayWebhookFixtureCommand` resolves fixtures at
+> `base_path("tests/Fixtures/webhooks/{name}.json")` — that directory is absent,
+> so the replay command has nothing to load.
+>
+> The signature verification it describes **is** implemented in
+> `WebhookController.php` and `SwishPaymentController.php`. Creating the fixtures
+> and tests is [Roadmap Phase 1](ROADMAP.md#phase-1--make-the-payment-path-provable-2-weeks);
+> the [Testing Guide](guides/testing.md#testing-webhooks) shows what they must assert.
+
 # Deterministic Webhook E2E Verification
 
 This project includes local deterministic webhook verification for Stripe, Paystack, and Mobile Money (MTN + M-Pesa) without requiring live external callbacks.
@@ -82,3 +102,13 @@ Attach the following to deployment handover:
 - Command output from strict readiness.
 - Command output from `verify-real-credentials.ps1`.
 - Test output from `php artisan test --filter=WebhookE2ETest`.
+
+
+---
+
+## See also
+
+- [Roadmap Phase 1](ROADMAP.md#phase-1--make-the-payment-path-provable-2-weeks)
+- [Testing Guide](guides/testing.md#testing-webhooks)
+- [Pending Closure Matrix](PENDING_CLOSURE_MATRIX.md)
+- [API Reference — Webhooks](reference/api.md#webhooks)

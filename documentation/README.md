@@ -1,6 +1,15 @@
-# Smart African Marketplace User Documentation
+# User Documentation
 
-This folder contains the user-facing documentation for the Smart African Marketplace app.
+**Status: Current**
+
+[Documentation Hub](../docs/README.md) › User Documentation
+
+Documentation written for **customers, vendors, admins and support staff**.
+
+Building or operating the platform instead? Go to the
+[Documentation Hub](../docs/README.md) — in particular
+[Getting Started](../docs/guides/getting-started.md) for developers and the
+[Deployment Runbook](../docs/DEPLOYMENT_RUNBOOK.md) for operators.
 
 ## Start Here
 
@@ -30,7 +39,7 @@ This folder contains the user-facing documentation for the Smart African Marketp
 
 ## Documentation Version
 
-- Last updated: 2026-02-28
+- Last updated: 2026-09-08
 - Audience: Customers, Vendors, Admins, Support teams
 
 ## v2 Documentation
@@ -40,3 +49,15 @@ This folder contains the user-facing documentation for the Smart African Marketp
 - [Customer Onboarding v2](./v2/onboarding-customer.md)
 - [Vendor Onboarding v2](./v2/onboarding-vendor.md)
 - [Admin Onboarding v2](./v2/onboarding-admin.md)
+
+---
+
+## For developers and operators
+
+| | |
+|---|---|
+| [Documentation Hub](../docs/README.md) | Index of every document |
+| [Getting Started](../docs/guides/getting-started.md) | Local development setup |
+| [Architecture Overview](../docs/architecture/overview.md) | How the system works |
+| [API Reference](../docs/reference/api.md) | REST endpoints |
+| [Deployment Runbook](../docs/DEPLOYMENT_RUNBOOK.md) | Shipping to production |

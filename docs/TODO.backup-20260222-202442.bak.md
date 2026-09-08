@@ -1,3 +1,12 @@
+> **Status: Historical** — a snapshot of `TODO.md` taken 2026-02-22.
+>
+> [Documentation Hub](README.md) › Archive
+>
+> Superseded by [TODO.md](../TODO.md). Kept only so no context is lost in this
+> pass; git history already holds it, so
+> [Roadmap 3.4](ROADMAP.md#34-documentation-housekeeping) proposes deleting this
+> file. Do not update it.
+
 # Smart African Marketplace - Development TODO List
 
 **Project Status**: Planning Phase  
