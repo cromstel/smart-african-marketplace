@@ -23,8 +23,20 @@
                 <!-- Mobile App QR Code -->
                 <div class="flex items-center space-x-4 p-4 bg-gray-800 rounded-lg">
                     <div class="flex-shrink-0">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ urlencode(route('mobile.index')) }}&bgcolor=ffffff&color=000000" 
-                             alt="{{ __('ui.footer.qr_alt') }}" 
+                        {{-- Generated locally with endroid/qr-code. Previously this
+                             hit an external QR API on every page render, which leaked the
+                             site URL to a third party, broke on self-hosted or offline
+                             installs, and added an external round-trip to every page.
+                             Cached for a day since the target URL rarely changes. --}}
+                        <img src="{{ \Illuminate\Support\Facades\Cache::remember(
+                                'footer_app_qr_'.md5(route('mobile.index')),
+                                now()->addDay(),
+                                fn () => app(\App\Services\QrCodeService::class)
+                                    ->generateAsDataUri(route('mobile.index'), 240)
+                             ) }}"
+                             alt="{{ __('ui.footer.qr_alt') }}"
+                             width="96" height="96"
+                             loading="lazy"
                              class="w-24 h-24 rounded-lg">
                     </div>
                     <div>
