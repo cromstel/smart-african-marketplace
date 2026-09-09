@@ -113,9 +113,10 @@ deployed.
 
 ## Phase 1 — Make the payment path provable (2 weeks)
 
-> **Delivered 2026-09-08.** 1.1, 1.2 and 1.4 are done and the webhook tests pass
-> — signature acceptance, rejection, tampered body, and replay idempotency for
-> both providers. Only 1.3 (mobile money) remains.
+> **Complete.** All of Phase 1 is delivered and passing: fixtures, Stripe and
+> Paystack signature/idempotency tests, mobile money coverage, and the closure
+> matrix corrected. Mobile money turned out to be the most serious finding of
+> the whole review — see 1.3.
 
 The platform moves money across Stripe, Paystack and Swish. The signature checks
 are implemented; the tests asserting they work are not.
@@ -145,7 +146,11 @@ The test the closure matrix has been citing. It must assert:
 Idempotency is the assertion that matters most — it is the one that silently
 costs money when it regresses.
 
-### 1.3 Mobile money coverage
+### 1.3 Mobile money coverage — ✅ done (and found a hole)
+
+> `tests/Feature/MobileMoneyWebhookTest.php` — 10 tests, passing. Writing them
+> surfaced that the endpoint had **no authentication at all**, and that real
+> M-Pesa STK callbacks were never matched. Both fixed.
 
 `MobileMoneyWebhookTest` and `MobileMoneyCheckoutFlowTest`, also already cited.
 M-Pesa, MTN and Airtel via Paystack are core to the African market.

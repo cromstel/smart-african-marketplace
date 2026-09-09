@@ -14,17 +14,17 @@ for what needs covering and in what order.
 
 | Metric | Count |
 |---|---|
-| Test files | 11 |
-| Tests passing | **61 (197 assertions)** |
+| Test files | 12 |
+| Tests passing | **71 (222 assertions)** |
 | Controllers | 146 |
 | Models | 98 |
 
-Verified 2026-09-09 on PHP 8.3 / MariaDB 10.11: `php artisan test` → 61 passed.
+Verified 2026-09-09 on PHP 8.3 / MariaDB 10.11: `php artisan test` → 71 passed.
 
 Tests: `AuthenticationTest`, `AuthorizationTest`, `AntiSpamTest`,
 `CrlfInjectionTest`, `WebhookE2ETest`, `Api/RegistrationTest`,
 `Api/RegistrationThrottleTest`, `Api/AddressApiTest`, `Api/CheckoutApiTest`,
-`Vendor/VendorIsolationTest`.
+`Vendor/VendorIsolationTest`, `MobileMoneyWebhookTest`.
 
 > **Build assets before running the suite.** Blade views use `@vite`, so without
 > the generated public/build/manifest.json every view-rendering test fails with "Vite
