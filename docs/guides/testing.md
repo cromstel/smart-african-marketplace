@@ -14,17 +14,17 @@ for what needs covering and in what order.
 
 | Metric | Count |
 |---|---|
-| Test files | 12 |
-| Tests passing | **71 (222 assertions)** |
+| Test files | 13 |
+| Tests passing | **76 (233 assertions)** |
 | Controllers | 146 |
 | Models | 98 |
 
-Verified 2026-09-09 on PHP 8.3 / MariaDB 10.11: `php artisan test` → 71 passed.
+Verified 2026-09-09 on PHP 8.3 / MariaDB 10.11: `php artisan test` → 76 passed.
 
 Tests: `AuthenticationTest`, `AuthorizationTest`, `AntiSpamTest`,
 `CrlfInjectionTest`, `WebhookE2ETest`, `Api/RegistrationTest`,
 `Api/RegistrationThrottleTest`, `Api/AddressApiTest`, `Api/CheckoutApiTest`,
-`Vendor/VendorIsolationTest`, `MobileMoneyWebhookTest`.
+`Vendor/VendorIsolationTest`, `Vendor/WithdrawalTest`, `MobileMoneyWebhookTest`.
 
 > **Build assets before running the suite.** Blade views use `@vite`, so without
 > the generated public/build/manifest.json every view-rendering test fails with "Vite
@@ -213,6 +213,32 @@ Manual replay without a provider:
 php artisan webhooks:replay-fixture stripe-charge-succeeded
 php artisan webhooks:replay-fixture paystack-charge-success
 ```
+
+---
+
+## Prove the test fails without the fix
+
+A test written alongside a fix can pass for reasons that have nothing to do with
+the fix. The withdrawal work is the cautionary example: the first version of
+`test_earnings_are_attributed_to_the_vendor_not_a_user_with_the_same_id`
+asserted `assertSee('900')` and **passed even with the bug restored** — the
+string appeared on the page regardless.
+
+The rewrite constructs a decoy vendor whose primary key equals the earner's
+*user* id and gives it different sales, so the two readings produce
+distinguishable numbers (900 correct, 450 buggy), then asserts both directions.
+That version fails against the bug and passes against the fix.
+
+Before trusting any regression test:
+
+```bash
+# 1. re-introduce the bug
+# 2. run the test -- it MUST fail
+# 3. restore the fix
+# 4. run it again -- it MUST pass
+```
+
+If step 2 passes, the test is decorative.
 
 ---
 

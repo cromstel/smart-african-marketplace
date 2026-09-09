@@ -181,7 +181,7 @@ can be tested without booting the framework.
 |---|---|---|
 | 1 | **Vendor isolation** | Tenancy is enforced in app code, not the database. An unconstrained query is a cross-tenant data leak. |
 | 2 | Checkout & order creation | Revenue path; touches inventory, pricing, shipping |
-| 3 | Payouts, ledger, withdrawals | Moves money *out*; errors are hard to reverse |
+| ~~3~~ | ~~Payouts, ledger, withdrawals~~ — **started**: `Vendor/WithdrawalTest` (5 tests). Found and fixed a vendor-id/user-id mix-up in the balance calculation. Payouts and ledger still uncovered | Moves money *out*; errors are hard to reverse |
 | 4 | Subscriptions & plan gating | `CheckSubscriptionLimits`, `EnsureModuleAccess` — entitlement bypass is revenue loss |
 | 5 | Auctions & bidding | Concurrency-sensitive; race conditions decide outcomes |
 | 6 | Bookings | Double-booking and slot integrity |
