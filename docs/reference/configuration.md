@@ -319,7 +319,15 @@ Reindex with `php artisan chatbot:reindex-knowledge`; purge with
 
 Tracked in the [Roadmap](../product/roadmap.md), Phase 0.
 
-**1. `env()` called outside `config/`** — **largely fixed on 2026-09-08.**
+**1. `env()` called outside `config/`** — **fully resolved on 2026-09-09.** There
+are now zero `env()` calls in `app/`. The dynamic lookups in
+`ConfigurationService` and the secret checks in `VerifyReadinessCommand` read
+through `config/env_snapshot.php`, a copy of the environment baked in when
+configuration is built, so they behave identically cached or not. Verified: after
+`php artisan config:cache`, `env('APP_NAME')` returns null while
+`config('env_snapshot.APP_NAME')` returns the value.
+
+Previously (2026-09-08):
 `SeoService` now reads `config('seo.*')` via the new `config/seo.php`, so SEO
 metadata and social links survive `config:cache`. Three call sites remain by
 design: `ConfigurationService` (runtime-computed keys) and

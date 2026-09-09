@@ -17,7 +17,16 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
-if (import.meta.env.VITE_PUSHER_APP_KEY) {
+// Broadcasting is opt-in. Previously this initialised whenever a Pusher key was
+// present, and .env.example ships a placeholder one -- so a fresh install with
+// BROADCAST_DRIVER=log still opened a websocket to a Soketi nobody was running,
+// producing connection errors and retry traffic on every page load. The client
+// now agrees with the server: set BROADCAST_ENABLED=true (and run Soketi) to
+// turn it on.
+const broadcastEnabled =
+  String(import.meta.env.VITE_BROADCAST_ENABLED ?? '').toLowerCase() === 'true';
+
+if (broadcastEnabled && import.meta.env.VITE_PUSHER_APP_KEY) {
   window.Echo = new Echo({
     broadcaster: 'pusher',
     key: import.meta.env.VITE_PUSHER_APP_KEY,
