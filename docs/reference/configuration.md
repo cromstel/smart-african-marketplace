@@ -165,6 +165,23 @@ Covers cards, bank transfer and mobile money (M-Pesa, MTN, Airtel).
 
 See [Swish Payment Integration](../modules/swish-payment-integration.md).
 
+### Mobile money callbacks
+
+| Variable | Notes |
+|---|---|
+| `MOMO_WEBHOOK_SECRET` | **Required to accept mobile money.** HMAC-SHA256 key for callback authentication |
+| `MOMO_SIGNATURE_HEADER` | Header carrying the signature. Default `X-Momo-Signature` |
+
+> The `/webhooks/momo/{provider}` endpoint previously accepted **any** request:
+> no signature, no shared secret, no middleware, and CSRF-exempt like the other
+> webhooks. Since it marks payments completed and orders paid, anyone who could
+> reach it with a known transaction reference could mark an order paid without
+> paying — while Stripe, Paystack and Swish all verified their callers.
+>
+> It now authenticates with an HMAC of the raw body and **fails closed**: with
+> no secret configured it returns 503 and logs a critical error. Set this before
+> deploying, and configure your provider to sign callbacks with the same key.
+
 ### Cash on delivery
 
 | Variable | Notes |

@@ -10,6 +10,7 @@ use App\Models\UserSubscription;
 use App\Services\LoyaltyPointsService;
 use App\Services\SubscriptionService;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -149,6 +150,49 @@ class WebhookController extends Controller
         }
     }
 
+    /**
+     * Authenticates a mobile money callback.
+     *
+     * Returns a response to send when the request is not trustworthy, or null
+     * when it may proceed. Fails closed: with no configured secret the
+     * endpoint refuses everything rather than accepting unauthenticated
+     * payment confirmations.
+     */
+    protected function guardMobileMoneyRequest(Request $request): ?JsonResponse
+    {
+        $secret = (string) (config('payment.mobile_money.webhook_secret') ?: '');
+
+        if ($secret === '') {
+            Log::critical('Mobile money webhook rejected: MOMO_WEBHOOK_SECRET is not configured. '
+                .'Callbacks cannot be authenticated, so they are refused.');
+
+            return response()->json(['error' => 'Webhook secret not configured'], 503);
+        }
+
+        $header = (string) config('payment.mobile_money.signature_header', 'X-Momo-Signature');
+        $signature = (string) $request->header($header, '');
+
+        if ($signature === '') {
+            Log::warning('Mobile money webhook rejected: missing signature header', [
+                'ip' => $request->ip(),
+            ]);
+
+            return response()->json(['error' => 'Missing signature'], 401);
+        }
+
+        $expected = hash_hmac('sha256', $request->getContent(), $secret);
+
+        if (! hash_equals($expected, $signature)) {
+            Log::warning('Mobile money webhook rejected: invalid signature', [
+                'ip' => $request->ip(),
+            ]);
+
+            return response()->json(['error' => 'Invalid signature'], 401);
+        }
+
+        return null;
+    }
+
     public function momo(Request $request, string $provider)
     {
         $provider = strtolower(trim($provider));
@@ -156,13 +200,29 @@ class WebhookController extends Controller
             return response()->json(['error' => 'Unsupported provider'], 422);
         }
 
+        // This endpoint marks payments completed and orders paid, so it is
+        // authenticated the same way the Stripe and Paystack webhooks are.
+        // It previously accepted any request, which meant anyone who could
+        // reach it with a known transaction reference could mark an order
+        // paid without paying.
+        if (($guard = $this->guardMobileMoneyRequest($request)) !== null) {
+            return $guard;
+        }
+
         $payload = $request->all();
         $referenceId = (string) (
             data_get($payload, 'reference_id')
             ?? data_get($payload, 'externalId')
-            ?? data_get($payload, 'Body.stkCallback.CallbackMetadata.Item.0.Value')
+            // Safaricom STK callbacks nest the identifiers under Body.stkCallback.
+            // These were previously only read at the top level, where a real
+            // M-Pesa callback does not carry them, so live callbacks were
+            // rejected as "Missing reference". CallbackMetadata.Item.0.Value is
+            // the amount rather than a reference, so it is tried last.
+            ?? data_get($payload, 'Body.stkCallback.CheckoutRequestID')
+            ?? data_get($payload, 'Body.stkCallback.MerchantRequestID')
             ?? data_get($payload, 'CheckoutRequestID')
             ?? data_get($payload, 'transaction_id')
+            ?? data_get($payload, 'Body.stkCallback.CallbackMetadata.Item.0.Value')
             ?? ''
         );
 
