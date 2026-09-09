@@ -171,13 +171,36 @@ decision and a green test run first.
 
 | Package | Current | Latest | Assessment |
 |---|---|---|---|
-| `stripe/stripe-php` | 17.6.0 | 21.3.1 | Cashier v16.8 permits `^17.4\|^18\|^19\|^20\|^21`, so it resolves cleanly. But it spans four majors of API change on the payment path, and `StripePaymentService` calls the SDK directly. Do this after the webhook tests have run green, not before. |
-| `livewire/livewire` | 3.8.8 | 4.4.4 | Resolves cleanly. Blast radius is unusually small — only 2 components and 2 views use Livewire — but v4 changes component and template syntax. Cheap to do, still needs verifying by eye. |
+| ~~`stripe/stripe-php`~~ | — | **21.3.1 — taken** | See below |
+| ~~`livewire/livewire`~~ | — | **4.4.4 — taken** | See below |
 | `laravel-echo` | 1.19.0 | 2.5.0 | Pairs with the Soketi/Pusher setup; check protocol compatibility before bumping. |
 | `tinymce` | 7.9.3 | 8.9.0 | Editor used in admin content screens. Licence terms have changed across TinyMCE majors — check before upgrading. |
 
-None of these are security-driven; both trees are clean at their current
-versions.
+### Taken on 2026-09-09, with evidence
+
+Both were held back until the test suite existed. It does now, so they were
+verified rather than assumed.
+
+**`stripe/stripe-php` 17.6.0 → 21.3.1.** Cashier v16.8 permits
+`^17.4|^18|^19|^20|^21`, so it resolves cleanly. The concern was four majors of
+API drift on the payment path — but the SDK surface this codebase actually uses
+is small and long-stable: `Customer::create/update`,
+`PaymentIntent::create/retrieve`, `Refund::create` and `Webhook::constructEvent`.
+All 71 tests pass, including the Stripe signature and replay-idempotency cases.
+
+**`livewire/livewire` 3.8.8 → 4.4.4.** Blast radius is genuinely small — two
+components, two views. All 71 tests pass, and the live-search component was
+driven in a real browser: typing returns a populated dropdown with products and
+prices, and the console is clean.
+
+### Still outstanding
+
+| Package | Current | Latest | Why not taken |
+|---|---|---|---|
+| `laravel-echo` | 1.19.0 | 2.5.0 | Pairs with Soketi. Cannot be verified without a running broadcast server, and nothing in the suite exercises it. Verify against a live Soketi instance first. |
+| `tinymce` | 7.9.3 | 8.9.0 | **Licensing, not technical.** TinyMCE's terms have changed across majors. This is a commercial decision, not an upgrade — read the licence before bumping. |
+
+Neither is security-driven; both trees audit clean at their current versions.
 
 ---
 
