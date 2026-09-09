@@ -197,6 +197,23 @@ Full list: [Artisan Commands](docs/reference/commands.md).
 
 ---
 
+## Before you deploy
+
+> **Set `MOMO_WEBHOOK_SECRET` if you accept mobile money (MTN, M-Pesa).**
+> The callback endpoint authenticates with an HMAC and **fails closed** — with
+> no secret configured it refuses every callback with a 503, so mobile money
+> payments will not be confirmed. `php artisan app:verify-readiness` flags this,
+> and `--strict` blocks the deploy. See
+> [Configuration](docs/reference/configuration.md#mobile-money-callbacks).
+
+Run the readiness gate before every release:
+
+```bash
+php artisan app:verify-readiness --strict
+```
+
+---
+
 ## Security
 
 Report vulnerabilities privately per [SECURITY.md](SECURITY.md). **Please do not

@@ -115,6 +115,20 @@ class VerifyReadinessCommand extends Command
             empty($badSecrets) ? 'Critical env keys look populated' : 'Missing/placeholder: '.implode(', ', $badSecrets)
         );
 
+        // The mobile money callback endpoint marks orders paid. It refuses every
+        // request when this is unset (fails closed), so an installation that
+        // accepts MTN or M-Pesa will silently stop confirming those payments.
+        // Surfaced as its own check rather than folded into the secrets sanity
+        // row, because the consequence is specific and easy to miss.
+        $momoSecret = trim((string) config('payment.mobile_money.webhook_secret', ''));
+        $results[] = $this->result(
+            'Mobile Money Callback Secret',
+            $momoSecret === '' ? 'warn' : 'pass',
+            $momoSecret === ''
+                ? 'MOMO_WEBHOOK_SECRET is not set — /webhooks/momo/* will refuse all callbacks (503). Required if you accept MTN or M-Pesa.'
+                : 'Configured; mobile money callbacks can be authenticated'
+        );
+
         $this->table(
             ['Check', 'Status', 'Detail'],
             array_map(fn ($row) => [$row['check'], strtoupper($row['status']), $row['detail']], $results)
