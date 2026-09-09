@@ -92,19 +92,23 @@ class VerifyReadinessCommand extends Command
             $results[] = $this->result('Health Endpoint', 'fail', $e->getMessage());
         }
 
+        // Checked through config rather than env(): after
+        // `php artisan config:cache` env() returns null for values that lived
+        // only in .env, so this gate reported every secret missing on exactly
+        // the deployments it was meant to protect.
         $secretChecks = [
-            'STRIPE_KEY',
-            'STRIPE_SECRET',
-            'PAYSTACK_PUBLIC_KEY',
-            'PAYSTACK_SECRET_KEY',
-            'MAIL_HOST',
-            'MAIL_USERNAME',
-            'MAIL_PASSWORD',
+            'STRIPE_KEY' => 'payment.stripe.key',
+            'STRIPE_SECRET' => 'payment.stripe.secret',
+            'PAYSTACK_PUBLIC_KEY' => 'payment.paystack.public_key',
+            'PAYSTACK_SECRET_KEY' => 'payment.paystack.secret_key',
+            'MAIL_HOST' => 'mail.mailers.smtp.host',
+            'MAIL_USERNAME' => 'mail.mailers.smtp.username',
+            'MAIL_PASSWORD' => 'mail.mailers.smtp.password',
         ];
 
         $badSecrets = [];
-        foreach ($secretChecks as $key) {
-            $value = trim((string) env($key, ''));
+        foreach ($secretChecks as $key => $configPath) {
+            $value = trim((string) (config($configPath) ?? config('env_snapshot.'.$key) ?? ''));
             if ($value === '' || str_contains($value, '...') || str_contains(strtolower($value), 'your-')) {
                 $badSecrets[] = $key;
             }

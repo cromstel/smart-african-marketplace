@@ -41,9 +41,15 @@ class ConfigurationService
             return $value ?? $default;
         }
 
-        // 2. Fallback to .env file
+        // 2. Fallback to the environment.
+        //
+        // Read through the config snapshot rather than env(): the key is
+        // computed at runtime, so it cannot be declared in a config file, and
+        // after `php artisan config:cache` env() returns null for anything that
+        // lived only in .env. This fallback therefore worked in development and
+        // silently stopped working in production. See config/env_snapshot.php.
         $envKey = strtoupper(str_replace('.', '_', $key));
-        $envValue = env($envKey);
+        $envValue = config('env_snapshot.'.$envKey);
 
         if ($envValue !== null) {
             // Cache the env value
@@ -115,10 +121,10 @@ class ConfigurationService
             return true;
         }
 
-        // Check .env
+        // Check the environment (via the snapshot -- see get() above for why).
         $envKey = strtoupper(str_replace('.', '_', $key));
 
-        return env($envKey) !== null;
+        return config('env_snapshot.'.$envKey) !== null;
     }
 
     /**

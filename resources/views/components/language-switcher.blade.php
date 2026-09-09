@@ -7,7 +7,7 @@
 
 <div
     x-data="{ open: false }"
-    class="{{ $isFooterPlacement ? 'relative' : 'fixed left-3 sm:left-4 top-1/2 -translate-y-1/2 z-50' }}"
+    class="{{ $isFooterPlacement ? 'relative' : 'fixed right-4 sm:right-6 bottom-24 sm:bottom-28 z-50' }}"
 >
     <button
         type="button"

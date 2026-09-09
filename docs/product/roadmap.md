@@ -74,7 +74,7 @@ Login already carries `throttle:10,1`. Registration is the more attractive targe
 
 *Definition of done:* throttle applied; a feature test asserts the 429.
 
-### 0.3 Move `env()` calls into config — **Medium** ✅ implemented (partial)
+### 0.3 Move `env()` calls into config — **Medium** ✅ complete
 
 Nine call sites break under `php artisan config:cache`, which the deployment
 runbook mandates. Highest impact in `SeoService.php` (SEO description, keywords,
@@ -208,7 +208,12 @@ coverage is reported on every PR.
 
 ## Phase 3 — Pay down structural debt (3–4 weeks)
 
-### 3.1 De-duplicate authorization middleware — **security-relevant**
+### 3.1 De-duplicate authorization middleware — ✅ done
+
+> `AdminMiddleware` and `VendorMiddleware` were **entirely unreferenced** — the
+> Kernel aliases point at `EnsureUserIsAdmin` and `EnsureUserIsVendor`. They had
+> also already drifted: the dead `AdminMiddleware` redirected unauthenticated
+> users to the admin login, while the live one aborts 403. Both deleted.
 
 `AdminMiddleware` / `EnsureUserIsAdmin` and `VendorMiddleware` /
 `EnsureUserIsVendor` are two implementations of one rule each. Two

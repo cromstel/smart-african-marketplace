@@ -4,7 +4,13 @@
 
 <!-- Main Footer Content -->
 <footer class="relative bg-gray-900 text-white mt-auto">
-    <div class="fixed left-3 sm:left-4 bottom-24 sm:bottom-20 z-[9999] pointer-events-auto" style="position: fixed; left: 1rem; bottom: 6rem; z-index: 9999;">
+    {{-- Floating language switcher. Previously pinned to the left edge, where it
+         sat permanently over the shop's category sidebar and covered a
+         navigation link. Moved to the right, stacked above the chat button, so
+         it shares the corner the site already reserves for floating controls.
+         The inline style duplicated these properties and overrode the classes,
+         so it has been dropped -- position is expressed once. --}}
+    <div class="fixed right-4 sm:right-6 bottom-24 sm:bottom-28 z-[9999] pointer-events-auto">
         @include('components.language-switcher', ['placement' => 'footer'])
     </div>
 
