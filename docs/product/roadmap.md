@@ -182,7 +182,11 @@ can be tested without booting the framework.
 | 6 | Bookings | Double-booking and slot integrity |
 | 7 | Refunds & RMA | Money and customer trust |
 
-### 2.3 Vendor isolation as a first-class test pattern
+### 2.3 Vendor isolation as a first-class test pattern — 🟡 pattern established
+
+> `tests/Feature/Vendor/VendorIsolationTest.php` implements the pattern for the
+> product routes (5 tests, passing). The remaining vendor controllers still need
+> the same treatment — this establishes the shape, not the coverage.
 
 Write a reusable assertion — *vendor A cannot read, update or delete vendor B's
 resource* — and apply it across all 32 vendor controllers. This is the single

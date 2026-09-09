@@ -14,16 +14,17 @@ for what needs covering and in what order.
 
 | Metric | Count |
 |---|---|
-| Test files | 10 |
-| Tests passing | **56 (190 assertions)** |
+| Test files | 11 |
+| Tests passing | **61 (197 assertions)** |
 | Controllers | 146 |
 | Models | 98 |
 
-Verified 2026-09-08 on PHP 8.3 / MariaDB 10.11: `php artisan test` → 56 passed.
+Verified 2026-09-09 on PHP 8.3 / MariaDB 10.11: `php artisan test` → 61 passed.
 
 Tests: `AuthenticationTest`, `AuthorizationTest`, `AntiSpamTest`,
 `CrlfInjectionTest`, `WebhookE2ETest`, `Api/RegistrationTest`,
-`Api/RegistrationThrottleTest`, `Api/AddressApiTest`, `Api/CheckoutApiTest`.
+`Api/RegistrationThrottleTest`, `Api/AddressApiTest`, `Api/CheckoutApiTest`,
+`Vendor/VendorIsolationTest`.
 
 > **Build assets before running the suite.** Blade views use `@vite`, so without
 > the generated public/build/manifest.json every view-rendering test fails with "Vite
@@ -156,6 +157,18 @@ public function test_a_vendor_cannot_view_another_vendors_order(): void
 
 Apply it across all 32 vendor controllers. Assert `404`: a `403` tells the caller
 the resource exists, which is itself a small leak.
+
+**A working example now exists**: `tests/Feature/Vendor/VendorIsolationTest.php`
+covers the product routes — edit, update, delete and variants — plus a positive
+case proving a vendor can still reach their own product.
+
+> **Watch the module-access gate.** Vendor product routes sit behind
+> `module.access:multiple_product_category`, which *redirects* rather than
+> returning 403 when the plan lacks the feature. Without an entitled
+> subscription, every isolation assertion passes for the wrong reason: the
+> request never reaches the policy. The test gives both vendors an active plan
+> carrying the feature, and asserts the positive case, so what is under test is
+> ownership rather than entitlement. Copy that setup for any new vendor test.
 
 ---
 
