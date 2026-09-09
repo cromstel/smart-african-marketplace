@@ -15,6 +15,7 @@ use App\Observers\VendorObserver;
 use App\Services\QrCodeService;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -64,7 +65,20 @@ class AppServiceProvider extends ServiceProvider
         // During migrations (and on a freshly migrated test DB) the
         // settings/cache tables may not exist yet — skip the DB-backed
         // mail configuration rather than crashing application bootstrap.
-        if (! Schema::hasTable('settings') || ! Schema::hasTable('cache')) {
+        //
+        // Schema::hasTable() needs a working connection, so the table guard
+        // alone did not cover a database that is unreachable: every artisan
+        // command then died at boot with a QueryException, including the ones
+        // you need in exactly that situation (key:generate, config:clear,
+        // app:verify-readiness). Mail configuration is an optimisation, not a
+        // prerequisite for the framework booting.
+        try {
+            if (! Schema::hasTable('settings') || ! Schema::hasTable('cache')) {
+                return;
+            }
+        } catch (\Throwable $e) {
+            Log::debug('Skipping database-backed mail configuration: '.$e->getMessage());
+
             return;
         }
 

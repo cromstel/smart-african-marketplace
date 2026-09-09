@@ -1,5 +1,24 @@
 # Deployment Runbook Checklist
 
+> ## ⚠️ Required before any release that accepts mobile money
+>
+> **`MOMO_WEBHOOK_SECRET` must be set.** The `/webhooks/momo/{provider}`
+> endpoint marks orders paid and is authenticated with an HMAC-SHA256 of the
+> raw body. It **fails closed**: with no secret configured it returns 503 and
+> logs a critical error, so MTN and M-Pesa payments stop being confirmed.
+>
+> It previously accepted unauthenticated requests, which meant anyone able to
+> reach it with a known transaction reference could mark an order paid without
+> paying. Closing that is why the behaviour changed.
+>
+> ```bash
+> php -r "echo bin2hex(random_bytes(32));"   # generate
+> php artisan app:verify-readiness --strict  # gate — non-zero exit blocks release
+> ```
+>
+> Configure the provider to sign callbacks with the same key.
+
+
 This checklist covers production readiness items that are code-ready in this repository and require environment provisioning.
 
 Companion execution checklist for staging-first external rollout:
