@@ -7,6 +7,7 @@ use App\Models\OrderItem;
 use App\Models\Setting;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WithdrawalController extends Controller
 {
@@ -69,20 +70,44 @@ class WithdrawalController extends Controller
         $fee = ($request->amount * $feePercentage) / 100;
         $netAmount = $request->amount - $fee;
 
-        $withdrawal = Withdrawal::create([
-            'user_id' => auth()->id(),
-            'amount' => $request->amount,
-            'fee' => $fee,
-            'net_amount' => $netAmount,
-            'method' => $request->method,
-            'account_details' => [
-                'account_name' => $request->account_name,
-                'account_number' => $request->account_number,
-                'bank_name' => $request->bank_name,
-            ],
-            'notes' => $request->notes,
-            'status' => 'pending',
-        ]);
+        // The balance and pending-request checks above are re-run inside a
+        // transaction that locks this user's withdrawal rows. Without it two
+        // concurrent submissions both pass the checks and both create a
+        // request -- a double spend against one balance.
+        $withdrawal = DB::transaction(function () use ($request, $fee, $netAmount) {
+            Withdrawal::where('user_id', auth()->id())->lockForUpdate()->get();
+
+            if (Withdrawal::where('user_id', auth()->id())->where('status', 'pending')->exists()) {
+                return null;
+            }
+
+            $stats = $this->getVendorStats();
+
+            if ($request->amount > $stats['available_balance']) {
+                return null;
+            }
+
+            return Withdrawal::create([
+                'user_id' => auth()->id(),
+                'amount' => $request->amount,
+                'fee' => $fee,
+                'net_amount' => $netAmount,
+                'method' => $request->method,
+                'account_details' => [
+                    'account_name' => $request->account_name,
+                    'account_number' => $request->account_number,
+                    'bank_name' => $request->bank_name,
+                ],
+                'notes' => $request->notes,
+                'status' => 'pending',
+            ]);
+        });
+
+        if (! $withdrawal) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Withdrawal could not be created. Check your available balance and any pending request.');
+        }
 
         return redirect()->route('vendor.withdrawals.index')
             ->with('success', 'Withdrawal request submitted successfully. Reference: '.$withdrawal->withdrawal_number);
@@ -98,7 +123,29 @@ class WithdrawalController extends Controller
 
     private function getVendorStats()
     {
-        $vendorId = auth()->id();
+        $userId = auth()->id();
+
+        // products.vendor_id references vendors.id, not users.id. This
+        // previously passed auth()->id() -- a user id -- so earnings were
+        // computed from whichever *other* vendor happened to share that
+        // number. Vendor ids and user ids diverge for every vendor in
+        // practice, so the balance a vendor saw, and could withdraw against,
+        // belonged to someone else.
+        //
+        // withdrawals.user_id genuinely is a user id, which is why the same
+        // variable read correctly two lines further down and the bug survived.
+        $vendorId = auth()->user()?->vendor?->id;
+
+        if (! $vendorId) {
+            return [
+                'total_earnings' => 0,
+                'platform_commission' => 0,
+                'net_earnings' => 0,
+                'total_withdrawn' => 0,
+                'pending_withdrawals' => 0,
+                'available_balance' => 0,
+            ];
+        }
 
         $totalEarnings = OrderItem::whereHas('order', function ($q) {
             $q->where('payment_status', 'paid')
@@ -113,11 +160,11 @@ class WithdrawalController extends Controller
         $platformCommission = ($totalEarnings * $commissionRate) / 100;
         $netEarnings = $totalEarnings - $platformCommission;
 
-        $totalWithdrawn = Withdrawal::where('user_id', $vendorId)
+        $totalWithdrawn = Withdrawal::where('user_id', $userId)
             ->where('status', 'completed')
             ->sum('amount');
 
-        $pendingWithdrawals = Withdrawal::where('user_id', $vendorId)
+        $pendingWithdrawals = Withdrawal::where('user_id', $userId)
             ->where('status', 'pending')
             ->sum('amount');
 
