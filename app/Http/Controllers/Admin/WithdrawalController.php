@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Vendor;
+use App\Models\VendorBalance;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WithdrawalController extends Controller
 {
@@ -80,6 +83,10 @@ class WithdrawalController extends Controller
             return redirect()->back()->with('error', 'Cannot complete this withdrawal.');
         }
 
+        // The amount was already reserved (deducted from VendorBalance) when
+        // the withdrawal was requested -- see Vendor\WithdrawalController::store().
+        // Completing it is a pure status transition; it must not touch the
+        // balance again, the same reasoning as PayoutService::markCompleted().
         $withdrawal->update([
             'status' => 'completed',
             'processed_at' => now(),
@@ -101,10 +108,33 @@ class WithdrawalController extends Controller
             return redirect()->back()->with('error', 'Cannot reject this withdrawal.');
         }
 
-        $withdrawal->update([
-            'status' => 'rejected',
-            'rejection_reason' => $request->rejection_reason,
-        ]);
+        // The reservation made at request time must come back to the
+        // vendor's available balance -- otherwise a rejected withdrawal
+        // just deletes the vendor's money. Locked and guarded against
+        // running twice for the same withdrawal, mirroring
+        // PayoutService::markFailed().
+        DB::transaction(function () use ($withdrawal, $request) {
+            $locked = Withdrawal::whereKey($withdrawal->id)->lockForUpdate()->first();
+
+            if (! $locked || ! in_array($locked->status, ['pending', 'processing'], true)) {
+                return;
+            }
+
+            $vendorId = Vendor::where('user_id', $locked->user_id)->value('id');
+
+            if ($vendorId) {
+                $balance = VendorBalance::where('vendor_id', $vendorId)->lockForUpdate()->first();
+                if ($balance) {
+                    $balance->available += $locked->amount;
+                    $balance->save();
+                }
+            }
+
+            $locked->update([
+                'status' => 'rejected',
+                'rejection_reason' => $request->rejection_reason,
+            ]);
+        });
 
         return redirect()->back()->with('success', 'Withdrawal rejected successfully.');
     }

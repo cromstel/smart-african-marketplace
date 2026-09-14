@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Vendor;
 use App\Http\Controllers\Controller;
 use App\Models\OrderItem;
 use App\Models\Setting;
+use App\Models\VendorBalance;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +49,14 @@ class WithdrawalController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
 
+        $vendorId = auth()->user()?->vendor?->id;
+
+        if (! $vendorId) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'A vendor profile is required to request a withdrawal.');
+        }
+
         $stats = $this->getVendorStats();
 
         if ($request->amount > $stats['available_balance']) {
@@ -70,22 +79,35 @@ class WithdrawalController extends Controller
         $fee = ($request->amount * $feePercentage) / 100;
         $netAmount = $request->amount - $fee;
 
-        // The balance and pending-request checks above are re-run inside a
-        // transaction that locks this user's withdrawal rows. Without it two
-        // concurrent submissions both pass the checks and both create a
-        // request -- a double spend against one balance.
-        $withdrawal = DB::transaction(function () use ($request, $fee, $netAmount) {
+        // Withdrawal and Payout used to check and reserve balance
+        // completely independently -- Withdrawal against a live OrderItem
+        // sum, Payout against VendorBalance -- so a vendor could draw the
+        // same earnings through both request types at once. They now share
+        // one locked balance: VendorBalance.available, reserved here the
+        // same way PayoutController::store() reserves it. The pending-
+        // withdrawal check is re-run under the same lock for the same
+        // reason it always was -- two concurrent submissions must not both
+        // pass the checks and both create a request.
+        $withdrawal = DB::transaction(function () use ($request, $vendorId, $fee, $netAmount) {
             Withdrawal::where('user_id', auth()->id())->lockForUpdate()->get();
 
             if (Withdrawal::where('user_id', auth()->id())->where('status', 'pending')->exists()) {
                 return null;
             }
 
-            $stats = $this->getVendorStats();
+            VendorBalance::firstOrCreate(
+                ['vendor_id' => $vendorId],
+                ['available' => 0, 'pending' => 0, 'lifetime_earnings' => 0]
+            );
 
-            if ($request->amount > $stats['available_balance']) {
+            $balance = VendorBalance::where('vendor_id', $vendorId)->lockForUpdate()->first();
+
+            if ($request->amount > $balance->available) {
                 return null;
             }
+
+            $balance->available -= $request->amount;
+            $balance->save();
 
             return Withdrawal::create([
                 'user_id' => auth()->id(),
@@ -147,6 +169,11 @@ class WithdrawalController extends Controller
             ];
         }
 
+        // Informational lifetime breakdown only, shown on the dashboard as
+        // "your earnings" context. This is NOT what gates a withdrawal --
+        // see available_balance below -- so it's left as the historical,
+        // platform-wide-rate estimate rather than rebuilt against each
+        // vendor's own commission_rate.
         $totalEarnings = OrderItem::whereHas('order', function ($q) {
             $q->where('payment_status', 'paid')
                 ->whereNotIn('status', ['cancelled', 'refunded']);
@@ -168,7 +195,13 @@ class WithdrawalController extends Controller
             ->where('status', 'pending')
             ->sum('amount');
 
-        $availableBalance = $netEarnings - $totalWithdrawn - $pendingWithdrawals;
+        // The actual gating figure. Withdrawal and Payout now read the same
+        // number -- VendorBalance.available -- credited by
+        // VendorLedgerService only once an order reaches status=delivered
+        // (see OrderObserver). That's a real, deliberate tightening versus
+        // the old OrderItem-sum calculation, which treated money as
+        // withdrawable as soon as an order was paid, before delivery.
+        $availableBalance = (float) (VendorBalance::where('vendor_id', $vendorId)->value('available') ?? 0);
 
         return [
             'total_earnings' => $totalEarnings,
@@ -176,7 +209,7 @@ class WithdrawalController extends Controller
             'net_earnings' => $netEarnings,
             'total_withdrawn' => $totalWithdrawn,
             'pending_withdrawals' => $pendingWithdrawals,
-            'available_balance' => max(0, $availableBalance),
+            'available_balance' => $availableBalance,
         ];
     }
 }
