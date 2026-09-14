@@ -47,5 +47,15 @@ class RouteServiceProvider extends ServiceProvider
 
             return Limit::perMinute($limit)->by($request->user()?->id ?: $request->ip());
         });
+
+        // Payment/SMS provider callbacks previously had no rate limit at all.
+        // Signature verification already rejects forged/tampered payloads
+        // (see WebhookController), so this isn't guarding authenticity --
+        // it's a generous ceiling against unbounded abuse. Kept high because
+        // a real provider can legitimately burst events, and throttling away
+        // a genuine payment webhook is worse than not throttling one.
+        RateLimiter::for('webhook', function (Request $request) {
+            return Limit::perMinute(120)->by($request->ip());
+        });
     }
 }

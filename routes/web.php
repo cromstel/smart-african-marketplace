@@ -758,10 +758,20 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
     });
 });
 
-Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])->name('webhooks.stripe');
-Route::post('/webhooks/paystack', [WebhookController::class, 'paystack'])->name('webhooks.paystack');
-Route::post('/webhooks/momo/{provider}', [WebhookController::class, 'momo'])->name('webhooks.momo');
-Route::post('/webhooks/swish', [WebhookController::class, 'swish'])->name('webhooks.swish');
+// Payment/SMS provider callbacks. These sit inside the `web` group (session,
+// CRLF protection, etc. -- CSRF is excepted for `webhooks/*` in
+// VerifyCsrfToken) like the rest of this file, but unlike the other public
+// POST endpoints here (contact, newsletter, chatbot) they had no rate limit
+// at all. The `webhook` limiter is deliberately generous -- providers can
+// legitimately burst events, and dropping a real payment webhook is worse
+// than under-throttling one -- it exists to stop unbounded abuse, not to
+// gate normal traffic.
+Route::middleware('throttle:webhook')->group(function () {
+    Route::post('/webhooks/stripe', [WebhookController::class, 'stripe'])->name('webhooks.stripe');
+    Route::post('/webhooks/paystack', [WebhookController::class, 'paystack'])->name('webhooks.paystack');
+    Route::post('/webhooks/momo/{provider}', [WebhookController::class, 'momo'])->name('webhooks.momo');
+    Route::post('/webhooks/swish', [WebhookController::class, 'swish'])->name('webhooks.swish');
+});
 
 Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
