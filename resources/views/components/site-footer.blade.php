@@ -4,16 +4,6 @@
 
 <!-- Main Footer Content -->
 <footer class="relative bg-gray-900 text-white mt-auto">
-    {{-- Floating language switcher. Previously pinned to the left edge, where it
-         sat permanently over the shop's category sidebar and covered a
-         navigation link. Moved to the right, stacked above the chat button, so
-         it shares the corner the site already reserves for floating controls.
-         The inline style duplicated these properties and overrode the classes,
-         so it has been dropped -- position is expressed once. --}}
-    <div class="fixed right-4 sm:right-6 bottom-24 sm:bottom-28 z-[9999] pointer-events-auto">
-        @include('components.language-switcher', ['placement' => 'footer'])
-    </div>
-
     <div class="mx-auto px-4 py-12" style="max-width: {{ $containerWidth }}px;">
         <div class="grid md:grid-cols-5 gap-8">
             <div class="md:col-span-2">
@@ -26,11 +16,22 @@
                 <p class="text-gray-400 mb-4">
                     {{ __('ui.brand.tagline') }}
                 </p>
+                {{-- Language switcher lives inline in the footer's normal document
+                     flow rather than as a viewport-fixed overlay. A fixed floating
+                     button had to guess a safe screen position across every page,
+                     and kept landing on top of real content instead: page hero CTAs,
+                     the shop category sidebar, and the footer's own newsletter form
+                     at wider breakpoints. Placing it here removes that whole class of
+                     bug — it just reflows with the rest of the footer like everything
+                     else on the page. --}}
+                <div class="mb-4">
+                    @include('components.language-switcher', ['placement' => 'footer'])
+                </div>
                 <!-- Mobile App QR Code -->
                 <div class="flex items-center space-x-4 p-4 bg-gray-800 rounded-lg">
                     <div class="flex-shrink-0">
                         {{-- Generated locally with endroid/qr-code. Previously this
-                             hit an external QR API on every page render, which leaked the
+                             hit api.qrserver.com on every page render, which leaked the
                              site URL to a third party, broke on self-hosted or offline
                              installs, and added an external round-trip to every page.
                              Cached for a day since the target URL rarely changes. --}}
