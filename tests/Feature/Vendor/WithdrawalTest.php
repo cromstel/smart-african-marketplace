@@ -5,12 +5,14 @@ namespace Tests\Feature\Vendor;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payout;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
 use App\Models\UserSubscription;
 use App\Models\Vendor;
+use App\Models\VendorBalance;
 use App\Models\Withdrawal;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -28,6 +30,22 @@ use Tests\TestCase;
  * The same variable was used correctly two lines later for
  * `withdrawals.user_id`, which genuinely is a user id. That is why it survived
  * review, and why the first test here pins the attribution explicitly.
+ *
+ * available_balance itself was reworked in a later fix: it used to be
+ * computed live from raw OrderItem sums, entirely independent of
+ * VendorBalance/VendorLedger -- the same balance Payout draws from -- which
+ * meant a vendor could withdraw against the OrderItem total and separately
+ * request a Payout against the ledger total for the very same sales.
+ * available_balance now reads VendorBalance.available, credited by
+ * VendorLedgerService only once an order reaches status=delivered. The
+ * fixtures below push orders through the real pending -> paid -> delivered
+ * transitions (rather than inserting them pre-paid) so the ledger is
+ * genuinely credited, the same way OrderObserver credits it in production.
+ * Vendor commission_rate is pinned to 10% on every fixture vendor so the
+ * ledger-based numbers match this file's pre-existing expected values
+ * (net_earnings is still computed separately, from the platform-wide
+ * `platform_commission_rate` setting, for the informational dashboard
+ * breakdown -- see WithdrawalController::getVendorStats()).
  */
 class WithdrawalTest extends TestCase
 {
@@ -134,6 +152,54 @@ class WithdrawalTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_a_rejected_withdrawal_refunds_the_reserved_amount(): void
+    {
+        [$user, $vendor] = $this->vendorWithPaidSales(1000.00); // 900 available
+
+        $this->actingAs($user)->post(route('vendor.withdrawals.store'), $this->form(300));
+        $withdrawal = Withdrawal::where('user_id', $user->id)->firstOrFail();
+
+        $this->assertSame('600.00', VendorBalance::where('vendor_id', $vendor->id)->value('available'));
+
+        $admin = User::factory()->admin()->create();
+        $this->actingAs($admin)->post(route('admin.withdrawals.reject', $withdrawal), [
+            'rejection_reason' => 'Bank details could not be verified.',
+        ]);
+
+        $this->assertSame('900.00', VendorBalance::where('vendor_id', $vendor->id)->value('available'));
+        $this->assertSame('rejected', $withdrawal->fresh()->status);
+    }
+
+    public function test_a_withdrawal_and_a_payout_cannot_together_overdraw_the_same_balance(): void
+    {
+        [$user, $vendor] = $this->vendorWithPaidSales(1000.00); // 900 available
+
+        // Give the vendor what Payout requires: approved verification and a
+        // bank detail set, so both requests are judged on balance alone.
+        $vendor->verification()->create(['status' => 'approved']);
+        $vendor->update(['bank_account_number' => '0000000000', 'bank_name' => 'Test Bank']);
+
+        $withdrawalResponse = $this->actingAs($user)
+            ->post(route('vendor.withdrawals.store'), $this->form(700));
+        $payoutResponse = $this->actingAs($user)
+            ->post(route('vendor.payouts.store'), [
+                'amount' => 700,
+                'method' => 'bank',
+            ]);
+
+        $withdrawalResponse->assertRedirect();
+        $payoutResponse->assertRedirect();
+
+        $totalReserved = Withdrawal::where('user_id', $user->id)->where('status', 'pending')->sum('amount')
+            + Payout::where('vendor_id', $vendor->id)->where('status', 'pending')->sum('amount');
+
+        $this->assertLessThanOrEqual(
+            900,
+            $totalReserved,
+            "A withdrawal and a payout together reserved {$totalReserved} against a 900 balance."
+        );
+    }
+
     // --------------------------------------------------------------- Helpers
 
     /**
@@ -172,6 +238,7 @@ class WithdrawalTest extends TestCase
             'business_address' => '2 Decoy Street',
             'status' => 'approved',
             'is_active' => true,
+            'commission_rate' => 10,
         ]);
         $decoy->id = $vendorId;
         $decoy->save();
@@ -218,7 +285,9 @@ class WithdrawalTest extends TestCase
     }
 
     /**
-     * A vendor with the given value of paid, non-cancelled sales.
+     * A vendor with the given value of paid, delivered sales -- pushed
+     * through the real payment_status/status transitions so OrderObserver
+     * credits VendorBalance via the ledger, the same as production traffic.
      *
      * @return array{0: User, 1: Vendor}
      */
@@ -235,6 +304,7 @@ class WithdrawalTest extends TestCase
             'business_address' => '1 Test Street',
             'status' => 'approved',
             'is_active' => true,
+            'commission_rate' => 10,
         ]);
 
         $plan = SubscriptionPlan::create([
@@ -272,7 +342,7 @@ class WithdrawalTest extends TestCase
                 'user_id' => User::factory()->create()->id,
                 'subtotal' => $grossSales, 'tax' => 0, 'shipping_cost' => 0,
                 'discount' => 0, 'total' => $grossSales,
-                'payment_status' => 'paid',
+                'payment_status' => 'pending',
                 'status' => 'processing',
                 'payment_method' => 'card',
             ]);
@@ -288,6 +358,9 @@ class WithdrawalTest extends TestCase
                 'subtotal' => $grossSales,
                 'total' => $grossSales,
             ]);
+
+            $order->update(['payment_status' => 'paid']);
+            $order->update(['status' => 'delivered']);
         }
 
         return [$user->fresh(), $vendor];
