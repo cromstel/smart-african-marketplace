@@ -38,11 +38,7 @@ class PayoutController extends Controller
 
     public function fail(Request $request, Payout $payout)
     {
-        $payout->update([
-            'status' => 'failed',
-            'metadata' => array_merge($payout->metadata ?? [], ['reason' => $request->input('reason')]),
-        ]);
-
+        app(PayoutService::class)->markFailed($payout, (string) $request->input('reason', 'Marked failed by admin'));
         app(ActivityLogger::class)->log('payout.failed', $payout);
 
         return redirect()->back()->with('success', 'Payout marked as failed.');
