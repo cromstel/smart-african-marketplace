@@ -118,7 +118,14 @@ class AuctionController extends Controller
      */
     public function show(Auction $auction): View
     {
-        $this->authorize('update', $auction);
+        // Not 'update': that ability deliberately excludes active/ended
+        // auctions (a vendor can no longer edit the terms once bidding has
+        // started), which would also lock the vendor out of viewing their
+        // own auction's bid history and status for most of its lifecycle.
+        // Not the public 'view' ability either: that lets any vendor browse
+        // another vendor's active auction (so they can bid on it), which
+        // must not extend to this private management page.
+        $this->authorize('viewOwn', $auction);
 
         $auction->load(['bids.user', 'winner.user']);
 

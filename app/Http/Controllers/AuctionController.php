@@ -45,7 +45,7 @@ class AuctionController extends Controller
         $seo = app(SeoService::class);
         $seo->setTitle('Featured Auctions')
             ->setDescription('Browse our featured auctions with special items from verified African vendors.')
-            ->addStructuredData($seo->generateAuctionListSchema($featuredAuctions->items()));
+            ->addStructuredData($seo->generateAuctionListSchema($featuredAuctions->all()));
 
         return view('auctions.featured', compact('featuredAuctions'));
     }
@@ -61,7 +61,7 @@ class AuctionController extends Controller
         $seo = app(SeoService::class);
         $seo->setTitle('Auctions Ending Soon')
             ->setDescription('Don\'t miss out! Bid now on auctions ending soon.')
-            ->addStructuredData($seo->generateAuctionListSchema($auctions->items()));
+            ->addStructuredData($seo->generateAuctionListSchema($auctions->all()));
 
         return view('auctions.ending-soon', compact('auctions'));
     }
@@ -76,7 +76,7 @@ class AuctionController extends Controller
         // Increment view count
         $auction->incrementViewCount();
 
-        $auction->load(['vendor', 'bids.user', 'images']);
+        $auction->load(['vendor', 'bids.user', 'product.images']);
 
         $minimumBid = $auction->getMinimumBid();
 
@@ -97,7 +97,7 @@ class AuctionController extends Controller
         $seo = app(SeoService::class);
         $seo->setTitle($auction->title)
             ->setDescription($auction->description)
-            ->setImage($auction->images->first()?->image_path)
+            ->setImage($auction->product?->images->first()?->image_path)
             ->setCanonical(route('auctions.show', $auction->slug))
             ->setType('product')
             ->addStructuredData($seo->generateAuctionSchema($auction));

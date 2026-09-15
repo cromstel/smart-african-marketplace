@@ -28,6 +28,26 @@ class AuctionPolicy
     }
 
     /**
+     * Determine whether the user can view the auction's vendor-management
+     * detail page (status, bid history, settlement controls).
+     *
+     * Deliberately distinct from view(): that ability also lets any
+     * authenticated visitor -- vendors included, since a vendor may want to
+     * browse and bid on another vendor's auction -- see the public page for
+     * an active/ended/settled auction. This one must never fall through to
+     * that public check, or a vendor could open another vendor's private
+     * management page for any auction that happens to be active.
+     */
+    public function viewOwn(User $user, Auction $auction): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $user->isVendor() && $user->vendor && $auction->vendor_id === $user->vendor->id;
+    }
+
+    /**
      * Determine whether the user can view the auction.
      */
     public function view(User $user, Auction $auction): bool

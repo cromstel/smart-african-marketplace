@@ -1,79 +1,51 @@
 @extends('layouts.shop')
 
-@section('content')
-<div class="container py-5">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h1>Auctions</h1>
-            <p class="text-muted">Discover unique items through our bidding system</p>
-        </div>
-        <div class="col-md-6">
-            <form action="{{ route('auctions.search') }}" method="GET" class="d-flex">
-                <input type="text" name="q" class="form-control me-2" placeholder="Search auctions...">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-        </div>
-    </div>
+@section('title', 'Auctions')
 
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="btn-group" role="group">
-                <a href="{{ route('auctions.index') }}" class="btn btn-outline-primary active">All Active</a>
-                <a href="{{ route('auctions.featured') }}" class="btn btn-outline-primary">Featured</a>
-                <a href="{{ route('auctions.ending-soon') }}" class="btn btn-outline-primary">Ending Soon</a>
-            </div>
-        </div>
+@section('content')
+<x-hero-section
+    pageIdentifier="auctions"
+    fallbackTitle="Auctions"
+    fallbackSubtitle="Discover unique items through our live bidding system"
+    fallbackImage="/images/hero-banners/hero-banner.avif"
+    :fallbackStats="[
+        ['value' => $auctions->total(), 'label' => 'Active Auctions']
+    ]"
+    :animated="true"
+/>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <form action="{{ route('auctions.search') }}" method="GET" class="flex w-full md:w-auto">
+            <input type="text" name="q" class="flex-1 md:w-64 border border-gray-300 rounded-l-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="Search auctions...">
+            <button type="submit" class="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-r-lg text-sm font-semibold transition-colors duration-200">
+                Search
+            </button>
+        </form>
+        @include('auctions._nav-tabs', ['active' => 'index'])
     </div>
 
     @if($auctions->isEmpty())
-        <div class="alert alert-info">
-            No active auctions at the moment. Check back later!
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+            <svg class="w-24 h-24 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h11M9 21V3m0 0L3 9m6-6l6 6"/>
+            </svg>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">No active auctions</h2>
+            <p class="text-gray-600 mb-6">There are no active auctions at the moment. Check back later!</p>
+            <a href="{{ route('shop.index') }}" class="inline-block bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg">
+                Browse Products
+            </a>
         </div>
     @else
-        <div class="row">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($auctions as $auction)
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="position-absolute top-0 end-0 m-2">
-                            @if($auction->is_featured)
-                                <span class="badge bg-warning">Featured</span>
-                            @endif
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <a href="{{ route('auctions.show', $auction) }}">{{ $auction->title }}</a>
-                            </h5>
-                            <p class="card-text text-muted">{{ Str::limit($auction->description, 100) }}</p>
-                            
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted">Current Bid</span>
-                                <span class="h5 text-primary">${{ number_format($auction->current_price, 2) }}</span>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted">Bids</span>
-                                <span>{{ $auction->total_bids }}</span>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted">Ends In</span>
-                                <span class="countdown" data-ends-at="{{ $auction->ends_at }}">
-                                    {{ $auction->ends_at->diffForHumans() }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-white border-top-0">
-                            <a href="{{ route('auctions.show', $auction) }}" class="btn btn-primary w-100">View Auction</a>
-                        </div>
-                    </div>
-                </div>
+                @include('auctions._card', ['auction' => $auction])
             @endforeach
         </div>
 
-        <div class="d-flex justify-content-center">
+        <div class="mt-8">
             {{ $auctions->links() }}
         </div>
     @endif
 </div>
 @endsection
-
