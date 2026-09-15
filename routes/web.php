@@ -156,9 +156,16 @@ Route::get('/chatbot/messages', [ChatbotController::class, 'messages'])
 Route::post('/chatbot/handoff', [ChatbotController::class, 'handoff'])
     ->middleware('throttle:chatbot')
     ->name('chatbot.handoff');
-Route::get('/campaigns/track/open/{token}', [CampaignTrackingController::class, 'open'])->name('campaigns.track.open');
-Route::get('/campaigns/track/click/{token}', [CampaignTrackingController::class, 'click'])->name('campaigns.track.click');
-Route::get('/campaigns/unsubscribe/{token}', [CampaignTrackingController::class, 'unsubscribe'])->name('campaigns.unsubscribe');
+// These are public, token-guarded, and unauthenticated by design (they're
+// hit from email clients, not logged-in sessions), but had no rate limit at
+// all -- each one does a DB lookup, and open()/unsubscribe() also write, so
+// an unthrottled flood (even of a single known/guessed token) is a cheap
+// DB-amplification vector. Reusing the `public-forms` limiter (20/min/IP)
+// rather than inventing a new one, since it already exists for exactly this
+// class of anonymous-public-endpoint abuse (see contact/newsletter below).
+Route::get('/campaigns/track/open/{token}', [CampaignTrackingController::class, 'open'])->middleware('throttle:public-forms')->name('campaigns.track.open');
+Route::get('/campaigns/track/click/{token}', [CampaignTrackingController::class, 'click'])->middleware('throttle:public-forms')->name('campaigns.track.click');
+Route::get('/campaigns/unsubscribe/{token}', [CampaignTrackingController::class, 'unsubscribe'])->middleware('throttle:public-forms')->name('campaigns.unsubscribe');
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->middleware('throttle:public-forms')->name('newsletter.subscribe');
 Route::post('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])->middleware('throttle:public-forms')->name('newsletter.unsubscribe');

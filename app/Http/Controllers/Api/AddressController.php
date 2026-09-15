@@ -22,6 +22,13 @@ class AddressController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        // state/postal_code/phone are required (not nullable): the
+        // `addresses` migration defines all three as NOT NULL with no
+        // default, so validating them as optional let a request pass
+        // validation and then blow up with a raw QueryException at the
+        // database layer instead of a clean 422 (found while resolving the
+        // input-validation audit; the web AddressController shares this
+        // same rule set).
         $validated = $request->validate([
             'type' => ['required', 'in:billing,shipping,both'],
             'first_name' => ['required', 'string', 'max:255'],
@@ -30,10 +37,10 @@ class AddressController extends Controller
             'address_line1' => ['required', 'string', 'max:255'],
             'address_line2' => ['nullable', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:255'],
-            'state' => ['nullable', 'string', 'max:255'],
-            'postal_code' => ['nullable', 'string', 'max:20'],
+            'state' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'max:20'],
             'country' => ['required', 'string', 'max:100'],
-            'phone' => ['nullable', 'string', 'max:30'],
+            'phone' => ['required', 'string', 'max:30'],
             'is_default' => ['boolean'],
         ]);
 
@@ -69,10 +76,10 @@ class AddressController extends Controller
             'address_line1' => ['sometimes', 'required', 'string', 'max:255'],
             'address_line2' => ['nullable', 'string', 'max:255'],
             'city' => ['sometimes', 'required', 'string', 'max:255'],
-            'state' => ['nullable', 'string', 'max:255'],
-            'postal_code' => ['nullable', 'string', 'max:20'],
+            'state' => ['sometimes', 'required', 'string', 'max:255'],
+            'postal_code' => ['sometimes', 'required', 'string', 'max:20'],
             'country' => ['sometimes', 'required', 'string', 'max:100'],
-            'phone' => ['nullable', 'string', 'max:30'],
+            'phone' => ['sometimes', 'required', 'string', 'max:30'],
             'is_default' => ['boolean'],
         ]);
 
