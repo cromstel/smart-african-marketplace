@@ -240,8 +240,8 @@ class SeoService
             'name' => $auction->title,
             'description' => $auction->description,
             'url' => route('auctions.show', $auction->slug),
-            'startDate' => $auction->start_time?->toIso8601String(),
-            'endDate' => $auction->end_time?->toIso8601String(),
+            'startDate' => $auction->starts_at?->toIso8601String(),
+            'endDate' => $auction->ends_at?->toIso8601String(),
             'seller' => [
                 '@type' => 'Organization',
                 'name' => $auction->vendor->business_name ?? $auction->vendor->name ?? config('app.name'),
@@ -250,15 +250,16 @@ class SeoService
                 '@type' => 'Offer',
                 'priceCurrency' => 'USD',
                 'price' => $auction->current_price,
-                'priceValidUntil' => $auction->end_time?->toDateString(),
-                'availability' => $auction->status === 'active' && $auction->end_time > now()
+                'priceValidUntil' => $auction->ends_at?->toDateString(),
+                'availability' => $auction->status === 'active' && $auction->ends_at && $auction->ends_at->isFuture()
                     ? 'https://schema.org/InStock'
                     : 'https://schema.org/OutOfStock',
             ],
         ];
 
-        if ($auction->images && $auction->images->isNotEmpty()) {
-            $schema['image'] = $auction->images->first()->image_path;
+        $auctionImages = $auction->product?->images;
+        if ($auctionImages && $auctionImages->isNotEmpty()) {
+            $schema['image'] = $auctionImages->first()->image_path;
         }
 
         return $schema;
