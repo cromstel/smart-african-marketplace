@@ -23,7 +23,7 @@ return [
     |
     */
 
-    'message' => env('MAINTENANCE_MESSAGE', 'Site is currently under maintenance. Please check back soon.'),
+    'message' => env('MAINTENANCE_MESSAGE', 'Site is currently under maintenance. Please check back later.'),
 
     /*
     |--------------------------------------------------------------------------

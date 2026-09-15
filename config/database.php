@@ -27,7 +27,11 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
                 PDO::ATTR_TIMEOUT => env('DB_CONNECTION_TIMEOUT', 5),
-                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                // PDO::MYSQL_ATTR_USE_BUFFERED_QUERY is deprecated since PHP 8.5
+                // in favor of Pdo\Mysql::ATTR_USE_BUFFERED_QUERY. Use whichever
+                // the running PHP version provides so this works on both sides
+                // of the 8.4 cutover without a deprecation notice.
+                (class_exists(\Pdo\Mysql::class) ? \Pdo\Mysql::ATTR_USE_BUFFERED_QUERY : PDO::MYSQL_ATTR_USE_BUFFERED_QUERY) => true,
             ]) : [],
         ],
     ],
