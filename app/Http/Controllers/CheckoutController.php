@@ -9,6 +9,7 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderGroup;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Services\Campaign\CampaignTrackingService;
 use App\Services\Shipping\ShippingCalculatorService;
@@ -193,8 +194,20 @@ class CheckoutController extends Controller
                 }
             }
 
+            // Lock each product row for the duration of the transaction and
+            // re-check stock immediately before decrementing it. Without this,
+            // two concurrent checkouts (or stock that changed after the item
+            // was added to the cart) could both pass and drive stock negative.
             foreach ($cart->items as $item) {
-                $product = $item->product;
+                $product = Product::whereKey($item->product_id)->lockForUpdate()->first();
+
+                if (! $product || $product->stock_quantity < $item->quantity) {
+                    $name = $product?->name ?? $item->product->name ?? 'this item';
+                    $available = $product?->stock_quantity ?? 0;
+
+                    throw new \RuntimeException("Not enough stock for \"{$name}\". Only {$available} unit(s) left.");
+                }
+
                 $product->stock_quantity -= $item->quantity;
                 $product->sales_count += $item->quantity;
                 $product->save();
@@ -207,6 +220,15 @@ class CheckoutController extends Controller
                 auth()->id()
             );
 
+            // Clear the cart as soon as the order is created, regardless of
+            // payment method. The order/payment pages below are reached via
+            // the order's own route binding, not the cart, so this is safe --
+            // and it prevents a resubmitted/duplicated checkout request from
+            // creating a second order and decrementing stock a second time
+            // for a cart that already became an order.
+            $cart->items()->delete();
+            $cart->delete();
+
             if ($validated['payment_method'] === 'cash_on_delivery') {
                 Payment::create([
                     'order_id' => $order->id,
@@ -218,9 +240,6 @@ class CheckoutController extends Controller
                     'processed_at' => now(),
                 ]);
 
-                $cart->items()->delete();
-                $cart->delete();
-
                 DB::commit();
 
                 Mail::to($order->user->email)->send(new OrderPlaced($order));
@@ -230,7 +249,7 @@ class CheckoutController extends Controller
                     $smsService->sendOrderConfirmation(
                         $order->user->phone,
                         $order->order_number,
-                        $order->total_amount
+                        (float) $order->total
                     );
                 }
 
