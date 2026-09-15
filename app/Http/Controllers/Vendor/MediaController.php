@@ -239,7 +239,13 @@ class MediaController extends Controller
 
         $request->validate([
             'files' => 'required|array',
-            'files.*' => 'file|mimes:jpeg,jpg,png,webp,svg,pdf,doc,docx,xls,xlsx,mp4,mov,avi|max:10240',
+            // svg deliberately excluded: it's served as-is from the public
+            // disk at a predictable, directly-browsable URL, and an SVG can
+            // carry an onload handler or inline <script> that executes in
+            // this site's own origin if that URL is ever opened directly
+            // (not just referenced via <img>) -- a stored-XSS vector any
+            // vendor could upload through this shared library.
+            'files.*' => 'file|mimes:jpeg,jpg,png,webp,pdf,doc,docx,xls,xlsx,mp4,mov,avi|max:10240',
             'folder_id' => 'nullable|exists:media_folders,id',
         ]);
 
@@ -273,6 +279,13 @@ class MediaController extends Controller
                     $maxWidth = Setting::get('media_max_width', 1200);
                     $maxHeight = Setting::get('media_max_height', 1200);
 
+                    // trackInLibrary: false -- this method already builds its own
+                    // MediaLibrary row below (it needs to set vendor_id, which
+                    // uploadAndOptimize()'s own internal tracking row never sets).
+                    // Leaving this true made every optimized vendor upload create
+                    // two MediaLibrary rows for the same physical file: one from
+                    // here (with vendor_id) and an untracked duplicate from the
+                    // service (without vendor_id).
                     $result = $this->imageOptimizationService->uploadAndOptimize(
                         $file,
                         "media/vendors/{$vendor->id}",
@@ -280,7 +293,7 @@ class MediaController extends Controller
                         $maxHeight,
                         null,
                         null,
-                        true,
+                        false,
                         $folderId
                     );
 

@@ -138,6 +138,37 @@ class ImageOptimizationService
         ]);
     }
 
+    /**
+     * WebP inputs stay WebP. Everything else is converted to AVIF when this
+     * server's GD build can actually encode it (checked once per call via
+     * `imageavif` existing, rather than assumed), falling back to JPEG
+     * otherwise so uploads never fail on a server without AVIF support.
+     */
+    private function outputExtension(string $inputExtension): string
+    {
+        if ($inputExtension === 'webp') {
+            return 'webp';
+        }
+
+        return function_exists('imageavif') ? 'avif' : 'jpg';
+    }
+
+    /**
+     * MIME type for the extensions outputExtension() can produce, plus the
+     * common originals it might be asked about elsewhere in the class.
+     */
+    private function mimeTypeFor(string $extension): string
+    {
+        return match (strtolower($extension)) {
+            'avif' => 'image/avif',
+            'webp' => 'image/webp',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'bmp' => 'image/bmp',
+            default => 'image/jpeg',
+        };
+    }
+
     private function resolveDefaultFolderId(): ?int
     {
         if (! auth()->check()) {

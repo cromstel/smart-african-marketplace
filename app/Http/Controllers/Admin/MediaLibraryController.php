@@ -168,9 +168,14 @@ class MediaLibraryController extends Controller
 
     public function upload(Request $request)
     {
+        // svg deliberately excluded: see the identical note in
+        // Vendor\MediaController::upload() -- it's served as-is from the
+        // public disk at a predictable URL, and can carry a script/onload
+        // handler that executes in this site's own origin if opened
+        // directly rather than only referenced via <img>.
         $request->validate([
             'files' => 'required|array',
-            'files.*' => 'file|mimes:jpeg,jpg,png,webp,svg,pdf,doc,docx,xls,xlsx,mp4,mov,avi|max:10240',
+            'files.*' => 'file|mimes:jpeg,jpg,png,webp,pdf,doc,docx,xls,xlsx,mp4,mov,avi|max:10240',
             'folder_id' => 'nullable|exists:media_folders,id',
         ]);
 
