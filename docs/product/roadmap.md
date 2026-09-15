@@ -99,6 +99,15 @@ still behave incorrectly under `config:cache`; both need a considered fix rather
 than a mechanical one, and neither silently corrupts page output the way
 `SeoService` did.
 
+> **Verified 2026-09-15.** The definition of done for this item called for
+> "a test asserts SEO metadata survives `config:cache`," and no such test
+> existed. Added `tests/Unit/Services/SeoServiceTest.php` (5 tests): proves
+> `getDescription()`/`getKeywords()` resolve from `config('seo.*')` rather
+> than `env()` (the exact thing a cached config array preserves), that a
+> page-specific `setDescription()` still overrides the config default, and
+> that `generateOrganizationSchema()`'s social links come from
+> `config('seo.social')` and correctly omit unset providers.
+
 ### 0.4 Reconcile the PHP version — **Low** ✅ implemented
 
 CI pins 8.3, `composer.json` requires `^8.2`. Pick the supported floor
@@ -155,7 +164,21 @@ costs money when it regresses.
 `MobileMoneyWebhookTest` and `MobileMoneyCheckoutFlowTest`, also already cited.
 M-Pesa, MTN and Airtel via Paystack are core to the African market.
 
-### 1.4 Correct the closure matrix
+> **Verified 2026-09-15 — `MobileMoneyCheckoutFlowTest` did not exist.** This
+> row cited it as already written; it was not, which is exactly the
+> "document cites a file that does not exist" problem CONTRIBUTING.md's rule
+> was added to catch. `MobileMoneyWebhookTest` only covers the provider
+> calling *back*; the checkout-initiation side of `Api\CheckoutController`
+> (the real outbound HTTP calls to MTN's `requesttopay` and M-Pesa's OAuth +
+> STK push, currency/reference handling per provider, and what happens when
+> a gateway is unconfigured or rejects the request) had zero coverage.
+> Written now as `tests/Feature/MobileMoneyCheckoutFlowTest.php` (6 tests):
+> MTN and M-Pesa happy paths against faked HTTP responses, both providers'
+> "gateway not configured" `RuntimeException` surfacing as a clean 422
+> instead of a 500, and confirming a rejected provider request rolls the
+> order back rather than leaving a half-created one.
+
+### 1.4 Correct the closure matrix — ✅ done
 
 Re-mark items honestly, then re-mark them Complete as each test lands. Add a rule
 to `CONTRIBUTING.md`: **a document may not cite a file that does not exist**, and
@@ -164,24 +187,42 @@ enforce it with the audit script in CI.
 *Definition of done:* every "Complete" row in the matrix points at a file that
 exists and a test that passes in CI.
 
+> **Verified 2026-09-15.** Confirmed all three pieces are real, not just
+> described: CONTRIBUTING.md states the "never cite a file that does not
+> exist" rule; `scripts/docs/check-docs.py` implements it; and
+> `.github/workflows/docs.yml` runs it (`python3 scripts/docs/check-docs.py`)
+> on every push and PR, so a doc citing a missing file now fails CI rather
+> than silently drifting. `docs/security/pending-closure-matrix.md`'s own
+> "Test suite baseline" row was itself stale (still read "56 passed, 190
+> assertions, 10 test files" — the state from 2026-09-08) and has been
+> refreshed to the current 248/46.
+
 ---
 
 ## Phase 2 — Establish a real test foundation (4–6 weeks)
 
 Not "100% coverage" — coverage of what breaks expensively.
 
-### 2.1 Split the test suites
+### 2.1 Split the test suites — ✅ done
 
 `phpunit.xml` defines only `Feature`. Add a `Unit` suite so service-layer logic
 can be tested without booting the framework.
 
+> **Verified 2026-09-15.** `phpunit.xml` already declares both `Unit`
+> (`./tests/Unit`) and `Feature` (`./tests/Feature`) suites; `Unit` holds
+> `Services/VendorLedgerServiceTest`, `Services/SeoServiceTest`,
+> `Services/Auction/BiddingServiceTest` and `Models/UserRoleTest`.
+
 ### 2.2 Cover the money and trust paths, in this order
 
-> **Update:** all seven areas below now have passing feature coverage (237
-> tests total across `Feature` + `Unit`, verified by running the full suite —
-> 225 from the original pass plus the 12 vendor-isolation tests added in
-> 2.3). "Covered" means the money/trust path has real assertions, not that
-> every edge case in that area is exhausted — see 2.3 for how far the vendor
+> **Update:** all seven areas below now have passing feature coverage (248
+> tests total across `Feature` + `Unit`, verified by running the full suite:
+> 225 from the original pass, the 12 vendor-isolation tests added in 2.3,
+> and 11 more from the 2026-09-15 phase 0-2 completeness audit —
+> `SeoServiceTest` closing the 0.3 gap and `MobileMoneyCheckoutFlowTest`
+> closing the 1.3 gap, both detailed in their respective sections).
+> "Covered" means the money/trust path has real assertions, not that every
+> edge case in that area is exhausted — see 2.3 for how far the vendor
 > isolation pattern specifically reaches.
 
 | Priority | Area | Why | Status |
@@ -237,12 +278,22 @@ now established across every vendor controller where it applies. Future new
 vendor-scoped controllers should get one of these tests as part of their PR,
 not as a follow-up.
 
-### 2.4 Add coverage reporting to CI
+### 2.4 Add coverage reporting to CI — ✅ done
 
 Not as a gate to start with. Make the number visible, then ratchet.
 
 *Definition of done:* CI runs Unit + Feature; the seven areas above have tests;
 coverage is reported on every PR.
+
+> **Shipped 2026-09-15.** `ci.yml` ran with `coverage: none` — the number was
+> never generated at all. The PHP 8.3 matrix leg (the version actually
+> deployed) now installs the `pcov` driver and runs
+> `php artisan test --coverage-clover=coverage.xml --coverage-text`, and the
+> Clover report is uploaded as a build artifact on every push and PR. The
+> 8.2 leg runs the plain suite unchanged, so coverage instrumentation is
+> generated once, not twice. Deliberately not a gate yet, per this item's
+> own instruction — a coverage-percentage threshold is a future decision,
+> not an oversight.
 
 ---
 

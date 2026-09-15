@@ -1,6 +1,6 @@
 # Laravel Pending Closure Matrix
 
-**Status: Needs review** — corrected 2026-09-08.
+**Status: Current** — corrected 2026-09-08, test-count refreshed 2026-09-15.
 
 [Documentation Hub](../README.md) › Pending Closure Matrix
 
@@ -46,7 +46,7 @@ This matrix tracks closure of Laravel-active pending tasks and separates code-co
 | CI non-strict readiness gate | Complete | `.github/workflows/ci.yml` | Always runs in CI. |
 | CI strict readiness gate with secrets | Complete | `.github/workflows/ci.yml` | Runs only when all required secrets exist. |
 | Migration state | Complete | `php artisan migrate:status` | No pending migrations. |
-| Test suite baseline | **Complete, but thin** | `php artisan test` — 56 passed, 190 assertions | 10 test files against 146 controllers and 98 models. Still thin; see [Roadmap Phase 2](../product/roadmap.md#phase-2--establish-a-real-test-foundation-46-weeks). |
+| Test suite baseline | **Complete** | `php artisan test` — 248 passed, 46 test files (refreshed 2026-09-15) | Grew from the original 56 passed / 10 files via Roadmap Phase 2: the seven money/trust areas in [2.2](../product/roadmap.md#22-cover-the-money-and-trust-paths-in-this-order) and 19-controller vendor isolation in [2.3](../product/roadmap.md#23-vendor-isolation-as-a-first-class-test-pattern--target-set-complete) are now covered. Not "100% coverage" — see Phase 2's guiding principle. |
 | Production payment keys provisioning | Deployment-time | Env/Secrets | Requires real values in environment. |
 | Production SMTP provisioning | Deployment-time | Env/Secrets | Requires real `MAIL_*` values. |
 | SSL/TLS, backups, infra monitoring wiring | Deployment-time | Infrastructure | Not a code gap. |
