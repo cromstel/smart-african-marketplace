@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Concerns\ApiResponse;
 use App\Models\SalonService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class SalonController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request)
     {
         $query = SalonService::with(['category', 'salon', 'stylist', 'user'])
@@ -57,7 +60,10 @@ class SalonController extends Controller
                 (float) ($request->radius ?? 50)
             );
 
-            return response()->json($this->paginateCollection($filtered, $request));
+            return $this->successResponse(
+                $this->paginateCollection($filtered, $request),
+                'Salon services retrieved successfully'
+            );
         }
 
         if ($hasGeo) {
@@ -104,7 +110,7 @@ class SalonController extends Controller
 
         $services = $query->paginate(12)->withQueryString();
 
-        return response()->json($services);
+        return $this->successResponse($services, 'Salon services retrieved successfully');
     }
 
     private function filterByDistance($services, float $lat, float $lng, float $radius)

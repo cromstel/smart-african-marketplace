@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Concerns\ApiResponse;
+use App\Http\Resources\ProductResource;
 use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class BrandProductController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request, Brand $brand)
     {
         if (! $brand->is_active) {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'message' => 'Brand not found',
-            ], 404);
+            return $this->errorResponse('Brand not found', 404);
         }
 
         $query = Product::with(['category', 'images'])
@@ -102,10 +102,6 @@ class BrandProductController extends Controller
 
         $products = $query->paginate($perPage);
 
-        return response()->json([
-            'success' => true,
-            'data' => $products,
-            'message' => 'Products retrieved successfully',
-        ]);
+        return $this->successResponse(ProductResource::collection($products), 'Products retrieved successfully');
     }
 }

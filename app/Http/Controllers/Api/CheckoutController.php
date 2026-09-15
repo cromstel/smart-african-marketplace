@@ -11,6 +11,7 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderGroup;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\Payment\PaystackPaymentService;
@@ -146,8 +147,20 @@ class CheckoutController extends Controller
                 }
             }
 
+            // Lock each product row for the duration of the transaction and
+            // re-check stock immediately before decrementing it. Without this,
+            // two concurrent checkouts (or stock that changed after the item
+            // was added to the cart) could both pass and drive stock negative.
             foreach ($cart->items as $item) {
-                $product = $item->product;
+                $product = Product::whereKey($item->product_id)->lockForUpdate()->first();
+
+                if (! $product || $product->stock_quantity < $item->quantity) {
+                    $name = $product?->name ?? $item->product->name ?? 'this item';
+                    $available = $product?->stock_quantity ?? 0;
+
+                    throw new \RuntimeException("Not enough stock for \"{$name}\". Only {$available} unit(s) left.");
+                }
+
                 $product->stock_quantity -= $item->quantity;
                 $product->sales_count += $item->quantity;
                 $product->save();
@@ -198,6 +211,13 @@ class CheckoutController extends Controller
                 ],
                 'message' => $paymentResult['message'],
             ], $paymentResult['http_status']);
+        } catch (\RuntimeException $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
 
