@@ -45,7 +45,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           extensions: bcmath, mbstring, pdo_mysql, fileinfo, curl, dom, libxml, xmlwriter, tokenizer
-          coverage: none
+          coverage: pcov
 
       - name: Get Composer cache directory
         id: composer-cache
@@ -89,10 +89,33 @@ jobs:
           DB_PASSWORD: password
         run: php artisan migrate --force
 
+      # Roadmap 2.4: make coverage visible, not a gate. Only one matrix leg
+      # uploads a report -- running pcov twice would just produce two
+      # identical artifacts -- and a coverage regression never fails the
+      # build on its own; that is a deliberate future decision, not an
+      # oversight.
+      - name: Run tests with coverage
+        if: matrix.php-version == '8.3'
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USERNAME: root
+          DB_PASSWORD: password
+        run: php artisan test --coverage-clover=coverage.xml --coverage-text
+
       - name: Run tests
+        if: matrix.php-version != '8.3'
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_USERNAME: root
           DB_PASSWORD: password
         run: php artisan test
+
+      - name: Upload coverage report
+        if: matrix.php-version == '8.3'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+          retention-days: 30
