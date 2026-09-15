@@ -5,6 +5,10 @@
 /public/storage
 /storage/*.key
 /vendor
+/scripts/*
+*.ps1
+*.bat
+*.txt
 /issues-to-fix/
 .env
 .env.local
@@ -138,3 +142,11 @@ deploy.sh
 /mobile/ios/**/xcuserdata/
 /mobile/ios/**/.swiftpm/
 docs/codebase-review.md
+
+Claude outputs/
+mobile/android/gradlew.bat
+soketi/run-local.cmd
+mobile/android/PLAY_STORE_LISTING.md
+docs/composer-install-prompt.md
+/composer.phar
+
