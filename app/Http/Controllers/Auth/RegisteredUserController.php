@@ -7,7 +7,7 @@ use App\Mail\WelcomeEmail;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Models\VendorCategory;
-use App\Providers\RouteServiceProvider;
+use App\Providers\AppServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -93,7 +93,7 @@ class RegisteredUserController extends Controller
                 return redirect()->route('vendor.dashboard')->with('success', 'Your vendor account has been created and is pending approval.');
             }
 
-            return redirect(RouteServiceProvider::HOME);
+            return redirect(AppServiceProvider::HOME);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
