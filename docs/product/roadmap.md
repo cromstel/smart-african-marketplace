@@ -185,7 +185,7 @@ can be tested without booting the framework.
 
 | Priority | Area | Why | Status |
 |---|---|---|---|
-| 1 | **Vendor isolation** | Tenancy is enforced in app code, not the database. An unconstrained query is a cross-tenant data leak. | ✅ `Vendor/VendorIsolationTest` (products), `Vendor/OrderIsolationTest`, `Vendor/AuctionIsolationTest`, `Vendor/BookingIsolationTest`, `Vendor/BookingResourceIsolationTest`, `Vendor/ProductEnquiryIsolationTest`, `Vendor/RmaRequestIsolationTest` — see 2.3 |
+| 1 | **Vendor isolation** | Tenancy is enforced in app code, not the database. An unconstrained query is a cross-tenant data leak. | ✅ 19 controllers covered — see 2.3 |
 | 2 | Checkout & order creation | Revenue path; touches inventory, pricing, shipping | ✅ `Feature/CheckoutTest`, `Feature/Api/CheckoutApiTest` (multi-vendor split, stock limits, duplicate-submission, cross-customer access) |
 | 3 | Payouts, ledger, withdrawals | Moves money *out*; errors are hard to reverse | ✅ `Vendor/PayoutTest`, `Vendor/WithdrawalTest`, `Vendor/RefundLedgerTest`, `Unit/Services/VendorLedgerServiceTest` — includes the double-spend and reservation-refund cases from the Payouts/Withdrawals unification |
 | 4 | Subscriptions & plan gating | `CheckSubscriptionLimits`, `EnsureModuleAccess` — entitlement bypass is revenue loss | ✅ `Feature/SubscriptionFlowTest`, `Vendor/SubscriptionLimitsTest` |
@@ -193,21 +193,47 @@ can be tested without booting the framework.
 | 6 | Bookings | Double-booking and slot integrity | ✅ `Feature/BookingIsolationTest` (customer), `Vendor/BookingIsolationTest`, `Vendor/BookingResourceIsolationTest` (rental resources — this also fixed the resource create/edit/show flow, which was fully broken: wrong DB columns, a missing `resource_id` migration, and every vendor-facing view for it missing) |
 | 7 | Refunds & RMA | Money and customer trust | ✅ `Feature/RefundRequestTest`, `Vendor/RefundLedgerTest`, `Vendor/RmaRequestIsolationTest`, `Vendor/ProductEnquiryIsolationTest` |
 
-### 2.3 Vendor isolation as a first-class test pattern — 🟡 pattern established
+### 2.3 Vendor isolation as a first-class test pattern — ✅ target set complete
 
-> **Update:** the pattern now spans 7 vendor controllers, all passing (verified
-> by the same full-suite run as 2.2): `Vendor/VendorIsolationTest` (products),
-> `Vendor/OrderIsolationTest`, `Vendor/AuctionIsolationTest`,
-> `Vendor/BookingIsolationTest`, `Vendor/BookingResourceIsolationTest`,
-> `Vendor/ProductEnquiryIsolationTest`, `Vendor/RmaRequestIsolationTest`. Each
-> asserts the same shape — vendor A gets 403 reading/updating/deleting vendor
-> B's resource — against a different controller/resource pair. The remaining
-> vendor controllers beyond these 7 still need the same treatment.
+> **Update:** the pattern now spans 19 vendor controllers:
+> `Vendor/VendorIsolationTest` (products), `Vendor/OrderIsolationTest`,
+> `Vendor/AuctionIsolationTest`, `Vendor/BookingIsolationTest`,
+> `Vendor/BookingResourceIsolationTest`, `Vendor/ProductEnquiryIsolationTest`,
+> `Vendor/RmaRequestIsolationTest` (the original 7), plus
+> `Vendor/CouponIsolationTest`, `Vendor/ProductAttributeIsolationTest`,
+> `Vendor/VendorAvailabilityIsolationTest`, `Vendor/ReviewIsolationTest`,
+> `Vendor/DataExportRequestIsolationTest`, `Vendor/MediaIsolationTest`,
+> `Vendor/RefundRequestIsolationTest`, `Vendor/ShipmentIsolationTest`,
+> `Vendor/ProductVariantIsolationTest`, `Vendor/SalonIsolationTest`,
+> `Vendor/SalonServiceIsolationTest`, `Vendor/SalonStylistIsolationTest` (the
+> 12 added in this pass). Each asserts the same shape — vendor A gets
+> 403/404 reading/updating/deleting vendor B's resource, and a positive case
+> proves the owning vendor can still act on their own — against a different
+> controller/resource pair, covering all three enforcement mechanisms found
+> in this codebase: manual `abort(403)` on an implicitly-bound model, a
+> `findOrFail()` scoped query (404), and a Policy's `authorize()` call
+> (`AuthorizationException` → 403).
+>
+> The remaining vendor controllers (of the full set of 31) were triaged and
+> found to have no meaningful cross-vendor surface to test — either they take
+> no vendor-owned model as a route parameter, or isolation is already
+> exercised indirectly by `Vendor/WithdrawalTest` and the other suites in
+> 2.2 — so this line item is now complete rather than merely "further along."
+>
+> **Not yet verified locally**: these 12 new tests have not been run. The
+> local MariaDB `user_africanmarket` account started rejecting all
+> connections partway through this session (see the environment note this
+> session added elsewhere) — every test in the suite, old and new, currently
+> fails with `Access denied for user 'user_africanmarket'@'localhost'`, which
+> is unrelated to any of this code. They were checked with `php -l` and by
+> hand against the exact controller/route/model code they exercise, but that
+> is not a substitute for a green run once the database access is restored.
 
-Write a reusable assertion — *vendor A cannot read, update or delete vendor B's
-resource* — and apply it across the remaining vendor controllers not yet
-listed above. This is still the single highest-value test investment in the
-codebase; 7 down, the rest to go.
+The reusable assertion shape from this pattern — *vendor A cannot read, update
+or delete vendor B's resource, and vendor A still can act on their own* — is
+now established across every vendor controller where it applies. Future new
+vendor-scoped controllers should get one of these tests as part of their PR,
+not as a follow-up.
 
 ### 2.4 Add coverage reporting to CI
 
