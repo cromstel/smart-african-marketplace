@@ -35,7 +35,7 @@ Companion execution checklist for staging-first external rollout:
 
 ## 2. Infrastructure
 - Enable HTTPS and valid SSL certificate.
-- Configure queue worker process (`php artisan queue:work` under process manager).
+- Configure queue worker process (see `docs/operations/queue-workers.md` for the required `--queue=...` flag and named queues -- a worker started without it silently never processes the campaign/media/chatbot/payout jobs).
 - Configure scheduler (`php artisan schedule:run` every minute via cron).
 - Configure persistent storage and backup location.
 - Follow certificate renewal procedure in `docs/operations/ssl-certificate-renewal.md`.
