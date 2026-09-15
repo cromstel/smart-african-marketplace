@@ -18,16 +18,30 @@ class BiddingService
      */
     public function placeBid(Auction $auction, User $user, float $amount): AuctionBid
     {
-        // Validate the bid
-        $this->validateBid($auction, $amount);
-
         return DB::transaction(function () use ($auction, $user, $amount) {
+            // Re-fetch and lock the auction row inside the transaction.
+            // $auction, as handed to us, was loaded by the caller (typically
+            // route-model binding) before this method ran and before any
+            // lock was taken. Validating against that snapshot let two
+            // near-simultaneous bids both pass validation against the same
+            // stale current_price: whichever request's transaction
+            // committed second would then overwrite current_price with its
+            // own (possibly lower) amount and flip the winning flag onto
+            // its own lower bid -- silently erasing a legitimately higher
+            // bid. Locking and re-validating against the current row
+            // closes that window; the second bidder now waits for the
+            // first bid's transaction to commit and is correctly rejected
+            // if their amount no longer clears the new minimum.
+            $locked = Auction::whereKey($auction->id)->lockForUpdate()->firstOrFail();
+
+            $this->validateBid($locked, $amount);
+
             // Get previous winning bid (if any)
-            $previousWinningBid = $auction->bids()->winning()->first();
+            $previousWinningBid = $locked->bids()->winning()->first();
 
             // Create the new bid
             $bid = AuctionBid::create([
-                'auction_id' => $auction->id,
+                'auction_id' => $locked->id,
                 'user_id' => $user->id,
                 'amount' => $amount,
                 'is_winning' => true,
@@ -39,23 +53,28 @@ class BiddingService
                 $previousWinningBid->update(['is_winning' => false]);
 
                 // Notify previous bidder they've been outbid
-                $this->notifyOutbid($auction, $previousWinningBid->user, $amount);
+                $this->notifyOutbid($locked, $previousWinningBid->user, $amount);
             }
 
             // Update auction current price and bid count
-            // Using direct assignment since amount is validated before this call
-            $auction->current_price = max($auction->current_price, $amount);
-            $auction->total_bids += 1;
-            $auction->save();
+            // Using direct assignment since amount is validated against the
+            // locked row above.
+            $locked->current_price = max($locked->current_price, $amount);
+            $locked->total_bids += 1;
+            $locked->save();
 
             // Check for anti-sniping extension
-            $this->checkAndExtend($auction);
+            $this->checkAndExtend($locked);
 
             // Process auto-bids (pass the user who just bid to exclude them)
-            $this->processAutoBids($auction, $amount, $user);
+            $this->processAutoBids($locked, $amount, $user);
 
             // Notify seller of new bid
-            $this->notifySellerOfNewBid($auction, $user, $amount);
+            $this->notifySellerOfNewBid($locked, $user, $amount);
+
+            // Keep the caller's instance (e.g. the controller's route-bound
+            // model) in sync with what was actually persisted.
+            $auction->setRawAttributes($locked->getAttributes());
 
             return $bid;
         });
