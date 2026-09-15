@@ -72,13 +72,13 @@ class SitemapController extends Controller
 
     public function products(): Response
     {
-        $products = Product::where('status', 'active')
-            ->where('stock', '>', 0)
+        $products = Product::where('is_active', true)
+            ->where('stock_quantity', '>', 0)
             ->select('slug', 'updated_at')
             ->get();
 
         $categories = Category::whereHas('products', function ($query) {
-            $query->where('status', 'active');
+            $query->where('is_active', true);
         })->get();
 
         $urls = [];
@@ -151,7 +151,7 @@ class SitemapController extends Controller
     public function auctions(): Response
     {
         $auctions = Auction::where('status', 'active')
-            ->where('end_time', '>', now())
+            ->where('ends_at', '>', now())
             ->select('slug', 'updated_at')
             ->get();
 
@@ -179,7 +179,7 @@ class SitemapController extends Controller
     public function vendors(): Response
     {
         $vendors = Vendor::where('is_active', true)
-            ->whereNotNull('verified_at')
+            ->where('status', 'approved')
             ->select('slug', 'updated_at')
             ->get();
 
