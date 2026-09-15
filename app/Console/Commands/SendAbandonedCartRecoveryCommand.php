@@ -2,16 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendAbandonedCartRecoveryEmail;
 use App\Models\Cart;
 use App\Models\Order;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 
 class SendAbandonedCartRecoveryCommand extends Command
 {
     protected $signature = 'campaigns:send-abandoned-cart {--hours=2} {--max=500}';
 
-    protected $description = 'Send abandoned cart recovery emails to eligible users';
+    protected $description = 'Queue abandoned cart recovery emails for eligible users';
 
     public function handle(): int
     {
@@ -28,7 +28,7 @@ class SendAbandonedCartRecoveryCommand extends Command
             ->limit($max)
             ->get();
 
-        $sent = 0;
+        $queued = 0;
         foreach ($carts as $cart) {
             if (! $cart->user || ! $cart->user->email) {
                 continue;
@@ -44,24 +44,11 @@ class SendAbandonedCartRecoveryCommand extends Command
                 continue;
             }
 
-            $itemCount = $cart->items->sum('quantity');
-            $cartTotal = number_format((float) $cart->total, 2);
-
-            $html = '<div style="font-family:Arial,sans-serif;color:#1f2937;line-height:1.5;">';
-            $html .= '<h2 style="margin:0 0 12px;">Complete your order</h2>';
-            $html .= '<p>You still have '.$itemCount.' item(s) in your cart worth $'.$cartTotal.'.</p>';
-            $html .= '<p><a href="'.route('cart.index').'" style="display:inline-block;background:#ea580c;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;">Return to cart</a></p>';
-            $html .= '<p style="color:#6b7280;font-size:12px;margin-top:16px;">If you already completed checkout, please ignore this email.</p>';
-            $html .= '</div>';
-
-            Mail::html($html, function ($message) use ($cart) {
-                $message->to($cart->user->email)->subject('You left items in your cart');
-            });
-
-            $sent++;
+            SendAbandonedCartRecoveryEmail::dispatch($cart);
+            $queued++;
         }
 
-        $this->info("Abandoned cart recovery complete. Sent: {$sent}");
+        $this->info("Abandoned cart recovery complete. Queued: {$queued}");
 
         return self::SUCCESS;
     }

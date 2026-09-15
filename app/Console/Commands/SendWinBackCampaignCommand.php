@@ -2,13 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SendWinBackCampaignEmail;
 use App\Models\Campaign;
-use App\Models\CampaignEvent;
 use App\Models\CampaignRecipient;
 use App\Models\Newsletter;
 use App\Models\Order;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class SendWinBackCampaignCommand extends Command
@@ -99,36 +98,15 @@ class SendWinBackCampaignCommand extends Command
                 'status' => 'pending',
             ]);
 
-            $target = url('/?utm_source=winback&utm_medium=email&utm_campaign=reactivation');
-            $link = route('campaigns.track.click', ['token' => $recipient->token, 'target' => $target]);
-            $openPixel = route('campaigns.track.open', ['token' => $recipient->token]);
-            $unsubscribe = route('campaigns.unsubscribe', ['token' => $recipient->token]);
-
-            $html = '<div style="font-family: Arial, sans-serif; color: #1f2937; line-height: 1.5;">'
-                .'<h2 style="margin-bottom: 8px;">We miss you 👋</h2>'
-                .'<p style="margin:0 0 12px;">It has been a while since your last visit. We saved a special offer for your next order.</p>'
-                .'<p style="margin:16px 0;"><a href="'.$link.'" style="display:inline-block;background:#ea580c;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;">Shop Now</a></p>'
-                .'<p style="font-size:12px;color:#6b7280;margin-top:18px;">If you no longer want these emails, you can <a href="'.$unsubscribe.'">unsubscribe here</a>.</p>'
-                .'<img src="'.$openPixel.'" width="1" height="1" alt="" />'
-                .'</div>';
-
-            Mail::html($html, function ($message) use ($subscriber, $campaign) {
-                $message->to($subscriber->email)->subject($campaign->subject);
-            });
-
-            $recipient->update(['status' => 'sent', 'sent_at' => now()]);
-
-            CampaignEvent::create([
-                'campaign_id' => $campaign->id,
-                'campaign_recipient_id' => $recipient->id,
-                'event_type' => 'sent',
-                'meta' => ['email' => $subscriber->email, 'kind' => 'win_back'],
-            ]);
+            SendWinBackCampaignEmail::dispatch($recipient);
         }
 
+        // 'sent' here means "handed off to the queue", not "delivered" -- the
+        // per-recipient CampaignRecipient/CampaignEvent rows are what track
+        // actual delivery now that sends happen asynchronously.
         $campaign->update(['status' => 'sent', 'sent_at' => now()]);
 
-        $this->info("Win-back campaign sent to {$targets->count()} recipients.");
+        $this->info("Win-back campaign queued for {$targets->count()} recipients.");
 
         return self::SUCCESS;
     }

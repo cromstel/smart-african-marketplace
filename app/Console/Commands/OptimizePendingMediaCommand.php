@@ -2,21 +2,19 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\OptimizeMediaLibraryItem;
 use App\Models\MediaLibrary;
-use App\Services\ImageOptimizationService;
 use Illuminate\Console\Command;
 
 class OptimizePendingMediaCommand extends Command
 {
     protected $signature = 'media:optimize-pending {--limit=100 : Maximum number of images to optimize}';
 
-    protected $description = 'Optimize pending media images and convert them to AVIF';
+    protected $description = 'Queue pending media images for optimization and AVIF conversion';
 
-    public function handle(ImageOptimizationService $imageOptimizationService): int
+    public function handle(): int
     {
         $limit = max(1, (int) $this->option('limit'));
-        $optimized = 0;
-        $failed = 0;
 
         $items = MediaLibrary::query()
             ->where('type', 'image')
@@ -32,16 +30,11 @@ class OptimizePendingMediaCommand extends Command
         }
 
         foreach ($items as $item) {
-            $result = $imageOptimizationService->optimizeMediaLibraryItem($item);
-            if ($result) {
-                $optimized++;
-            } else {
-                $failed++;
-            }
+            OptimizeMediaLibraryItem::dispatch($item);
         }
 
-        $this->info("Optimization complete. Optimized: {$optimized}, Failed: {$failed}.");
+        $this->info("Optimization complete. Queued: {$items->count()}.");
 
-        return $failed > 0 ? self::FAILURE : self::SUCCESS;
+        return self::SUCCESS;
     }
 }
