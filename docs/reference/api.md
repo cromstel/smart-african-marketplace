@@ -1,7 +1,7 @@
 # API Reference
 
 **Status: Current** — verified against `routes/api.php` and
-`app/Providers/RouteServiceProvider.php` on 2026-09-08.
+`app/Providers/AppServiceProvider.php` on 2026-09-15.
 
 [Documentation Hub](../README.md) › Reference › API
 
@@ -63,7 +63,10 @@ Returns the authenticated user. Note this route sits **outside** the `v1` prefix
 
 ## Rate limiting
 
-Named limiters from `RouteServiceProvider`:
+Named limiters from `App\Providers\AppServiceProvider::configureRateLimiting()`
+(moved from the now-deleted `RouteServiceProvider` when
+[Roadmap 3.3](../product/roadmap.md#33-decide-on-the-bootstrap-structure)
+migrated `bootstrap/app.php` to the slim skeleton):
 
 | Limiter | Limit | Keyed by |
 |---|---|---|
