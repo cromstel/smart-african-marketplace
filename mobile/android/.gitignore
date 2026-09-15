@@ -35,3 +35,4 @@ local.properties
 captures/
 .externalNativeBuild/
 .cxx/
+PLAY_STORE_LISTING.md
