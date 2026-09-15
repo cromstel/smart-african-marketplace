@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessVendorPayout;
 use App\Models\Payout;
 use App\Services\ActivityLogger;
 use App\Services\PayoutService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PayoutController extends Controller
 {
@@ -30,10 +32,15 @@ class PayoutController extends Controller
             return redirect()->back()->with('error', 'Payout cannot be processed.');
         }
 
-        app(PayoutService::class)->process($payout);
-        app(ActivityLogger::class)->log('payout.processed', $payout);
+        // Flip to 'processing' here, synchronously, so the admin sees it
+        // immediately instead of waiting for the job to be picked up by a
+        // worker. PayoutService::process() sets the same status again as its
+        // first step, which is a harmless no-op re-write.
+        $payout->update(['status' => 'processing']);
 
-        return redirect()->back()->with('success', 'Payout processed.');
+        ProcessVendorPayout::dispatch($payout, Auth::id());
+
+        return redirect()->back()->with('success', 'Payout queued for processing.');
     }
 
     public function fail(Request $request, Payout $payout)

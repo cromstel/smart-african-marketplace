@@ -2,20 +2,19 @@
 
 namespace App\Console\Commands;
 
-use App\Services\Chatbot\KnowledgeBaseService;
+use App\Jobs\ReindexChatbotKnowledgeJob;
 use Illuminate\Console\Command;
 
 class ReindexChatbotKnowledge extends Command
 {
     protected $signature = 'chatbot:reindex-knowledge';
 
-    protected $description = 'Rebuild chatbot knowledge index from products, services, pages, and blog posts';
+    protected $description = 'Queue a rebuild of the chatbot knowledge index from products, services, pages, and blog posts';
 
-    public function handle(KnowledgeBaseService $service): int
+    public function handle(): int
     {
-        $this->info('Reindexing chatbot knowledge base...');
-        $service->reindexAll();
-        $this->info('Knowledge base reindex complete.');
+        ReindexChatbotKnowledgeJob::dispatch();
+        $this->info('Knowledge base reindex queued.');
 
         return self::SUCCESS;
     }
