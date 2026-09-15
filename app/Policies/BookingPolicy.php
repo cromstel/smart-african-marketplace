@@ -38,12 +38,15 @@ class BookingPolicy
             return true;
         }
 
-        if ($user->isVendor() && $user->vendor) {
-            // Vendor can view bookings for their salon
-            if ($booking->salon_owner_id === $user->vendor->id ||
-                $booking->vendor_id === $user->vendor->id) {
-                return true;
-            }
+        if ($user->isVendor()) {
+            // bookings.salon_owner_id is a foreign key to users.id (the
+            // salon service's owning user), not vendors.id -- there is no
+            // vendor_id column on this table at all. Comparing it against
+            // $user->vendor->id (as this used to) meant a vendor's own
+            // bookings almost never matched their own vendor id, and in
+            // rare cases another vendor's user id could coincidentally
+            // equal it, granting a cross-tenant view.
+            return $booking->salon_owner_id === $user->id;
         }
 
         if ($user->isCustomer()) {
@@ -81,12 +84,9 @@ class BookingPolicy
             return true;
         }
 
-        if ($user->isVendor() && $user->vendor) {
-            // Vendor can update bookings for their salon
-            if ($booking->salon_owner_id === $user->vendor->id ||
-                $booking->vendor_id === $user->vendor->id) {
-                return true;
-            }
+        if ($user->isVendor()) {
+            // See view(): salon_owner_id is a users.id, not vendors.id.
+            return $booking->salon_owner_id === $user->id;
         }
 
         if ($user->isCustomer()) {
@@ -116,10 +116,9 @@ class BookingPolicy
             return true;
         }
 
-        if ($user->isVendor() && $user->vendor) {
-            // Vendor can confirm bookings for their salon
-            return $booking->salon_owner_id === $user->vendor->id ||
-                   $booking->vendor_id === $user->vendor->id;
+        if ($user->isVendor()) {
+            // See view(): salon_owner_id is a users.id, not vendors.id.
+            return $booking->salon_owner_id === $user->id;
         }
 
         return false;
@@ -135,12 +134,9 @@ class BookingPolicy
             return true;
         }
 
-        if ($user->isVendor() && $user->vendor) {
-            // Vendor can cancel bookings for their salon
-            if ($booking->salon_owner_id === $user->vendor->id ||
-                $booking->vendor_id === $user->vendor->id) {
-                return true;
-            }
+        if ($user->isVendor()) {
+            // See view(): salon_owner_id is a users.id, not vendors.id.
+            return $booking->salon_owner_id === $user->id;
         }
 
         if ($user->isCustomer()) {
