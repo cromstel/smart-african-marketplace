@@ -4,11 +4,10 @@ namespace Tests\Feature\Vendor;
 
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\SubscriptionPlan;
 use App\Models\User;
-use App\Models\UserSubscription;
 use App\Models\Vendor;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\Feature\Vendor\Concerns\MakesIsolatedVendors;
 use Tests\TestCase;
 
 /**
@@ -34,6 +33,7 @@ use Tests\TestCase;
 class VendorIsolationTest extends TestCase
 {
     use DatabaseTransactions;
+    use MakesIsolatedVendors;
 
     public function test_a_vendor_cannot_open_another_vendors_product_for_editing(): void
     {
@@ -99,51 +99,6 @@ class VendorIsolationTest extends TestCase
     }
 
     // --------------------------------------------------------------- Helpers
-
-    /**
-     * @return array{0: User, 1: Vendor}
-     */
-    private function makeVendor(): array
-    {
-        $user = User::factory()->vendor()->create();
-
-        $vendor = Vendor::create([
-            'user_id' => $user->id,
-            'business_name' => 'Vendor '.uniqid(),
-            'slug' => 'vendor-'.uniqid(),
-            'business_email' => 'vendor'.uniqid().'@example.com',
-            'business_phone' => '+15550000000',
-            'business_address' => '1 Test Street',
-            'status' => 'approved',
-            'is_active' => true,
-        ]);
-
-        $this->entitle($user);
-
-        return [$user->fresh(), $vendor];
-    }
-
-    /**
-     * Gives the vendor an active plan including the product-module feature, so
-     * requests reach the ownership policy instead of the module-access gate.
-     */
-    private function entitle(User $user): void
-    {
-        $plan = SubscriptionPlan::create([
-            'name' => 'Isolation Test Plan '.uniqid(),
-            'slug' => 'isolation-test-plan-'.uniqid(),
-            'feature_keys' => [
-                'multiple_product_category',
-                'vendor_dashboard_announcements',
-            ],
-        ]);
-
-        UserSubscription::create([
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id,
-            'status' => 'active',
-        ]);
-    }
 
     /**
      * @return array{0: User, 1: Vendor, 2: Product}

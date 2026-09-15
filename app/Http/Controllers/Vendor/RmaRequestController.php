@@ -10,7 +10,7 @@ class RmaRequestController extends Controller
 {
     public function index(Request $request)
     {
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $query = RmaRequest::whereHas('orderItem.product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -37,7 +37,7 @@ class RmaRequestController extends Controller
 
     public function show($id)
     {
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $rma = RmaRequest::whereHas('orderItem.product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -53,7 +53,7 @@ class RmaRequestController extends Controller
             'response' => 'required|string|max:1000',
         ]);
 
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $rma = RmaRequest::whereHas('orderItem.product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
