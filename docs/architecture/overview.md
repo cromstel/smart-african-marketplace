@@ -61,7 +61,7 @@ storage).
 Browser / Mobile app
         │
         ▼
-public/index.php ──► bootstrap/app.php ──► App\Http\Kernel
+public/index.php ──► bootstrap/app.php
         │
         ▼
 Global middleware      TrustProxies, TrimStrings, CompressResponse,
@@ -291,11 +291,14 @@ Authorization lives in `app/Policies/` (4 policies) plus the middleware above.
 Recorded here so they are visible rather than rediscovered. Scheduled in the
 [Roadmap](../product/roadmap.md).
 
-1. **Legacy bootstrap on a modern framework.** `bootstrap/app.php` uses the
-   Laravel 10-era structure (explicit `Http\Kernel`, `Console\Kernel`,
-   `ExceptionHandler` singletons) while `composer.json` requires
-   `laravel/framework: ^12.0`. It works, but every Laravel 11/12 tutorial and
-   upgrade guide will describe a skeleton this project does not have.
+1. ~~**Legacy bootstrap on a modern framework.**~~ **Resolved** (Roadmap
+   [3.3](../product/roadmap.md#33-decide-on-the-bootstrap-structure)) —
+   `bootstrap/app.php` migrated to the Laravel 11/12 slim skeleton
+   (`Application::configure()->withRouting()->withMiddleware()
+   ->withExceptions()`). `app/Http/Kernel.php`, `app/Console/Kernel.php`,
+   `app/Exceptions/Handler.php` and `app/Providers/RouteServiceProvider.php`
+   are gone; app providers now live in `bootstrap/providers.php` and
+   scheduled tasks in `routes/console.php`.
 
 2. **Duplicate authorization middleware.** `AdminMiddleware` and
    `EnsureUserIsAdmin` coexist, as do `VendorMiddleware` and `EnsureUserIsVendor`.
@@ -307,8 +310,11 @@ Recorded here so they are visible rather than rediscovered. Scheduled in the
    (deliberate environment inspection); both still misbehave under
    `config:cache`.
 
-4. **Empty `app/Jobs/`.** Long-running work runs inside scheduled commands rather
-   than queued jobs, so it cannot be retried or scaled independently.
+4. ~~**Empty `app/Jobs/`.**~~ **Resolved** (Roadmap
+   [3.2](../product/roadmap.md#32-introduce-real-queued-jobs)) — six queued
+   jobs now cover abandoned-cart/welcome/win-back email, media optimisation,
+   chatbot reindexing and vendor payout processing, each with a tuned
+   retry/backoff policy on a named queue.
 
 5. **Test coverage.** 6 test files against 146 controllers and 98 models.
 

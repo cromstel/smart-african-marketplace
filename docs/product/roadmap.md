@@ -382,12 +382,88 @@ policies.
 > synchronously, which is fine — it's a DB-only status transition with no
 > external call, not a candidate for queuing.
 
-### 3.3 Decide on the bootstrap structure
+### 3.3 Decide on the bootstrap structure — ✅ done
 
 `bootstrap/app.php` uses the Laravel 10 skeleton on Laravel 12. It works, but
 every current tutorial and upgrade guide assumes otherwise, and the next major
 upgrade will be harder for it. Either migrate to the slim skeleton or record an
 [ADR](../architecture/decisions/README.md) explaining the deliberate choice.
+
+> **Shipped 2026-09-15.** Migrated (the user's explicit choice over recording
+> an ADR to keep the old structure). `bootstrap/app.php` now uses
+> `Application::configure()->withRouting()->withEvents()->withMiddleware()
+> ->withExceptions()->create()`; `app/Http/Kernel.php`, `app/Console/Kernel.php`,
+> `app/Exceptions/Handler.php` and `app/Providers/RouteServiceProvider.php` are
+> deleted.
+>
+> Every setting was carried over deliberately rather than reset to framework
+> defaults, verified against the installed framework's own source (not
+> memory) before writing anything:
+> - **Global middleware and the `web`/`api` groups** are fully replaced
+>   (`$middleware->use()` / `->group()`) with the exact same custom
+>   subclasses in the exact same order the old Kernel used — this app
+>   overrides `TrustProxies`, `PreventRequestsDuringMaintenance`,
+>   `TrimStrings`, `EncryptCookies` and `VerifyCsrfToken` with its own
+>   versions, so appending to Laravel's stock groups would have been wrong.
+> - **Middleware aliases**: only the ones that differ from Laravel's own
+>   defaults are declared (`auth`, `guest`, `signed` point at this app's
+>   custom classes; `admin`, `vendor`, `salon_owner`, `subscription.limits`,
+>   `module.access`, `compress`, `maintenance`, `antispam` have no framework
+>   default at all). Aliases identical to the framework default were left
+>   alone.
+> - **Exception handling**: the old `Handler::render()` override's
+>   parent-then-post-process pattern (API JSON error envelope, `success`
+>   flag, stripping `exception`/`file`/`line`/`trace`, rewriting
+>   `ModelNotFoundException`'s message) moved to `$exceptions->respond()`
+>   (`Handler::respondUsing()`), which is the framework's own equivalent
+>   "final rendered response" hook — confirmed by reading
+>   `Illuminate\Foundation\Exceptions\Handler::finalizeRenderedResponse()`
+>   directly. One real difference the full test suite caught: `respond()`'s
+>   `$e` argument has already passed through `prepareException()`, which
+>   rewraps `ModelNotFoundException` into `NotFoundHttpException` — the
+>   message-rewrite check now looks for either shape
+>   (`$e instanceof ModelNotFoundException || ($e instanceof
+>   NotFoundHttpException && $e->getPrevious() instanceof
+>   ModelNotFoundException)`).
+> - **Event auto-discovery**: `Application::configure()` turns this on by
+>   default, which would have double-registered `BookingStatusChanged`'s
+>   three listeners (already wired manually in
+>   `App\Providers\EventServiceProvider::$listen`). Explicitly disabled via
+>   `->withEvents(discover: false)`.
+> - **Providers**: `config/app.php`'s `'providers'` key is removed entirely
+>   (not emptied — an empty array does not trigger the framework's
+>   `ServiceProvider::defaultProviders()` fallback, only a missing/null key
+>   does). Compared that fallback list against what this app used to spell
+>   out by hand: identical, plus the framework's own
+>   `ConcurrencyServiceProvider`. The app's three own providers
+>   (`AppServiceProvider`, `AuthServiceProvider`, `EventServiceProvider`)
+>   now live in the new `bootstrap/providers.php`.
+> - **Rate limiters** (`api`, `public-forms`, `search`, `chatbot`,
+>   `webhook`), previously in `RouteServiceProvider::configureRateLimiting()`,
+>   moved into `AppServiceProvider::boot()` — there was no other slot for
+>   them once route registration became `bootstrap/app.php`'s job.
+> - **`RouteServiceProvider::HOME`** (`'/dashboard'`), read by five Breeze
+>   auth controllers (`VerifyEmailController`,
+>   `EmailVerificationPromptController`,
+>   `EmailVerificationNotificationController`,
+>   `ConfirmablePasswordController`, `RegisteredUserController`), moved to
+>   `AppServiceProvider::HOME` — the same relocation Breeze's own updated
+>   skeleton makes.
+> - **Scheduled tasks**: the same 12 `Schedule::command(...)` calls moved
+>   from `Console\Kernel::schedule()` into `routes/console.php` (loaded on
+>   every Artisan boot), timing unchanged.
+>
+> Verified with `php artisan route:list` (all named routes intact, no
+> `/api/api` double-prefixing) and the full suite. One real regression
+> surfaced by the first run and fixed before commit: the
+> `ModelNotFoundException` message rewrite (above) — the first run showed
+> 1 failed, 257 passed (688 assertions, since the failing test's later
+> assertions in that method never ran once the first one failed). Two
+> full reruns after the fix (one before, one after the Pint pass) both came
+> back 258 passed, 693 assertions. `docs/architecture/overview.md`'s
+> request-lifecycle diagram and "Known architectural debts" list (item 1,
+> and, while already in the same list, the already-shipped item 4 from 3.2)
+> updated; so is `docs/reference/api.md`'s rate-limiter section.
 
 ### 3.4 Documentation housekeeping
 
