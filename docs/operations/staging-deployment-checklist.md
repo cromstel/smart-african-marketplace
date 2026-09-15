@@ -55,9 +55,13 @@ Ensure:
 Quick checks:
 
 ```powershell
-php artisan queue:work --once
+php artisan queue:work --queue=payouts,campaigns,media,chatbot,default --once
 php artisan schedule:list
 ```
+
+See `docs/operations/queue-workers.md` for the full worker command and
+named-queue list -- a worker started without `--queue=...` only drains the
+`default` queue and silently never processes any of the named queues.
 
 ## 4) SSL/TLS tasks
 Apply the procedure from `docs/operations/ssl-certificate-renewal.md`.
