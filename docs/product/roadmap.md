@@ -333,7 +333,8 @@ upgrade will be harder for it. Either migrate to the slim skeleton or record an
 - [x] Normalise filenames to `kebab-case.md` (spaces and parentheses in
       filenames break tooling)
 - [x] Add the audit script to CI (`.github/workflows/docs.yml`)
-- [ ] Delete `docs/archive/todo-2026-02-22.md` — that is what git is for
+- [x] Delete `docs/archive/todo-2026-02-22.md` — that is what git is for
+      (done 2026-09-15; git history keeps it)
 
 ---
 
