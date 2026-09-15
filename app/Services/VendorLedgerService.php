@@ -95,6 +95,24 @@ class VendorLedgerService
         });
     }
 
+    /**
+     * Reverse (all or part of) a vendor's ledger credit(s) for a refunded
+     * order. $amount need not be the full order total -- it is split
+     * across vendors on a shared order in proportion to each vendor's
+     * share of the order's gross, same as before.
+     *
+     * Fixes two bugs in the previous implementation: it always debited
+     * VendorBalance.available, clamped to zero -- so a refund issued
+     * before the order reached "delivered" (while its earnings still sat
+     * in .pending, since releaseToAvailable() had not run yet) debited a
+     * bucket that never held the money and silently did nothing; and it
+     * never touched lifetime_earnings, so that figure stayed permanently
+     * overstated after any refund. This now debits whichever bucket the
+     * order's earnings currently sit in, and reverses lifetime_earnings
+     * by the same amount. A vendor never actually credited for this order
+     * (e.g. it was refunded before payment was ever confirmed) is
+     * correctly skipped rather than gaining a stray zero-value balance.
+     */
     public function debitRefund(Order $order, float $amount): void
     {
         $items = $order->items;
@@ -108,8 +126,10 @@ class VendorLedgerService
             return;
         }
 
-        DB::transaction(function () use ($order, $itemsByVendor, $total, $amount) {
-            foreach ($itemsByVendor as $vendorId => $items) {
+        $orderIds = $items->pluck('order_id')->filter()->unique();
+
+        DB::transaction(function () use ($itemsByVendor, $total, $amount, $orderIds) {
+            foreach ($itemsByVendor as $vendorId => $vendorItems) {
                 if (! $vendorId) {
                     continue;
                 }
@@ -118,26 +138,45 @@ class VendorLedgerService
                     continue;
                 }
 
-                $vendorGross = $items->sum('total');
+                $wasCredited = VendorLedger::where('vendor_id', $vendorId)
+                    ->whereIn('order_id', $orderIds)
+                    ->where('type', 'credit_pending')
+                    ->exists();
+                if (! $wasCredited) {
+                    continue;
+                }
+
+                $vendorGross = $vendorItems->sum('total');
                 $share = $vendorGross / $total;
                 $debit = $amount * $share;
+
+                $alreadyReleased = VendorLedger::where('vendor_id', $vendorId)
+                    ->whereIn('order_id', $orderIds)
+                    ->where('type', 'credit_available')
+                    ->exists();
 
                 $balance = VendorBalance::firstOrCreate(
                     ['vendor_id' => $vendorId],
                     ['available' => 0, 'pending' => 0, 'lifetime_earnings' => 0]
                 );
 
-                $balance->available = max(0, $balance->available - $debit);
+                if ($alreadyReleased) {
+                    $balance->available = max(0, $balance->available - $debit);
+                } else {
+                    $balance->pending = max(0, $balance->pending - $debit);
+                }
+                $balance->lifetime_earnings = max(0, $balance->lifetime_earnings - $debit);
                 $balance->save();
 
                 VendorLedger::create([
                     'vendor_id' => $vendorId,
-                    'order_id' => $order->id,
+                    'order_id' => $orderIds->first(),
                     'type' => 'debit_refund',
                     'amount' => $debit,
-                    'balance_after' => $balance->available,
+                    'balance_after' => $alreadyReleased ? $balance->available : $balance->pending,
                     'metadata' => [
                         'reason' => 'refund',
+                        'released' => $alreadyReleased,
                     ],
                 ]);
             }
