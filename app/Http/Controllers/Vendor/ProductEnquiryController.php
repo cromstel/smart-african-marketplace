@@ -12,7 +12,7 @@ class ProductEnquiryController extends Controller
 {
     public function index(Request $request)
     {
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $query = ProductEnquiry::whereHas('product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -35,7 +35,7 @@ class ProductEnquiryController extends Controller
 
     public function show($id)
     {
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $enquiry = ProductEnquiry::whereHas('product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -50,7 +50,7 @@ class ProductEnquiryController extends Controller
             'response' => 'required|string|max:2000',
         ]);
 
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $enquiry = ProductEnquiry::whereHas('product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -72,7 +72,7 @@ class ProductEnquiryController extends Controller
 
     public function close($id)
     {
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $enquiry = ProductEnquiry::whereHas('product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);

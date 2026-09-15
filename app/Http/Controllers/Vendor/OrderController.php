@@ -18,7 +18,7 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $query = Order::where('is_parent', false)->whereHas('items.product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -56,7 +56,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $order = Order::where('is_parent', false)->whereHas('items.product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -86,7 +86,7 @@ class OrderController extends Controller
             'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
         ]);
 
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $order = Order::where('is_parent', false)->whereHas('items.product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -129,7 +129,7 @@ class OrderController extends Controller
             'is_customer_visible' => 'boolean',
         ]);
 
-        $vendorId = auth()->id();
+        $vendorId = auth()->user()->vendor?->id;
 
         $order = Order::whereHas('items.product', function ($q) use ($vendorId) {
             $q->where('vendor_id', $vendorId);
@@ -148,8 +148,10 @@ class OrderController extends Controller
 
     public function create()
     {
+        $vendorId = auth()->user()->vendor?->id;
+
         $customers = User::where('role', 'customer')->latest()->get();
-        $products = Product::where('vendor_id', auth()->id())
+        $products = Product::where('vendor_id', $vendorId)
             ->where('is_active', true)
             ->where('stock_quantity', '>', 0)
             ->get();
@@ -169,6 +171,8 @@ class OrderController extends Controller
             'notes' => 'nullable|string|max:1000',
         ]);
 
+        $vendorId = auth()->user()->vendor?->id;
+
         DB::beginTransaction();
 
         try {
@@ -176,7 +180,7 @@ class OrderController extends Controller
             $items = [];
 
             foreach ($request->products as $productData) {
-                $product = Product::where('vendor_id', auth()->id())
+                $product = Product::where('vendor_id', $vendorId)
                     ->findOrFail($productData['id']);
 
                 if ($product->stock_quantity < $productData['quantity']) {
@@ -220,6 +224,7 @@ class OrderController extends Controller
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['product']->id,
+                    'vendor_id' => $vendorId,
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                 ]);
