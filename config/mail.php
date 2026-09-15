@@ -56,7 +56,16 @@ return [
     ],
 
     'to' => [
-        'address' => env('MAIL_TO'),
+        // Cast an empty/unset MAIL_TO to null (not ''). Laravel's own
+        // MailManager::setGlobalAddress() runs on every mailer resolution
+        // and checks `isset($address['address'])`, which is true for an
+        // empty string but false for null -- so leaving this as '' makes
+        // the framework itself call Mailer::alwaysTo('', ...) on every
+        // mailer, independent of and bypassing AppServiceProvider's own
+        // guarded alwaysTo() call, causing every outgoing email (e.g. the
+        // registration welcome email) to fail with a Symfony
+        // RfcComplianceException. See docs/claude/... session notes.
+        'address' => env('MAIL_TO') ?: null,
         'name' => env('MAIL_TO_NAME', ''),
     ],
 
