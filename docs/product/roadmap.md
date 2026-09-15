@@ -311,12 +311,76 @@ coverage is reported on every PR.
 implementations drift, and a drifted authorization check is a vulnerability.
 Keep one of each, alias the other, migrate routes, then delete.
 
-### 3.2 Introduce real queued jobs
+### 3.2 Introduce real queued jobs — ✅ done
 
 `app/Jobs/` is empty; long work runs inside scheduled commands, so it cannot be
 retried, backed off or scaled. Move the heavy operations — campaign sends, media
 optimisation, chatbot reindexing, payout batches — into queued jobs with retry
 policies.
+
+> **Shipped 2026-09-15.** Six jobs added to `app/Jobs/`: `SendAbandonedCartRecoveryEmail`,
+> `SendWelcomeSeriesEmail`, `SendWinBackCampaignEmail` (campaign sends, one job
+> per recipient instead of one process per whole batch), `OptimizeMediaLibraryItem`
+> (media optimisation, one job per image), `ReindexChatbotKnowledgeJob` (chatbot
+> reindexing, with `WithoutOverlapping` mirroring the lock
+> `KnowledgeBaseService::ensureIndexed()` already used for its own just-in-time
+> path), and `ProcessVendorPayout` — the "payout batches" item turned out, on
+> inspection, to have no batch command at all: `Admin\PayoutController::process()`
+> was making a live blocking Stripe/Paystack transfer call inside the admin's
+> HTTP request, which is the version of this problem that actually existed and
+> is what got queued.
+>
+> Retry policies are tuned per job, not uniform: 3 tries / `[60,300,900]`s
+> backoff for campaign sends, 3 / `[30,120,300]`s for media (which also turns
+> `ImageOptimizationService::optimizeMediaLibraryItem()`'s internal
+> catch-and-return-false into a thrown exception, so a real failure reaches the
+> queue's retry instead of being silently accepted), 2 tries with no backoff
+> for the reindex job, and 3 / `[300,1800,3600]`s for payouts. The payout job's
+> retry is honest about its limits: `PayoutService::process()` catches gateway
+> exceptions internally and marks the payout `failed` rather than rethrowing,
+> so queuing does not add automatic retry-on-gateway-rejection — that was
+> already a fail-fast, admin-must-retry design and stays that way. What
+> queuing does add is that the admin's request returns immediately instead of
+> blocking on the gateway call, and that a worker process dying mid-call no
+> longer leaves the payout stranded with no recovery path, since the database
+> queue's `retry_after` redelivers an unacknowledged job and
+> `PayoutService::process()`'s own guard (skip if already completed/failed)
+> makes that safe.
+>
+> Jobs dispatch onto named queues (`payouts`, `campaigns`, `media`, `chatbot`)
+> rather than the implicit `default` queue, so payout processing isn't stuck
+> behind a few hundred queued marketing emails. This required updating
+> `docs/operations/queue-workers.md`'s worker command to add
+> `--queue=payouts,campaigns,media,chatbot,default` — a worker still running
+> the old command would silently never process any of these jobs, so this is
+> called out explicitly there and in the two other ops docs that mention
+> `queue:work`.
+>
+> A queue-dispatch test for the welcome-series command
+> (`tests/Feature/BackgroundJobsTest.php`) surfaced a real, pre-existing bug
+> unrelated to the refactor itself: Carbon 3 (this app runs on Laravel 12)
+> made `diffInDays()` signed rather than absolute by default, so a
+> freshly-created subscriber could get a tiny negative float from
+> `now()->diffInDays($createdAt)` and fall through every `match` arm to
+> `null`, silently never receiving the welcome series. Fixed by forcing
+> `absolute: true` and flooring to an int in
+> `SendWelcomeEmailSeriesCommand::determineStep()`. Worth a follow-up: this
+> Carbon 3 behavior change could affect other `diffInDays`/`diffInHours` call
+> sites in the codebase that assume the old absolute-by-default convention —
+> not audited here, flagged for later.
+>
+> New tests: `tests/Feature/BackgroundJobsTest.php` (dispatch-side coverage
+> for all five call sites), `tests/Feature/ProcessVendorPayoutJobTest.php`
+> (the payout job's real handle() behavior end-to-end against a faked Stripe
+> transfer, plus the terminal-state skip guard), and
+> `tests/Feature/OptimizeMediaLibraryItemTest.php` (the false-to-exception
+> wrapping). Full suite verified green at 258 passed (248 + these 10 new
+> test methods).
+>
+> One side observation, not fixed here (separate concern from queuing):
+> `Admin\PayoutController::fail()` still calls `PayoutService::markFailed()`
+> synchronously, which is fine — it's a DB-only status transition with no
+> external call, not a candidate for queuing.
 
 ### 3.3 Decide on the bootstrap structure
 
