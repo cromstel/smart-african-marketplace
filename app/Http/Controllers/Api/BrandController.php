@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Concerns\ApiResponse;
 use App\Http\Resources\BrandResource;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request)
     {
         $query = Brand::query()
@@ -30,30 +33,18 @@ class BrandController extends Controller
 
         $brands = $query->paginate($perPage);
 
-        return response()->json([
-            'success' => true,
-            'data' => BrandResource::collection($brands),
-            'message' => 'Brands retrieved successfully',
-        ]);
+        return $this->successResponse(BrandResource::collection($brands), 'Brands retrieved successfully');
     }
 
     public function show(Brand $brand)
     {
         if (! $brand->is_active) {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'message' => 'Brand not found',
-            ], 404);
+            return $this->errorResponse('Brand not found', 404);
         }
 
         $brand->loadMissing('vendor');
         $brand->setAttribute('products_count', $brand->products()->active()->published()->count());
 
-        return response()->json([
-            'success' => true,
-            'data' => new BrandResource($brand),
-            'message' => 'Brand retrieved successfully',
-        ]);
+        return $this->successResponse(new BrandResource($brand), 'Brand retrieved successfully');
     }
 }

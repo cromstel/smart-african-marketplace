@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Concerns\ApiResponse;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request)
     {
         $query = Product::with(['category', 'images'])->where('is_active', true);
@@ -49,21 +52,16 @@ class ProductController extends Controller
 
         $products = $query->paginate($request->get('per_page', 15));
 
-        return response()->json([
-            'success' => true,
-            'data' => ProductResource::collection($products),
-            'message' => 'Products retrieved successfully',
-        ]);
+        return $this->successResponse(
+            ProductResource::collection($products),
+            'Products retrieved successfully'
+        );
     }
 
     public function show(Product $product)
     {
         $product->load(['category', 'images', 'variants', 'reviews.user', 'vendor']);
 
-        return response()->json([
-            'success' => true,
-            'data' => new ProductResource($product),
-            'message' => 'Product retrieved successfully',
-        ]);
+        return $this->successResponse(new ProductResource($product), 'Product retrieved successfully');
     }
 }

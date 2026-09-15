@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Concerns\ApiResponse;
 use App\Http\Resources\AddressResource;
 use App\Models\Address;
 use Illuminate\Http\JsonResponse;
@@ -10,15 +11,13 @@ use Illuminate\Http\Request;
 
 class AddressController extends Controller
 {
+    use ApiResponse;
+
     public function index(Request $request): JsonResponse
     {
         $addresses = Address::where('user_id', $request->user()->id)->latest()->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => AddressResource::collection($addresses),
-            'message' => 'Addresses retrieved successfully',
-        ]);
+        return $this->successResponse(AddressResource::collection($addresses), 'Addresses retrieved successfully');
     }
 
     public function store(Request $request): JsonResponse
@@ -44,30 +43,22 @@ class AddressController extends Controller
 
         $address = $request->user()->addresses()->create($validated);
 
-        return response()->json([
-            'success' => true,
-            'data' => new AddressResource($address),
-            'message' => 'Address created successfully',
-        ], 201);
+        return $this->successResponse(new AddressResource($address), 'Address created successfully', 201);
     }
 
     public function show(Request $request, Address $address): JsonResponse
     {
         if ($address->user_id !== $request->user()->id) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            return $this->errorResponse('Unauthorized', 403);
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => new AddressResource($address),
-            'message' => 'Address retrieved successfully',
-        ]);
+        return $this->successResponse(new AddressResource($address), 'Address retrieved successfully');
     }
 
     public function update(Request $request, Address $address): JsonResponse
     {
         if ($address->user_id !== $request->user()->id) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            return $this->errorResponse('Unauthorized', 403);
         }
 
         $validated = $request->validate([
@@ -93,25 +84,17 @@ class AddressController extends Controller
 
         $address->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'data' => new AddressResource($address),
-            'message' => 'Address updated successfully',
-        ]);
+        return $this->successResponse(new AddressResource($address), 'Address updated successfully');
     }
 
     public function destroy(Request $request, Address $address): JsonResponse
     {
         if ($address->user_id !== $request->user()->id) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            return $this->errorResponse('Unauthorized', 403);
         }
 
         $address->delete();
 
-        return response()->json([
-            'success' => true,
-            'data' => null,
-            'message' => 'Address deleted successfully',
-        ]);
+        return $this->successResponse(null, 'Address deleted successfully');
     }
 }
