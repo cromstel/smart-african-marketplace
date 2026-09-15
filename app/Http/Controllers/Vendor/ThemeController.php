@@ -47,9 +47,18 @@ class ThemeController extends Controller
             'background_color' => 'required|string|size:7|regex:/^#[0-9A-Fa-f]{6}$/',
             'font_family' => 'required|string|max:100',
             'font_heading' => 'required|string|max:100',
-            'banner_image' => 'nullable|image|max:2048',
-            'logo' => 'nullable|image|max:1024',
-            'favicon' => 'nullable|image|max:512',
+            // Laravel's bare `image` rule accepts svg by default -- unlike
+            // every other image upload in this codebase, which whitelists
+            // mimes: explicitly. An uploaded SVG is served as-is from the
+            // public disk at a predictable, directly-browsable URL, and can
+            // carry an onload handler or inline <script> that executes in
+            // this site's own origin (full cookie/session access) if that
+            // URL is ever opened directly rather than only referenced via
+            // <img>. Restricting to raster formats closes that off; webp
+            // already covers the transparency use case svg would.
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:1024',
+            'favicon' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:512',
             'custom_css' => 'nullable|string|max:10000',
             'custom_js' => 'nullable|string|max:10000',
             'layout_style' => 'required|in:grid,list,masonry',
@@ -65,7 +74,9 @@ class ThemeController extends Controller
             'social_links.linkedin' => 'nullable|url',
             'social_links.whatsapp' => 'nullable|string',
             'is_active' => 'boolean',
-            'profile_image' => 'nullable|image|max:1024',
+            // See the note above logo/favicon/banner_image on why svg is
+            // excluded here too.
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:1024',
         ]);
 
         DB::beginTransaction();
