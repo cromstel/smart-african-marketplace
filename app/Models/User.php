@@ -237,6 +237,36 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(Withdrawal::class);
     }
 
+    /**
+     * Products owned by this vendor, used by CheckSubscriptionLimits to
+     * enforce a plan's product cap. Product.vendor_id references vendors.id,
+     * not users.id, so this cannot be a plain hasMany(Product::class); it
+     * returns a query builder rather than an Eloquent relation.
+     */
+    public function products()
+    {
+        return Product::where('vendor_id', $this->vendor?->id ?? 0);
+    }
+
+    /**
+     * Orders containing at least one line item sold by this vendor, used by
+     * CheckSubscriptionLimits to enforce a plan's monthly order cap. Order
+     * carries no vendor_id column of its own -- membership on a (possibly
+     * multi-vendor) order lives on order_items.vendor_id -- so this cannot
+     * be a plain hasMany(Order::class, 'vendor_id'); it returns a query
+     * builder rather than an Eloquent relation.
+     */
+    public function vendorOrders()
+    {
+        $vendorId = $this->vendor?->id;
+
+        return Order::childOrders()->when(
+            $vendorId,
+            fn ($query) => $query->whereHas('items', fn ($q) => $q->where('vendor_id', $vendorId)),
+            fn ($query) => $query->whereRaw('1 = 0')
+        );
+    }
+
     public function notificationPreference(string $key, bool $default = true): bool
     {
         $preferences = $this->notification_preferences ?? [];

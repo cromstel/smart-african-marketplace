@@ -290,18 +290,30 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'verified']
     Route::resource('salon-services', SalonServiceController::class)->except(['show']);
     Route::resource('salon-categories', SalonServiceCategoryController::class)->except(['show']);
     Route::post('salon-categories/{salonCategory}/toggle', [SalonServiceCategoryController::class, 'toggle'])->name('salon-categories.toggle');
-    Route::middleware('can:bookings.view_any')->group(function () {
+    // can:bookings.X strings below used to have no matching Gate::define nor
+    // a model argument to resolve a Policy against, so Laravel's Gate denied
+    // every one of these routes to everyone (admins included) by default.
+    // Rewired to can:ability,model / can:ability,ClassName against the now-
+    // fixed BookingPolicy. The old index+show group is split: viewAny has no
+    // per-instance check, so keeping /bookings/{booking} under it would have
+    // skipped ownership entirely once the ability existed (harmless here
+    // since BookingPolicy grants admins everything, but not a pattern to
+    // repeat for the customer/vendor groups below).
+    Route::middleware('can:viewAny,App\Models\Booking')->group(function () {
         Route::get('/bookings/calendar', [App\Http\Controllers\Admin\BookingController::class, 'calendar'])->name('bookings.calendar');
-        Route::resource('bookings', App\Http\Controllers\Admin\BookingController::class)->only(['index', 'show']);
+        Route::get('/bookings', [App\Http\Controllers\Admin\BookingController::class, 'index'])->name('bookings.index');
     });
-    Route::middleware('can:bookings.update')->group(function () {
+    Route::middleware('can:view,booking')->group(function () {
+        Route::get('/bookings/{booking}', [App\Http\Controllers\Admin\BookingController::class, 'show'])->name('bookings.show');
+    });
+    Route::middleware('can:update,booking')->group(function () {
         Route::put('/bookings/{booking}/status', [App\Http\Controllers\Admin\BookingController::class, 'updateStatus'])->name('bookings.update-status');
         Route::post('/bookings/{booking}/force-confirm', [App\Http\Controllers\Admin\BookingController::class, 'forceConfirm'])->name('bookings.force-confirm');
         Route::post('/bookings/{booking}/resend-reminder', [App\Http\Controllers\Admin\BookingController::class, 'resendReminder'])->name('bookings.resend-reminder');
     });
 
     // Booking Types (Multi-type booking system) - Admin only
-    Route::middleware('can:bookings.manage_types')->group(function () {
+    Route::middleware('can:manageTypes,App\Models\Booking')->group(function () {
         Route::resource('booking-types', BookingTypeController::class)->except(['show']);
         Route::post('/booking-types/{bookingType}/toggle', [BookingTypeController::class, 'toggle'])->name('booking-types.toggle');
         Route::post('/booking-types/{bookingType}/reorder', [BookingTypeController::class, 'reorder'])->name('booking-types.reorder');
@@ -542,19 +554,26 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/coupon/remove', [CouponController::class, 'remove'])->name('coupon.remove')->middleware('verified');
 
     // Booking routes - protected by both permissions and subscription module
+    // can:bookings.X below had no Gate::define and no model argument, so
+    // Gate denied every one of these routes by default (see the identical
+    // note on the admin booking routes above). viewAny/view are split so
+    // that viewing a single booking always checks ownership, never just
+    // "can list bookings at all".
     Route::middleware('module.access:bookings')->group(function () {
-        Route::middleware('can:bookings.view_any')->group(function () {
+        Route::middleware('can:viewAny,App\Models\Booking')->group(function () {
             Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+        });
+        Route::middleware('can:view,booking')->group(function () {
             Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
         });
-        Route::middleware('can:bookings.update')->group(function () {
+        Route::middleware('can:update,booking')->group(function () {
             Route::get('/bookings/{booking}/reschedule', [BookingController::class, 'edit'])->name('bookings.reschedule');
             Route::put('/bookings/{booking}/reschedule', [BookingController::class, 'update'])->name('bookings.update')->middleware('verified');
         });
-        Route::middleware('can:bookings.cancel')->group(function () {
+        Route::middleware('can:cancel,booking')->group(function () {
             Route::put('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel')->middleware('verified');
         });
-        Route::middleware('can:bookings.create')->group(function () {
+        Route::middleware('can:create,App\Models\Booking')->group(function () {
             Route::get('/salon/{service}/book/calendar', [BookingController::class, 'calendarPreview'])->name('bookings.calendar');
             Route::get('/salon/{service}/book', [BookingController::class, 'create'])->name('bookings.create');
             Route::post('/salon/{service}/book', [BookingController::class, 'store'])->name('bookings.store')->middleware('verified');
@@ -590,15 +609,21 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
     Route::get('/data-export/{dataExportRequest}/download', [App\Http\Controllers\Vendor\DataExportRequestController::class, 'download'])
         ->name('data-export.download');
 
+    // See the identical note on the admin/customer booking routes: these
+    // can:bookings.X strings had no Gate::define and no model argument, so
+    // Gate denied every one by default, regardless of BookingController's
+    // own ensureOwnership() check further down the request lifecycle.
     Route::middleware('module.access:bookings')->group(function () {
-        Route::middleware('can:bookings.view_any')->group(function () {
+        Route::middleware('can:viewAny,App\Models\Booking')->group(function () {
             Route::get('/bookings', [App\Http\Controllers\Vendor\BookingController::class, 'index'])->name('bookings.index');
+        });
+        Route::middleware('can:view,booking')->group(function () {
             Route::get('/bookings/{booking}', [App\Http\Controllers\Vendor\BookingController::class, 'show'])->name('bookings.show');
         });
-        Route::middleware('can:bookings.confirm')->group(function () {
+        Route::middleware('can:confirm,booking')->group(function () {
             Route::post('/bookings/{booking}/confirm', [App\Http\Controllers\Vendor\BookingController::class, 'confirm'])->name('bookings.confirm');
         });
-        Route::middleware('can:bookings.cancel')->group(function () {
+        Route::middleware('can:cancel,booking')->group(function () {
             Route::post('/bookings/{booking}/cancel', [App\Http\Controllers\Vendor\BookingController::class, 'cancel'])->name('bookings.cancel');
         });
         Route::post('/bookings/{booking}/message', [App\Http\Controllers\Vendor\BookingController::class, 'message'])->name('bookings.message');
@@ -607,10 +632,24 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
     // Booking Resources (for rentals and inventory management)
     Route::middleware('module.access:bookings')->group(function () {
         Route::middleware('can:bookings.manage_resources')->group(function () {
-            Route::resource('booking-resources', BookingResourceController::class)->except(['show']);
+            // `show` used to be excepted because its view didn't exist yet
+            // (resources/views/vendor/bookings/resources/*.blade.php --
+            // see BookingResourceIsolationTest's docblock); now that the
+            // views are built, the full resource set (including show) is
+            // wired up. `toggle` likewise had a working controller method
+            // but no route.
+            Route::resource('booking-resources', BookingResourceController::class);
+            Route::post('/booking-resources/{bookingResource}/toggle', [BookingResourceController::class, 'toggle'])->name('booking-resources.toggle');
             Route::get('/booking-resources/{bookingResource}/availability', [BookingResourceController::class, 'availability'])->name('booking-resources.availability');
             Route::get('/booking-resources/{bookingResource}/statistics', [BookingResourceController::class, 'statistics'])->name('booking-resources.statistics');
-            Route::post('/booking-resources/{bookingResource}/bulk-availability', [BookingResourceController::class, 'bulkAvailability'])->name('booking-resources.bulk-availability');
+            // `bulk-availability` (POST -> bulkAvailability()) was removed here:
+            // the controller method never existed (fatal error if hit), no view
+            // or JS anywhere referenced it, and there's no backing schema for
+            // it -- availability is derived entirely from the `bookings` table,
+            // with no `resource_availability`/blocked-dates table to bulk-write
+            // into. Rebuilding it as a real feature needs a product decision
+            // (what "bulk availability" should persist) before a schema is
+            // designed, so it isn't reinstated speculatively.
         });
     });
 
@@ -624,7 +663,13 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
         ->name('settings.availability.destroy');
 
     Route::middleware('module.access:multiple_product_category')->group(function () {
-        Route::resource('products', App\Http\Controllers\Vendor\ProductController::class)->except(['show']);
+        // subscription.limits:products only blocks the plain POST /products
+        // (create/store) action -- it lets any route through that carries a
+        // {product} route parameter (edit/update/variants/images), so it is
+        // scoped to just the resource route rather than this whole group.
+        Route::resource('products', App\Http\Controllers\Vendor\ProductController::class)
+            ->except(['show'])
+            ->middleware('subscription.limits:products');
         Route::get('/categories', [App\Http\Controllers\Vendor\CategoryController::class, 'index'])->name('categories.index');
         Route::get('/inventory', [App\Http\Controllers\Vendor\ProductController::class, 'inventory'])->name('inventory.index');
         Route::get('/variations', [App\Http\Controllers\Vendor\ProductVariantController::class, 'all'])->name('variations.index');
@@ -666,18 +711,30 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
         Route::post('/announcements/mark-all-read', [App\Http\Controllers\Vendor\AnnouncementController::class, 'markAllAsRead'])->name('announcements.markAllAsRead');
     });
 
+    // /orders/create must be registered before the /orders/{order} wildcard
+    // below -- Laravel matches routes in registration order, so with the
+    // wildcard first, "GET /orders/create" was matching /orders/{order}
+    // instead (Order::findOrFail('create')), a 404 every time. Manual order
+    // creation was therefore unreachable regardless of subscription limits.
+    //
+    // subscription.limits:orders has no HTTP-method guard internally (unlike
+    // the products check), so it must only ever sit on these two
+    // order-creation routes -- never on orders.index/show/updateStatus/
+    // addNote below, or a vendor at their monthly order limit would be
+    // locked out of viewing and managing orders they already have.
+    Route::get('/orders/create', [App\Http\Controllers\Vendor\OrderController::class, 'create'])
+        ->middleware(['module.access:order_management', 'module.access:manual_order_creation', 'subscription.limits:orders'])
+        ->name('orders.create');
+    Route::post('/orders', [App\Http\Controllers\Vendor\OrderController::class, 'store'])
+        ->middleware(['module.access:order_management', 'module.access:manual_order_creation', 'subscription.limits:orders'])
+        ->name('orders.store');
+
     Route::middleware('module.access:order_management')->group(function () {
         Route::get('/orders', [App\Http\Controllers\Vendor\OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [App\Http\Controllers\Vendor\OrderController::class, 'show'])->name('orders.show');
         Route::post('/orders/{order}/status', [App\Http\Controllers\Vendor\OrderController::class, 'updateStatus'])->name('orders.updateStatus');
         Route::post('/orders/{order}/notes', [App\Http\Controllers\Vendor\OrderController::class, 'addNote'])->name('orders.addNote');
     });
-    Route::get('/orders/create', [App\Http\Controllers\Vendor\OrderController::class, 'create'])
-        ->middleware(['module.access:order_management', 'module.access:manual_order_creation'])
-        ->name('orders.create');
-    Route::post('/orders', [App\Http\Controllers\Vendor\OrderController::class, 'store'])
-        ->middleware(['module.access:order_management', 'module.access:manual_order_creation'])
-        ->name('orders.store');
 
     Route::get('/refunds', [App\Http\Controllers\Vendor\RefundRequestController::class, 'index'])->name('refunds.index');
     Route::get('/refunds/{refund}', [App\Http\Controllers\Vendor\RefundRequestController::class, 'show'])->name('refunds.show');
