@@ -12,6 +12,19 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        // Force IPv4 loopback instead of the "localhost" default, which can
+        // resolve to the IPv6 [::1] address on Windows. Some browsers/
+        // extensions block requests to bracketed IPv6-literal hosts (seen as
+        // net::ERR_BLOCKED_BY_CLIENT), and IPv4 loopback is the more
+        // universally compatible choice for local dev anyway.
+        host: '127.0.0.1',
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: '127.0.0.1',
+        },
+    },
     build: {
         minify: 'esbuild',
         cssMinify: true,
