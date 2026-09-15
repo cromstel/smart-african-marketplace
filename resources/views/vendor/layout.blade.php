@@ -165,7 +165,7 @@
                     $vendorSubmenuActive = [
                         'products' => request()->routeIs('vendor.products.*', 'vendor.reviews.*', 'vendor.attributes.*', 'vendor.variations.*', 'vendor.inventory.*', 'vendor.brands.*'),
                         'salon' => request()->routeIs('vendor.salon.*', 'vendor.salon-stylists.*', 'vendor.salon-services.*'),
-                        'bookings' => request()->routeIs('vendor.bookings.*', 'vendor.settings.availability.*'),
+                        'bookings' => request()->routeIs('vendor.bookings.*', 'vendor.settings.availability.*', 'vendor.booking-resources.*'),
                         'subscription' => request()->routeIs('vendor.subscription.*'),
                         'finance' => request()->routeIs('vendor.wallet.*', 'vendor.payouts.*', 'vendor.settings.payouts.*', 'vendor.verification.*', 'vendor.refunds.*'),
                     ];
@@ -263,6 +263,9 @@
                         </a>
                         <a href="{{ route('vendor.settings.availability.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('vendor.settings.availability.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
                             <span>Availability</span>
+                        </a>
+                        <a href="{{ route('vendor.booking-resources.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('vendor.booking-resources.*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Resources</span>
                         </a>
                     </div>
                 </div>

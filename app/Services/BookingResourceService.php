@@ -10,41 +10,52 @@ use Illuminate\Support\Collection;
 class BookingResourceService
 {
     /**
-     * Create a new booking resource
+     * Create a new booking resource.
+     *
+     * This used to write a field set ('type', 'slug', 'weekly_rate',
+     * 'min_rental_hours', 'category', 'requires_deposit', 'metadata', ...)
+     * that does not match BookingResource's actual columns
+     * ('resource_type', 'quantity_total', 'minimum_rental_hours',
+     * 'pricing_type', no slug/weekly_rate/category/deposit/metadata at
+     * all). Mass assignment silently dropped every mismatched field, and
+     * since the required, defaultless `resource_type` column was never
+     * among them, every create() threw a SQL error -- this feature could
+     * never actually create a resource. Rewritten to match the real
+     * schema.
      */
     public function createResource(array $data): BookingResource
     {
         return BookingResource::create([
             'vendor_id' => $data['vendor_id'],
+            'resource_type' => $data['resource_type'] ?? 'equipment',
             'name' => $data['name'],
-            'slug' => $data['slug'] ?? \Str::slug($data['name']),
             'description' => $data['description'] ?? null,
-            'type' => $data['type'] ?? 'equipment',
-            'category' => $data['category'] ?? null,
+            'sku' => $data['sku'] ?? null,
+            'quantity_total' => $data['quantity_total'] ?? ($data['quantity_available'] ?? 1),
+            'quantity_available' => $data['quantity_available'] ?? ($data['quantity_total'] ?? 1),
+            'is_active' => $data['is_active'] ?? true,
+            'minimum_rental_hours' => $data['minimum_rental_hours'] ?? 1,
+            'pricing_type' => $data['pricing_type'] ?? 'hourly',
             'hourly_rate' => $data['hourly_rate'] ?? 0,
             'daily_rate' => $data['daily_rate'] ?? 0,
-            'weekly_rate' => $data['weekly_rate'] ?? 0,
-            'monthly_rate' => $data['monthly_rate'] ?? 0,
-            'quantity_available' => $data['quantity_available'] ?? 1,
-            'min_rental_hours' => $data['min_rental_hours'] ?? 1,
-            'max_rental_hours' => $data['max_rental_hours'] ?? 168,
-            'is_active' => $data['is_active'] ?? true,
-            'requires_deposit' => $data['requires_deposit'] ?? false,
-            'deposit_amount' => $data['deposit_amount'] ?? 0,
-            'metadata' => $data['metadata'] ?? [],
+            'fixed_rate' => $data['fixed_rate'] ?? 0,
+            'image' => $data['image'] ?? null,
+            'specifications' => $data['specifications'] ?? null,
         ]);
     }
 
     /**
-     * Update a booking resource
+     * Update a booking resource. See createResource() for why this field
+     * list was rewritten to match BookingResource's actual columns.
      */
     public function updateResource(BookingResource $resource, array $data): BookingResource
     {
         $updateableFields = [
-            'name', 'slug', 'description', 'type', 'category',
-            'hourly_rate', 'daily_rate', 'weekly_rate', 'monthly_rate',
-            'quantity_available', 'min_rental_hours', 'max_rental_hours',
-            'is_active', 'requires_deposit', 'deposit_amount', 'metadata',
+            'name', 'description', 'resource_type', 'sku',
+            'quantity_total', 'quantity_available', 'is_active',
+            'minimum_rental_hours', 'pricing_type',
+            'hourly_rate', 'daily_rate', 'fixed_rate',
+            'image', 'specifications',
         ];
 
         $updateData = array_intersect_key($data, array_flip($updateableFields));
@@ -234,46 +245,36 @@ class BookingResourceService
     }
 
     /**
-     * Calculate rental price for a resource
+     * Calculate rental price for a resource.
+     *
+     * Previously branched on `monthly_rate`/`weekly_rate` and a
+     * `requires_deposit`/`deposit_amount` pair, none of which exist on
+     * BookingResource (see createResource() above) -- those columns are
+     * always null/undefined, so the monthly/weekly branches could never
+     * fire and the "deposit" was always zero. This is currently unused
+     * (no controller calls it), but rewritten to match the model's real
+     * `pricing_type` discriminator (hourly/daily/fixed, the same one
+     * BookingResource::calculatePrice() uses) so it isn't dead-wrong if
+     * something wires it up later.
      */
     public function calculateRentalPrice(
         BookingResource $resource,
         int $durationMinutes
     ): array {
-        $hours = ceil($durationMinutes / 60);
+        $hours = (int) max(1, ceil($durationMinutes / 60));
+        $days = (int) max(1, ceil($hours / 24));
 
-        $price = 0;
-        $rateType = 'hourly';
-
-        if ($hours >= 720 && $resource->monthly_rate > 0) {
-            // Monthly rate
-            $months = ceil($hours / 720);
-            $price = $resource->monthly_rate * $months;
-            $rateType = 'monthly';
-        } elseif ($hours >= 168 && $resource->weekly_rate > 0) {
-            // Weekly rate
-            $weeks = ceil($hours / 168);
-            $price = $resource->weekly_rate * $weeks;
-            $rateType = 'weekly';
-        } elseif ($hours >= 24 && $resource->daily_rate > 0) {
-            // Daily rate
-            $days = ceil($hours / 24);
-            $price = $resource->daily_rate * $days;
-            $rateType = 'daily';
-        } else {
-            // Hourly rate
-            $price = $resource->hourly_rate * $hours;
-            $rateType = 'hourly';
-        }
-
-        $deposit = $resource->requires_deposit ? $resource->deposit_amount : 0;
+        $price = match ($resource->pricing_type) {
+            'daily' => (float) $resource->daily_rate * $days,
+            'fixed' => (float) $resource->fixed_rate,
+            default => (float) $resource->hourly_rate * $hours,
+        };
 
         return [
             'price' => round($price, 2),
-            'rate_type' => $rateType,
+            'rate_type' => $resource->pricing_type ?? 'hourly',
             'hours' => $hours,
-            'deposit' => round($deposit, 2),
-            'total' => round($price + $deposit, 2),
+            'total' => round($price, 2),
         ];
     }
 
