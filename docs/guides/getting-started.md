@@ -94,6 +94,14 @@ php artisan serve  # http://localhost:8000
 
 Two terminals. For a production-style build use `npm run build`.
 
+> **Windows:** if every request throws `MissingAppKeyException` even though
+> `.env` has a valid `APP_KEY` and `artisan tinker`/`migrate`/`db:seed` all
+> work fine, use `php artisan serve --no-reload` instead. On some Windows
+> setups, Laravel's file-watch environment filtering in `ServeCommand`
+> silently breaks the spawned server's ability to read `.env`; `--no-reload`
+> skips that filtering (you just won't get auto-restart on `.env` changes —
+> re-run the command instead). `scripts/serve-local.ps1` wraps this for you.
+
 ---
 
 ## Verify the install
