@@ -177,25 +177,37 @@ can be tested without booting the framework.
 
 ### 2.2 Cover the money and trust paths, in this order
 
-| Priority | Area | Why |
-|---|---|---|
-| 1 | **Vendor isolation** | Tenancy is enforced in app code, not the database. An unconstrained query is a cross-tenant data leak. |
-| 2 | Checkout & order creation | Revenue path; touches inventory, pricing, shipping |
-| ~~3~~ | ~~Payouts, ledger, withdrawals~~ — **started**: `Vendor/WithdrawalTest` (5 tests). Found and fixed a vendor-id/user-id mix-up in the balance calculation. Payouts and ledger still uncovered | Moves money *out*; errors are hard to reverse |
-| 4 | Subscriptions & plan gating | `CheckSubscriptionLimits`, `EnsureModuleAccess` — entitlement bypass is revenue loss |
-| 5 | Auctions & bidding | Concurrency-sensitive; race conditions decide outcomes |
-| 6 | Bookings | Double-booking and slot integrity |
-| 7 | Refunds & RMA | Money and customer trust |
+> **Update:** all seven areas below now have passing feature coverage (193
+> tests total across `Feature` + `Unit`, verified by running the full suite).
+> "Covered" means the money/trust path has real assertions, not that every
+> edge case in that area is exhausted — see 2.3 for how far the vendor
+> isolation pattern specifically reaches.
+
+| Priority | Area | Why | Status |
+|---|---|---|---|
+| 1 | **Vendor isolation** | Tenancy is enforced in app code, not the database. An unconstrained query is a cross-tenant data leak. | ✅ `Vendor/VendorIsolationTest` (products), `Vendor/OrderIsolationTest`, `Vendor/AuctionIsolationTest`, `Vendor/BookingIsolationTest`, `Vendor/BookingResourceIsolationTest`, `Vendor/ProductEnquiryIsolationTest`, `Vendor/RmaRequestIsolationTest` — see 2.3 |
+| 2 | Checkout & order creation | Revenue path; touches inventory, pricing, shipping | ✅ `Feature/CheckoutTest`, `Feature/Api/CheckoutApiTest` (multi-vendor split, stock limits, duplicate-submission, cross-customer access) |
+| 3 | Payouts, ledger, withdrawals | Moves money *out*; errors are hard to reverse | ✅ `Vendor/PayoutTest`, `Vendor/WithdrawalTest`, `Vendor/RefundLedgerTest`, `Unit/Services/VendorLedgerServiceTest` — includes the double-spend and reservation-refund cases from the Payouts/Withdrawals unification |
+| 4 | Subscriptions & plan gating | `CheckSubscriptionLimits`, `EnsureModuleAccess` — entitlement bypass is revenue loss | ✅ `Feature/SubscriptionFlowTest`, `Vendor/SubscriptionLimitsTest` |
+| 5 | Auctions & bidding | Concurrency-sensitive; race conditions decide outcomes | ✅ `Unit/Services/Auction/BiddingServiceTest` (stale-read/race case), `Feature/AuctionBiddingTest`, `Vendor/AuctionIsolationTest` |
+| 6 | Bookings | Double-booking and slot integrity | ✅ `Feature/BookingIsolationTest` (customer), `Vendor/BookingIsolationTest`, `Vendor/BookingResourceIsolationTest` (rental resources — this also fixed the resource create/edit/show flow, which was fully broken: wrong DB columns, a missing `resource_id` migration, and every vendor-facing view for it missing) |
+| 7 | Refunds & RMA | Money and customer trust | ✅ `Feature/RefundRequestTest`, `Vendor/RefundLedgerTest`, `Vendor/RmaRequestIsolationTest`, `Vendor/ProductEnquiryIsolationTest` |
 
 ### 2.3 Vendor isolation as a first-class test pattern — 🟡 pattern established
 
-> `tests/Feature/Vendor/VendorIsolationTest.php` implements the pattern for the
-> product routes (5 tests, passing). The remaining vendor controllers still need
-> the same treatment — this establishes the shape, not the coverage.
+> **Update:** the pattern now spans 7 vendor controllers, all passing (verified
+> by the same full-suite run as 2.2): `Vendor/VendorIsolationTest` (products),
+> `Vendor/OrderIsolationTest`, `Vendor/AuctionIsolationTest`,
+> `Vendor/BookingIsolationTest`, `Vendor/BookingResourceIsolationTest`,
+> `Vendor/ProductEnquiryIsolationTest`, `Vendor/RmaRequestIsolationTest`. Each
+> asserts the same shape — vendor A gets 403 reading/updating/deleting vendor
+> B's resource — against a different controller/resource pair. The remaining
+> vendor controllers beyond these 7 still need the same treatment.
 
 Write a reusable assertion — *vendor A cannot read, update or delete vendor B's
-resource* — and apply it across all 32 vendor controllers. This is the single
-highest-value test investment in the codebase.
+resource* — and apply it across the remaining vendor controllers not yet
+listed above. This is still the single highest-value test investment in the
+codebase; 7 down, the rest to go.
 
 ### 2.4 Add coverage reporting to CI
 
@@ -275,12 +287,17 @@ Decide the Livewire question explicitly (see
 record it as an ADR. Extract a documented Blade component library so the next 100
 views are consistent with the last 330.
 
-### 4.4 API maturity
+### 4.4 API maturity — 🟡 pagination and error envelopes done, OpenAPI docs outstanding
+
+> **Update:** pagination contracts and a consistent error envelope are now
+> implemented via an `ApiResponse` trait and a corrected `Handler.php`, with
+> `Feature/Api/ApiPaginationAndErrorEnvelopeTest` passing (part of the 193-test
+> full-suite run cited in 2.2). Generated OpenAPI documentation has not been
+> started — [API Reference](../reference/api.md) is still hand-written.
 
 The API is versioned at `/api/v1` but thin — catalogue, cart, orders, addresses,
-checkout, mobile auth. As the Android app grows, add pagination contracts,
-consistent error envelopes, and generated OpenAPI documentation from
-[API Reference](../reference/api.md).
+checkout, mobile auth. As the Android app grows, generate OpenAPI documentation
+from the codebase rather than maintaining it by hand.
 
 ### 4.5 Observability
 
