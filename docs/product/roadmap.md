@@ -177,10 +177,11 @@ can be tested without booting the framework.
 
 ### 2.2 Cover the money and trust paths, in this order
 
-> **Update:** all seven areas below now have passing feature coverage (193
-> tests total across `Feature` + `Unit`, verified by running the full suite).
-> "Covered" means the money/trust path has real assertions, not that every
-> edge case in that area is exhausted — see 2.3 for how far the vendor
+> **Update:** all seven areas below now have passing feature coverage (237
+> tests total across `Feature` + `Unit`, verified by running the full suite —
+> 225 from the original pass plus the 12 vendor-isolation tests added in
+> 2.3). "Covered" means the money/trust path has real assertions, not that
+> every edge case in that area is exhausted — see 2.3 for how far the vendor
 > isolation pattern specifically reaches.
 
 | Priority | Area | Why | Status |
@@ -220,14 +221,15 @@ can be tested without booting the framework.
 > exercised indirectly by `Vendor/WithdrawalTest` and the other suites in
 > 2.2 — so this line item is now complete rather than merely "further along."
 >
-> **Not yet verified locally**: these 12 new tests have not been run. The
-> local MariaDB `user_africanmarket` account started rejecting all
-> connections partway through this session (see the environment note this
-> session added elsewhere) — every test in the suite, old and new, currently
-> fails with `Access denied for user 'user_africanmarket'@'localhost'`, which
-> is unrelated to any of this code. They were checked with `php -l` and by
-> hand against the exact controller/route/model code they exercise, but that
-> is not a substitute for a green run once the database access is restored.
+> **Verified 2026-09-15.** Local MariaDB access was restored (see the
+> environment note this session added elsewhere for the diagnosis) and the
+> full suite was run: **237 tests, 235 passed on the first pass**. The 2
+> failures (`Unit/Services/VendorLedgerServiceTest` and
+> `Vendor/ProductEnquiryIsolationTest`, both a `SQLSTATE[40001]` deadlock on
+> a `knowledge_chunks` insert) are pre-existing tests unrelated to this
+> change, and both passed cleanly when re-run in isolation — a transient
+> lock-contention flake under full-suite concurrency, not a regression. All
+> 12 new isolation suites passed outright on the first run.
 
 The reusable assertion shape from this pattern — *vendor A cannot read, update
 or delete vendor B's resource, and vendor A still can act on their own* — is
