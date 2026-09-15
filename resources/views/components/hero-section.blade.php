@@ -78,7 +78,9 @@
     $heroInlineStyle = null;
     $heroHeightModeClass = 'hero-height-managed';
     $heroContentPaddingClasses = 'py-12 md:py-20';
-    $heroButtonsLayoutClasses = $pageIdentifier === 'home' ? 'flex-nowrap' : 'flex-wrap';
+    // Always allow wrapping: fixed-width/nowrap CTAs previously risked overflow
+    // on narrow viewports or with longer translated button labels.
+    $heroButtonsLayoutClasses = 'flex-wrap';
     $heroMobileHeight = '45vh';
     $heroDesktopHeight = '50vh';
     $heroUseExactHeight = false;
@@ -121,10 +123,20 @@
         min-height: var(--hero-height-mobile);
     }
 
+    /*
+     * "Exact" height is a target, not a hard cap: it sets the same
+     * min-height as the managed default. A fixed `height`/`max-height`
+     * here used to clip the title/buttons on short viewports or with
+     * longer admin-entered titles (verified clipped at 320x568 with the
+     * default fallback copy) because the content is vertically centered
+     * inside a box that can't grow. Letting the box grow past the target
+     * when content needs more room keeps CTAs reachable; the background
+     * (absolutely positioned, inset-0) simply stretches to match, so the
+     * common case -- where content already fits within the target height
+     * -- looks identical to before.
+     */
     .hero-height-managed.hero-height-exact {
         min-height: var(--hero-height-mobile);
-        height: var(--hero-height-mobile);
-        max-height: var(--hero-height-mobile);
     }
 
     @media (min-width: 768px) {
@@ -134,8 +146,6 @@
 
         .hero-height-managed.hero-height-exact {
             min-height: var(--hero-height-desktop);
-            height: var(--hero-height-desktop);
-            max-height: var(--hero-height-desktop);
         }
     }
 
@@ -255,7 +265,7 @@
             @endphp
 
             @if(count($stats) > 0)
-                <div class="hero-stats flex flex-wrap gap-4 mt-8">
+                <div class="hero-stats flex flex-wrap gap-4 mt-6 md:mt-8">
                     @foreach($stats as $stat)
                         <div class="bg-white/10 backdrop-blur-sm rounded-lg px-4 sm:px-6 py-3 min-w-[8.5rem]">
                             <div class="text-[clamp(1.125rem,4vw,1.875rem)] leading-tight font-bold">{{ $stat['value'] ?? '' }}</div>
@@ -265,18 +275,29 @@
                 </div>
             @endif
 
+            @php
+                // Compact, consistent CTA styling shared by every hero across the
+                // site: same padding/height/radius/font-size for primary and
+                // secondary so they read as one design system, regardless of
+                // whether the copy comes from the admin-configured HeroSection
+                // or the hardcoded homepage fallback. Sized for a comfortable
+                // >=44px touch target without the buttons dominating the hero.
+                $heroPrimaryBtnClasses = 'inline-flex items-center justify-center gap-1.5 bg-white text-gray-900 hover:bg-gray-100 active:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold text-sm sm:text-base shadow-sm hover:shadow-md active:scale-[0.98] transition-all duration-150';
+                $heroSecondaryBtnClasses = 'inline-flex items-center justify-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/70 text-white hover:bg-white/20 hover:border-white active:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold text-sm sm:text-base active:scale-[0.98] transition-all duration-150';
+            @endphp
+
             @if(($hero && ($hero->primary_button_text || $hero->secondary_button_text)) || $pageIdentifier === 'home')
-                <div class="hero-buttons flex {{ $heroButtonsLayoutClasses }} gap-4 mt-8">
+                <div class="hero-buttons flex {{ $heroButtonsLayoutClasses }} items-center gap-3 mt-6 md:mt-8">
                     @if($hero && $hero->primary_button_text && $hero->primary_button_link)
                         <a href="{{ $hero->primary_button_link }}" 
-                           class="bg-white text-gray-900 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg">
+                           class="{{ $heroPrimaryBtnClasses }}">
                             {{ $hero->primary_button_text }}
                         </a>
                     @elseif($pageIdentifier === 'home')
                         <a href="{{ route('shop.index') }}" 
-                           class="bg-white text-gray-900 hover:bg-gray-100 w-[calc(50%-0.5rem)] sm:w-56 min-w-0 px-3 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-sm sm:text-lg uppercase tracking-wide transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 inline-flex items-center justify-center">
-                            SHOP NOW
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="{{ $heroPrimaryBtnClasses }}">
+                            Shop Now
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                             </svg>
                         </a>
@@ -284,14 +305,14 @@
                     
                     @if($hero && $hero->secondary_button_text && $hero->secondary_button_link)
                         <a href="{{ $hero->secondary_button_link }}" 
-                           class="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 px-8 py-4 rounded-lg font-bold text-lg transition-all duration-200 hover:scale-105">
+                           class="{{ $heroSecondaryBtnClasses }}">
                             {{ $hero->secondary_button_text }}
                         </a>
                     @elseif($pageIdentifier === 'home')
                         <a href="{{ route('register', ['type' => 'vendor']) }}" 
-                           class="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 w-[calc(50%-0.5rem)] sm:w-56 min-w-0 px-3 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-sm sm:text-lg uppercase tracking-wide transition-all duration-200 hover:scale-105 inline-flex items-center justify-center">
-                            GET STARTED
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="{{ $heroSecondaryBtnClasses }}">
+                            Get Started
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                             </svg>
                         </a>

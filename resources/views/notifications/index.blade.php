@@ -7,7 +7,7 @@
     pageIdentifier="notifications"
     fallbackTitle="Notifications"
     fallbackSubtitle="Stay on top of booking updates and marketplace alerts"
-    fallbackImage="/images/hero-banner.avif"
+    fallbackImage="/images/hero-banners/hero-banner.avif"
     :animated="true"
 />
 

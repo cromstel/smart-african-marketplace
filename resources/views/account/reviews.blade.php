@@ -7,7 +7,7 @@
     pageIdentifier="reviews"
     fallbackTitle="My Reviews"
     fallbackSubtitle="Track and manage your product reviews"
-    fallbackImage="/images/hero-banner.avif"
+    fallbackImage="/images/hero-banners/hero-banner.avif"
     :animated="true"
 />
 

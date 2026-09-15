@@ -7,7 +7,7 @@
     pageIdentifier="vendor-status"
     fallbackTitle="Application Status"
     fallbackSubtitle="Track your vendor verification progress"
-    fallbackImage="/images/vendor-apply-banner.avif"
+    fallbackImage="/images/hero-banners/referral-banner.avif"
     headingTag="h2"
     :animated="true"
 />

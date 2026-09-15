@@ -21,7 +21,7 @@
 
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org/",
+  "@@context": "https://schema.org/",
   "@type": "Product",
   "name": "{{ $product->name }}",
   "image": "{{ $product->featured_image ? '/storage/' . ltrim($product->featured_image ?? '', '/') : '' }}",
@@ -59,7 +59,7 @@
     heightPreset="standard"
     :fallbackTitle="__('ui.shop.product_details')"
     :fallbackSubtitle="__('ui.shop.product_details_subtitle')"
-    fallbackImage="/images/hero-banner.avif"
+    fallbackImage="/images/hero-banners/shop-banner.avif"
     headingTag="h2"
     :animated="true"
 />

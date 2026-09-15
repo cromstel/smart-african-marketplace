@@ -117,9 +117,22 @@
         .theme-link:hover {
             color: var(--theme-link);
         }
+        .theme-link:focus-visible {
+            outline: 2px solid var(--theme-accent);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
         .theme-cta {
             border-radius: var(--theme-btn-radius);
             background: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));
+        }
+        .theme-cta:focus-visible {
+            outline: 2px solid var(--theme-accent);
+            outline-offset: 2px;
+        }
+        .theme-cta:active {
+            transform: translateY(0);
+            filter: brightness(0.95);
         }
         .theme-nav {
             @if($surfaceStyle === 'glass')
@@ -518,7 +531,7 @@
                 </div>
             @else
                 <div class="mt-6 pt-6 border-t border-gray-200">
-                    <a href="{{ route('login') }}" class="flex items-center justify-center px-4 py-3 text-sm sm:text-base md:text-lg bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg font-semibold transition-all shadow-md">
+                    <a href="{{ route('login') }}" class="theme-cta flex items-center justify-center text-xs sm:text-sm md:text-base text-white px-6 py-2.5 font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                         </svg>
