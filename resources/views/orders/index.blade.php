@@ -7,7 +7,7 @@
     pageIdentifier="orders"
     fallbackTitle="My Orders"
     fallbackSubtitle="Track and manage your orders"
-    fallbackImage="/images/hero-banner.avif"
+    fallbackImage="/images/hero-banners/hero-banner.avif"
     :animated="true"
 />
 

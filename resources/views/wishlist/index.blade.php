@@ -7,7 +7,7 @@
     pageIdentifier="wishlist"
     fallbackTitle="My Wishlist"
     fallbackSubtitle="Your favorite products saved for later"
-    fallbackImage="/images/hero-banner.avif"
+    fallbackImage="/images/hero-banners/wishlist-banner.avif"
     :fallbackStats="[
         ['value' => $wishlistItems->count(), 'label' => 'Saved Items']
     ]"

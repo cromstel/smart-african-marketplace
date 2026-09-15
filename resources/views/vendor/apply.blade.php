@@ -7,7 +7,7 @@
     pageIdentifier="vendor-apply"
     fallbackTitle="Become a Vendor"
     fallbackSubtitle="Apply to sell on {{ config('app.name') }}"
-    fallbackImage="/images/vendor-apply-banner.avif"
+    fallbackImage="/images/hero-banners/referral-banner.avif"
     headingTag="h2"
     :animated="true"
 />

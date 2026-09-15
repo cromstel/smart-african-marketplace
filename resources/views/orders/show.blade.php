@@ -7,7 +7,7 @@
     pageIdentifier="orders"
     fallbackTitle="Order Details"
     fallbackSubtitle="View your order information"
-    fallbackImage="/images/hero-banner.avif"
+    fallbackImage="/images/hero-banners/hero-banner.avif"
     headingTag="h2"
     :animated="true"
 />

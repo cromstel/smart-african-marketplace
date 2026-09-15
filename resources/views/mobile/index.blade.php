@@ -2,7 +2,12 @@
 
 @section('content')
 @php
-    $containerWidth = max(1024, min(1600, (int) setting('theme_container_width', 1600)));
+    try {
+        $rawContainerWidth = (int) \App\Models\Setting::getValue('theme_container_width', 1600);
+    } catch (\Throwable $e) {
+        $rawContainerWidth = 1600;
+    }
+    $containerWidth = max(1024, min(1600, $rawContainerWidth));
 @endphp
 
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100" style="max-width: <?php echo e($containerWidth); ?>px; margin: 0 auto;">

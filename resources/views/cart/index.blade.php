@@ -7,7 +7,7 @@
     pageIdentifier="cart"
     fallbackTitle="Shopping Cart"
     fallbackSubtitle="Review your items before checkout"
-    fallbackImage="/images/hero-banner.avif"
+    fallbackImage="/images/hero-banners/shopping-cart-banner.avif"
     :animated="true"
 />
 
