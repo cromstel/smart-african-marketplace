@@ -29,18 +29,6 @@
         </span>
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500 text-green-500 px-4 py-3 rounded-lg">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
             <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">

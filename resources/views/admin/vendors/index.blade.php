@@ -4,18 +4,6 @@
 @section('header', 'Vendors Management')
 
 @section('content')
-@if(session('success'))
-    <div class="mb-6 bg-green-900 border border-green-700 text-green-200 px-6 py-4 rounded-lg">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="mb-6 bg-red-900 border border-red-700 text-red-200 px-6 py-4 rounded-lg">
-        {{ session('error') }}
-    </div>
-@endif
-
 <div class="mb-6 flex justify-between items-center">
     <div>
         <h3 class="text-2xl font-bold text-white">All Vendors</h3>
