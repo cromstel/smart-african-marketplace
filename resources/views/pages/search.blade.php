@@ -29,8 +29,18 @@
                 <p class="text-lg text-orange-50">Use filters, insights, and suggestions to find products, salon services, vendors, and stories that matter.</p>
             </div>
             <div class="mt-8 max-w-4xl">
+                {{--
+                    @json() alone is unsafe inside a double-quoted HTML
+                    attribute: it's plain json_encode(), which still leaves
+                    literal double-quote characters around string values --
+                    both arguments here are strings, so the URL's opening
+                    quote immediately terminated x-data="...", breaking
+                    Alpine's parse of searchSuggestions(...) entirely.
+                    Illuminate\Support\Js::from() hex-escapes the JSON so it
+                    contains no literal quote characters, safe to embed raw.
+                --}}
                 <form id="search-form" action="{{ route('search.index') }}" method="GET"
-                      x-data="searchSuggestions(@json(route('search.suggestions')), @json($query))"
+                      x-data="searchSuggestions({{ Illuminate\Support\Js::from(route('search.suggestions')) }}, {{ Illuminate\Support\Js::from($query) }})"
                       x-init="init()"
                       @click.away="open = false"
                       class="space-y-6">
