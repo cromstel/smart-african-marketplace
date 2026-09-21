@@ -19,13 +19,36 @@ class PaystackPaymentService
 
     public function __construct()
     {
-        $this->secretKey = Setting::get('paystack_secret_key');
-        $this->publicKey = Setting::get('paystack_public_key');
+        // Reading Paystack settings happens eagerly whenever this service is
+        // resolved from the container (even for unrelated requests/commands
+        // that merely type-hint a class depending on it), so a DB outage
+        // here must never crash the whole request -- fall back to treating
+        // Paystack as unconfigured instead.
+        try {
+            $this->secretKey = Setting::get('paystack_secret_key');
+            $this->publicKey = Setting::get('paystack_public_key');
+        } catch (Exception $e) {
+            Log::error('Failed to load Paystack settings from database; treating Paystack as unconfigured', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function isConfigured(): bool
     {
-        return ! empty($this->secretKey) && Setting::get('paystack_enabled', false);
+        if (empty($this->secretKey)) {
+            return false;
+        }
+
+        try {
+            return (bool) Setting::get('paystack_enabled', false);
+        } catch (Exception $e) {
+            Log::error('Failed to check paystack_enabled setting; treating Paystack as disabled', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
     }
 
     protected function makeRequest(string $method, string $endpoint, array $data = []): array

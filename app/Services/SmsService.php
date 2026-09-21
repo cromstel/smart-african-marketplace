@@ -16,10 +16,23 @@ class SmsService
 
     public function __construct()
     {
-        $accountSid = Setting::get('twilio_account_sid');
-        $authToken = Setting::get('twilio_auth_token');
-        $this->fromNumber = Setting::get('twilio_phone_number');
-        $this->enabled = Setting::get('sms_enabled', false);
+        $this->enabled = false;
+
+        // Reading Twilio settings happens eagerly whenever this service is
+        // resolved from the container (even for unrelated requests/commands
+        // that merely type-hint a class depending on it), so a DB outage
+        // here must never crash the whole request -- fall back to treating
+        // SMS as disabled instead.
+        try {
+            $accountSid = Setting::get('twilio_account_sid');
+            $authToken = Setting::get('twilio_auth_token');
+            $this->fromNumber = Setting::get('twilio_phone_number');
+            $this->enabled = Setting::get('sms_enabled', false);
+        } catch (\Exception $e) {
+            Log::error('Failed to load Twilio settings from database; treating SMS as disabled: '.$e->getMessage());
+
+            return;
+        }
 
         if ($accountSid && $authToken && $this->enabled) {
             try {
