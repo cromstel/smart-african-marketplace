@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
@@ -82,21 +83,44 @@ class RegisteredUserController extends Controller
             }
 
             DB::commit();
-
-            event(new Registered($user));
-
-            Mail::to($user->email)->send(new WelcomeEmail($user));
-
-            Auth::login($user);
-
-            if ($request->filled('register_as_vendor')) {
-                return redirect()->route('vendor.dashboard')->with('success', 'Your vendor account has been created and is pending approval.');
-            }
-
-            return redirect(AppServiceProvider::HOME);
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
+
+        // Post-registration side effects (email verification notice, welcome
+        // email) are best-effort: the account and (optional) vendor record
+        // are already committed above, so a mail/notification failure here
+        // (e.g. a misconfigured or temporarily unreachable mail transport)
+        // must never prevent the user from being logged in and redirected.
+        // Previously these calls sat inside the same try/catch as the DB
+        // writes, so an exception here was caught, ran a no-op DB::rollBack()
+        // (the transaction was already committed) and then rethrew --
+        // surfacing as a 500 response and silently skipping Auth::login().
+        try {
+            event(new Registered($user));
+        } catch (\Throwable $e) {
+            Log::error('Failed to dispatch Registered event / send email verification notification', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            Mail::to($user->email)->send(new WelcomeEmail($user));
+        } catch (\Throwable $e) {
+            Log::error('Failed to send welcome email', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        Auth::login($user);
+
+        if ($request->filled('register_as_vendor')) {
+            return redirect()->route('vendor.dashboard')->with('success', 'Your vendor account has been created and is pending approval.');
+        }
+
+        return redirect(AppServiceProvider::HOME);
     }
 }
