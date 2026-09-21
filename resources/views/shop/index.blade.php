@@ -152,7 +152,9 @@
                                     @php
                                         $webpPath = str_replace(pathinfo($product->featured_image, PATHINFO_EXTENSION), 'webp', $product->featured_image);
                                     @endphp
-                                    <source srcset="{{ '/storage/' . ltrim($webpPath ?? '', '/') }}" type="image/webp">
+                                    @if(Storage::disk('public')->exists($webpPath))
+                                        <source srcset="{{ '/storage/' . ltrim($webpPath ?? '', '/') }}" type="image/webp">
+                                    @endif
                                     <img src="{{ '/storage/' . ltrim($product->featured_image ?? '', '/') }}" alt="{{ $product->name }}" class="object-cover w-full h-48" loading="lazy">
                                 </picture>
                             @else
