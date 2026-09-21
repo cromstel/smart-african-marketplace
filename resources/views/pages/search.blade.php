@@ -81,7 +81,15 @@
                             </template>
                             <template x-if="suggestions.length === 0">
                                 <div class="px-4 py-3 text-sm text-gray-500">
-                                    <span x-text="`Press enter to search for \"${query}\"`"></span>
+                                    {{-- HTML attributes don't support backslash-escaping: \" here
+                                         used to terminate the x-text="..." attribute at that literal
+                                         quote character, truncating it to an unterminated template
+                                         literal ("Press enter to search for \) and throwing
+                                         "SyntaxError: Unexpected end of input" on every page load.
+                                         &quot; is the HTML-safe way to get a literal " into an
+                                         attribute value; the browser decodes it before Alpine
+                                         evaluates the expression. --}}
+                                    <span x-text="`Press enter to search for &quot;${query}&quot;`"></span>
                                 </div>
                             </template>
                         </div>
