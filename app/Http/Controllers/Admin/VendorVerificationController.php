@@ -43,6 +43,17 @@ class VendorVerificationController extends Controller
 
     public function approve(Request $request, VendorVerification $verification)
     {
+        // Guard against re-approving (or approving after a rejection) with a
+        // stale page open in two tabs, or a resubmitted-but-unreviewed record
+        // -- only a still-pending verification should be actionable here.
+        // Without this, clicking Approve on an already-decided verification
+        // would silently re-stamp reviewed_at/reviewed_by and could revert a
+        // vendor a second admin had just rejected back to approved.
+        if ($verification->status !== 'pending') {
+            return redirect()->route('admin.vendor-verifications.show', $verification)
+                ->with('error', 'This verification has already been reviewed.');
+        }
+
         $vendor = $verification->vendor;
 
         $verification->update([
@@ -71,6 +82,15 @@ class VendorVerificationController extends Controller
 
     public function reject(Request $request, VendorVerification $verification)
     {
+        // Same guard as approve(): a decided verification (approved or
+        // rejected) shouldn't be actionable again until the vendor
+        // resubmits, which resets it to 'pending' (see
+        // Vendor\VerificationController::store()).
+        if ($verification->status !== 'pending') {
+            return redirect()->route('admin.vendor-verifications.show', $verification)
+                ->with('error', 'This verification has already been reviewed.');
+        }
+
         $validated = $request->validate([
             'notes' => 'nullable|string|max:2000',
         ]);
