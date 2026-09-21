@@ -23,7 +23,10 @@ class AddressApiTest extends TestCase
             'last_name' => 'Doe',
             'address_line1' => '123 Market St',
             'city' => 'Lagos',
+            'state' => 'Lagos',
+            'postal_code' => '100001',
             'country' => 'NG',
+            'phone' => '+2348012345678',
             'is_default' => true,
         ]);
 

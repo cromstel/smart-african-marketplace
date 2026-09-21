@@ -60,7 +60,12 @@ class AddressBookTest extends TestCase
         $this->actingAs($user)
             ->get(route('addresses.index'))
             ->assertOk()
-            ->assertSee("You haven't saved any addresses yet.");
+            // The empty-state copy is static HTML in the view (not a
+            // {{ $var }} interpolation), so it renders with a literal
+            // apostrophe rather than the &#039; entity assertSee() expects
+            // by default -- pass escape=false to match what's actually
+            // in the response instead of Blade's auto-escaped output.
+            ->assertSee("You haven't saved any addresses yet.", false);
     }
 
     public function test_a_user_can_create_an_address(): void
