@@ -192,14 +192,24 @@
                     Upcoming Bookings
                 </h3>
                 @php
-                    $upcomingBookings = auth()->user()->bookings()->where('booking_date', '>=', now())->orderBy('booking_date')->take(3)->get();
+                    // Exclude cancelled/completed bookings -- a future-dated
+                    // booking the customer already cancelled (or one that's
+                    // already been completed) is not "upcoming". This
+                    // previously showed cancelled bookings here, which was
+                    // confusing right after cancelling one.
+                    $upcomingBookings = auth()->user()->bookings()
+                        ->whereNotIn('status', ['cancelled', 'completed'])
+                        ->where('booking_date', '>=', now()->toDateString())
+                        ->orderBy('booking_date')
+                        ->take(3)
+                        ->get();
                 @endphp
                 @if($upcomingBookings->count() > 0)
                     <div class="space-y-2">
                         @foreach($upcomingBookings as $booking)
                             <div class="p-3 bg-blue-50 rounded border border-blue-200">
                                 <p class="font-semibold text-sm text-gray-900">{{ $booking->salonService->name }}</p>
-                                <p class="text-xs text-gray-600 mt-1">{{ $booking->booking_date->format('M d, Y') }} at {{ $booking->booking_time }}</p>
+                                <p class="text-xs text-gray-600 mt-1">{{ $booking->booking_date->format('M d, Y') }} at {{ \Carbon\Carbon::parse($booking->booking_time)->format('g:i A') }}</p>
                             </div>
                         @endforeach
                     </div>
