@@ -150,3 +150,6 @@ mobile/android/PLAY_STORE_LISTING.md
 docs/composer-install-prompt.md
 /composer.phar
 
+_serve.pid
+_check_json2.php
+_check_json_directive.php
