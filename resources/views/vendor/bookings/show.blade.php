@@ -93,37 +93,66 @@
         </div>
     @endif
 
-    <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
-        <h3 class="text-lg font-bold text-white mb-4">Vendor Actions</h3>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <form method="POST" action="{{ route('vendor.bookings.confirm', $booking) }}" class="space-y-2 bg-gray-900 rounded-lg p-4">
-                @csrf
-                <label class="block text-sm text-gray-300">Staff Notes (optional)</label>
-                <textarea name="staff_notes" rows="2" class="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-2">{{ old('staff_notes', $booking->staff_notes) }}</textarea>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                    Confirm Booking
-                </button>
-            </form>
+    @php
+        // Mirror BookingController's server-side transition guards here so
+        // the vendor isn't offered an action that will always be rejected:
+        // confirm() only allows pending -> confirmed, and cancel() refuses
+        // once a booking is completed or cancelled. Previously both forms
+        // always rendered regardless of status, so e.g. a vendor viewing an
+        // already-confirmed booking would see a "Confirm Booking" button
+        // that just bounced back with "Only pending bookings can be
+        // confirmed." every time.
+        $canConfirm = $booking->status === 'pending';
+        $canCancel = ! in_array($booking->status, ['completed', 'cancelled'], true);
+    @endphp
+    @if($canConfirm || $canCancel)
+        <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
+            <h3 class="text-lg font-bold text-white mb-4">Vendor Actions</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                @if($canConfirm)
+                    <form method="POST" action="{{ route('vendor.bookings.confirm', $booking) }}" class="space-y-2 bg-gray-900 rounded-lg p-4">
+                        @csrf
+                        <label class="block text-sm text-gray-300">Staff Notes (optional)</label>
+                        <textarea name="staff_notes" rows="2" class="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-2">{{ old('staff_notes', $booking->staff_notes) }}</textarea>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            Confirm Booking
+                        </button>
+                    </form>
+                @endif
 
-            <form method="POST" action="{{ route('vendor.bookings.cancel', $booking) }}" class="space-y-2 bg-gray-900 rounded-lg p-4">
-                @csrf
-                <label class="block text-sm text-gray-300">Cancellation Note (optional)</label>
-                <textarea name="staff_notes" rows="2" class="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-2">{{ old('staff_notes', $booking->staff_notes) }}</textarea>
-                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
-                    Cancel Booking
-                </button>
-            </form>
+                @if($canCancel)
+                    <form method="POST" action="{{ route('vendor.bookings.cancel', $booking) }}" class="space-y-2 bg-gray-900 rounded-lg p-4">
+                        @csrf
+                        <label class="block text-sm text-gray-300">Cancellation Note (optional)</label>
+                        <textarea name="staff_notes" rows="2" class="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-2">{{ old('staff_notes', $booking->staff_notes) }}</textarea>
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                            Cancel Booking
+                        </button>
+                    </form>
+                @endif
 
-            <form method="POST" action="{{ route('vendor.bookings.message', $booking) }}" class="space-y-2 bg-gray-900 rounded-lg p-4">
+                <form method="POST" action="{{ route('vendor.bookings.message', $booking) }}" class="space-y-2 bg-gray-900 rounded-lg p-4">
+                    @csrf
+                    <label class="block text-sm text-gray-300">Message to Customer</label>
+                    <textarea name="message" rows="2" class="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-2" required></textarea>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    @else
+        <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
+            <h3 class="text-lg font-bold text-white mb-4">Message to Customer</h3>
+            <form method="POST" action="{{ route('vendor.bookings.message', $booking) }}" class="space-y-2 bg-gray-900 rounded-lg p-4 lg:w-1/3">
                 @csrf
-                <label class="block text-sm text-gray-300">Message to Customer</label>
                 <textarea name="message" rows="2" class="w-full bg-gray-700 border border-gray-600 text-white rounded px-3 py-2" required></textarea>
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">
                     Send Message
                 </button>
             </form>
         </div>
-    </div>
+    @endif
 
     @if($booking->staff_notes)
         <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
