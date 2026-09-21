@@ -42,7 +42,6 @@
                         @enderror
                     </div>
                 </div>
-                <p class="mt-2 text-sm text-gray-400">Leave password fields empty to keep the current password</p>
             </div>
 
             <div class="mb-8">

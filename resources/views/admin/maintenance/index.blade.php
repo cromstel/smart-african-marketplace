@@ -5,29 +5,6 @@
 
 @section('content')
 <div class="max-w-4xl">
-    <!-- Flash Messages -->
-    @if(session('success'))
-        <div class="mb-4 p-4 bg-green-900/50 border border-green-700 rounded-lg text-green-200">
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                {{ session('success') }}
-            </div>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="mb-4 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-200">
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-                {{ session('error') }}
-            </div>
-        </div>
-    @endif
-
     <!-- Current Status Card -->
     <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 mb-6">
         <div class="flex items-center justify-between">
