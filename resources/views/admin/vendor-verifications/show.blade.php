@@ -66,20 +66,35 @@
     <div class="space-y-6">
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
             <h3 class="text-lg font-bold text-white mb-4">Admin Actions</h3>
-            <form method="POST" action="{{ route('admin.vendor-verifications.approve', $verification) }}" class="mb-3">
-                @csrf
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
-                    Approve Verification
-                </button>
-            </form>
-            <form method="POST" action="{{ route('admin.vendor-verifications.reject', $verification) }}" class="space-y-3">
-                @csrf
-                <label class="block text-sm text-gray-300">Rejection Notes (optional)</label>
-                <textarea name="notes" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white">{{ old('notes', $verification->notes) }}</textarea>
-                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
-                    Reject Verification
-                </button>
-            </form>
+            @if($verification->status === 'pending')
+                <form method="POST" action="{{ route('admin.vendor-verifications.approve', $verification) }}" class="mb-3">
+                    @csrf
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                        Approve Verification
+                    </button>
+                </form>
+                <form method="POST" action="{{ route('admin.vendor-verifications.reject', $verification) }}" class="space-y-3">
+                    @csrf
+                    <label class="block text-sm text-gray-300">Rejection Notes (optional)</label>
+                    <textarea name="notes" rows="3" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white">{{ old('notes', $verification->notes) }}</textarea>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                        Reject Verification
+                    </button>
+                </form>
+            @else
+                {{--
+                    Once a verification is approved/rejected, the server
+                    (VendorVerificationController::approve()/reject()) no
+                    longer accepts another decision on it -- it only becomes
+                    actionable again once the vendor resubmits documents,
+                    which resets it to 'pending'. Hiding the buttons here
+                    keeps the admin from clicking something that will now
+                    just bounce back with "already been reviewed."
+                --}}
+                <p class="text-sm text-gray-400">
+                    This verification has already been {{ $verification->status }}. It will become actionable again if the vendor resubmits documents.
+                </p>
+            @endif
         </div>
 
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 text-sm text-gray-300">
