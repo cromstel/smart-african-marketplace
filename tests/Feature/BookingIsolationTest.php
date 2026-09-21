@@ -5,9 +5,7 @@ namespace Tests\Feature;
 use App\Models\Booking;
 use App\Models\Category;
 use App\Models\SalonService;
-use App\Models\SubscriptionPlan;
 use App\Models\User;
-use App\Models\UserSubscription;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -21,6 +19,18 @@ use Tests\TestCase;
  * $booking->user_id === auth()->id() checks. This test proves the routes
  * are reachable for an owning customer and still correctly blocked for a
  * non-owning one, now that they're wired to real BookingPolicy abilities.
+ *
+ * A second, separate bug lived on top of that one: the whole route group
+ * was ALSO wrapped in module.access:bookings, a vendor-subscription-plan
+ * gate meant for the vendor-side booking-management routes. A plain
+ * customer account never holds a subscription, so that gate 403'd every
+ * customer before BookingPolicy even ran -- makeCustomer() below used to
+ * be called makeEntitledCustomer() and papered over this in the test
+ * fixture by giving the "customer" a fake subscription just to make these
+ * tests pass, which masked the real-world bug instead of catching it. The
+ * gate has been removed from the customer route group (it stays on the
+ * vendor.bookings.* group, where it belongs), and the fixture now reflects
+ * an ordinary customer: no subscription at all.
  */
 class BookingIsolationTest extends TestCase
 {
@@ -28,7 +38,7 @@ class BookingIsolationTest extends TestCase
 
     public function test_a_customer_can_view_their_own_booking(): void
     {
-        $customer = $this->makeEntitledCustomer();
+        $customer = $this->makeCustomer();
         $booking = $this->makeBooking($customer);
 
         $this->actingAs($customer)
@@ -38,8 +48,8 @@ class BookingIsolationTest extends TestCase
 
     public function test_a_customer_cannot_view_another_customers_booking(): void
     {
-        $owner = $this->makeEntitledCustomer();
-        $stranger = $this->makeEntitledCustomer();
+        $owner = $this->makeCustomer();
+        $stranger = $this->makeCustomer();
         $booking = $this->makeBooking($owner);
 
         $this->actingAs($stranger)
@@ -49,7 +59,7 @@ class BookingIsolationTest extends TestCase
 
     public function test_a_customer_can_reschedule_their_own_booking(): void
     {
-        $customer = $this->makeEntitledCustomer();
+        $customer = $this->makeCustomer();
         $booking = $this->makeBooking($customer);
 
         $this->actingAs($customer)
@@ -59,8 +69,8 @@ class BookingIsolationTest extends TestCase
 
     public function test_a_customer_cannot_reschedule_another_customers_booking(): void
     {
-        $owner = $this->makeEntitledCustomer();
-        $stranger = $this->makeEntitledCustomer();
+        $owner = $this->makeCustomer();
+        $stranger = $this->makeCustomer();
         $booking = $this->makeBooking($owner);
 
         $this->actingAs($stranger)
@@ -70,7 +80,7 @@ class BookingIsolationTest extends TestCase
 
     public function test_a_customer_can_cancel_their_own_booking(): void
     {
-        $customer = $this->makeEntitledCustomer();
+        $customer = $this->makeCustomer();
         $booking = $this->makeBooking($customer);
 
         $this->actingAs($customer)
@@ -82,8 +92,8 @@ class BookingIsolationTest extends TestCase
 
     public function test_a_customer_cannot_cancel_another_customers_booking(): void
     {
-        $owner = $this->makeEntitledCustomer();
-        $stranger = $this->makeEntitledCustomer();
+        $owner = $this->makeCustomer();
+        $stranger = $this->makeCustomer();
         $booking = $this->makeBooking($owner);
 
         $this->actingAs($stranger)
@@ -95,7 +105,7 @@ class BookingIsolationTest extends TestCase
 
     public function test_a_customer_can_list_and_start_a_new_booking(): void
     {
-        $customer = $this->makeEntitledCustomer();
+        $customer = $this->makeCustomer();
         $service = $this->makeSalonService();
 
         $this->actingAs($customer)->get(route('bookings.index'))->assertOk();
@@ -104,30 +114,62 @@ class BookingIsolationTest extends TestCase
 
     public function test_guest_is_redirected_to_login_for_booking_routes(): void
     {
-        $customer = $this->makeEntitledCustomer();
+        $customer = $this->makeCustomer();
         $booking = $this->makeBooking($customer);
 
         $this->get(route('bookings.index'))->assertRedirect(route('login'));
         $this->get(route('bookings.show', $booking))->assertRedirect(route('login'));
     }
 
-    private function makeEntitledCustomer(): User
+    public function test_a_customer_with_no_subscription_can_create_a_booking(): void
     {
-        $user = User::factory()->create();
+        // Regression test for the module.access:bookings bug described in
+        // the class docblock: this customer has no subscription of any
+        // kind, which used to 403/redirect before BookingController::store
+        // ever ran.
+        $customer = $this->makeCustomer();
+        $service = $this->makeSalonService();
+        $date = now()->addDay()->format('Y-m-d');
 
-        $plan = SubscriptionPlan::create([
-            'name' => 'Booking Test Plan '.uniqid(),
-            'slug' => 'booking-test-plan-'.uniqid(),
-            'feature_keys' => ['bookings'],
+        $response = $this->actingAs($customer)->post(route('bookings.store', $service), [
+            'booking_date' => $date,
+            'booking_time' => '10:00',
+            // customer_notes intentionally omitted: BookingController::store
+            // used to read $validated['customer_notes'] without a null
+            // fallback, and $request->validate() omits the key entirely
+            // for an absent nullable field, throwing "Undefined array key".
         ]);
 
-        UserSubscription::create([
-            'user_id' => $user->id,
-            'subscription_plan_id' => $plan->id,
-            'status' => 'active',
-        ]);
+        $booking = Booking::where('user_id', $customer->id)
+            ->where('salon_service_id', $service->id)
+            ->first();
 
-        return $user->fresh();
+        $this->assertNotNull($booking, 'Expected a booking to be created.');
+        $response->assertRedirect(route('bookings.show', $booking));
+        $this->assertNull($booking->customer_notes);
+    }
+
+    public function test_a_vendor_cannot_create_a_booking_as_a_customer(): void
+    {
+        // BookingPolicy::create() only grants admins and customers -- a
+        // vendor account booking a service (as opposed to managing bookings
+        // made on their own services, via vendor.bookings.*) is correctly
+        // forbidden.
+        $vendor = User::factory()->create(['role' => 'vendor']);
+        $service = $this->makeSalonService();
+
+        $this->actingAs($vendor)
+            ->get(route('bookings.create', $service))
+            ->assertForbidden();
+    }
+
+    private function makeCustomer(): User
+    {
+        // Deliberately a bare factory customer with no subscription of any
+        // kind -- see the class docblock. If the module.access:bookings
+        // regression ever comes back, every test in this file using this
+        // fixture will fail with a 302 to the upgrade-subscription page.
+        return User::factory()->create(['role' => 'customer']);
     }
 
     private function makeSalonService(): SalonService

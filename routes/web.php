@@ -560,13 +560,21 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/coupon/apply', [CouponController::class, 'apply'])->name('coupon.apply')->middleware('verified');
     Route::delete('/coupon/remove', [CouponController::class, 'remove'])->name('coupon.remove')->middleware('verified');
 
-    // Booking routes - protected by both permissions and subscription module
-    // can:bookings.X below had no Gate::define and no model argument, so
-    // Gate denied every one of these routes by default (see the identical
-    // note on the admin booking routes above). viewAny/view are split so
-    // that viewing a single booking always checks ownership, never just
-    // "can list bookings at all".
-    Route::middleware('module.access:bookings')->group(function () {
+    // Booking routes (customer-facing: browsing/creating/managing YOUR OWN
+    // bookings) - authorization is BookingPolicy alone (viewAny/view/create/
+    // update/cancel), which already grants admins, customers, and vendors
+    // (scoped to their own salon_owner_id) appropriately -- see
+    // BookingPolicy's class doc comments. This group used to also be wrapped
+    // in module.access:bookings, a vendor-subscription-plan gate. That's the
+    // right gate for the VENDOR booking-management routes under
+    // vendor.bookings.* (still gated, see the /vendor prefix group below),
+    // but here it ran ahead of BookingPolicy and rejected every non-admin,
+    // non-subscribed user -- i.e. every ordinary customer, since customer
+    // accounts never hold a vendor subscription -- making it impossible for
+    // any customer to view, create, reschedule, or cancel a booking at all.
+    // Removed so BookingPolicy is the sole authorization layer here, as the
+    // policy's own logic already assumes.
+    Route::group([], function () {
         Route::middleware('can:viewAny,App\Models\Booking')->group(function () {
             Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
         });

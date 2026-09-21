@@ -346,7 +346,13 @@ class BookingController extends Controller
                 'duration_minutes' => $service->duration_minutes,
                 'price' => $service->price,
                 'status' => 'pending',
-                'customer_notes' => $validated['customer_notes'],
+                // customer_notes is nullable -- $request->validate() omits the
+                // key entirely from $validated when the field wasn't submitted
+                // at all (rather than setting it to null), so accessing it
+                // directly threw "Undefined array key" whenever a booking was
+                // created without notes. update() below already guards this
+                // the same way; store() didn't.
+                'customer_notes' => $validated['customer_notes'] ?? null,
             ]);
 
             DB::commit();
