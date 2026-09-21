@@ -27,9 +27,20 @@ class StripePaymentService
 
     public function __construct()
     {
-        $this->secretKey = Setting::get('stripe_secret_key');
-        $this->publicKey = Setting::get('stripe_public_key');
-        $this->webhookSecret = Setting::get('stripe_webhook_secret');
+        // Reading Stripe settings happens eagerly whenever this service is
+        // resolved from the container (even for unrelated requests/commands
+        // that merely type-hint a class depending on it), so a DB outage
+        // here must never crash the whole request -- fall back to treating
+        // Stripe as unconfigured instead.
+        try {
+            $this->secretKey = Setting::get('stripe_secret_key');
+            $this->publicKey = Setting::get('stripe_public_key');
+            $this->webhookSecret = Setting::get('stripe_webhook_secret');
+        } catch (Exception $e) {
+            Log::error('Failed to load Stripe settings from database; treating Stripe as unconfigured', [
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         if ($this->secretKey) {
             Stripe::setApiKey($this->secretKey);
@@ -38,7 +49,19 @@ class StripePaymentService
 
     public function isConfigured(): bool
     {
-        return ! empty($this->secretKey) && Setting::get('stripe_enabled', false);
+        if (empty($this->secretKey)) {
+            return false;
+        }
+
+        try {
+            return (bool) Setting::get('stripe_enabled', false);
+        } catch (Exception $e) {
+            Log::error('Failed to check stripe_enabled setting; treating Stripe as disabled', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
     }
 
     public function createCustomer(User $user): ?string

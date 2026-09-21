@@ -25,11 +25,27 @@ class SwishService
 
     public function __construct()
     {
-        $this->environment = Setting::getValue('swish_environment', 'sandbox');
-        $this->merchantId = Setting::getValue('swish_merchant_id', '');
-        $this->certificatePath = Setting::getValue('swish_certificate');
-        $this->certificatePassword = Setting::getValue('swish_private_key');
+        $this->environment = 'sandbox';
+        $this->merchantId = '';
+        $this->certificatePath = null;
+        $this->certificatePassword = null;
         $this->callbackUrl = rtrim(config('app.url'), '/').'/webhooks/swish/callback';
+
+        // Reading Swish settings happens eagerly whenever this service is
+        // resolved from the container (even for unrelated requests/commands
+        // that merely type-hint a class depending on it), so a DB outage
+        // here must never crash the whole request -- fall back to treating
+        // Swish as unconfigured instead.
+        try {
+            $this->environment = Setting::getValue('swish_environment', 'sandbox');
+            $this->merchantId = Setting::getValue('swish_merchant_id', '');
+            $this->certificatePath = Setting::getValue('swish_certificate');
+            $this->certificatePassword = Setting::getValue('swish_private_key');
+        } catch (\Exception $e) {
+            Log::error('Failed to load Swish settings from database; treating Swish as unconfigured', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -37,8 +53,19 @@ class SwishService
      */
     public function isEnabled(): bool
     {
-        return in_array(Setting::getValue('swish_enabled'), [true, 'true', '1', 1], true)
-            && ! empty($this->merchantId);
+        if (empty($this->merchantId)) {
+            return false;
+        }
+
+        try {
+            return in_array(Setting::getValue('swish_enabled'), [true, 'true', '1', 1], true);
+        } catch (\Exception $e) {
+            Log::error('Failed to check swish_enabled setting; treating Swish as disabled', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
     }
 
     /**
