@@ -50,7 +50,9 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {{ $service->category->name ?? 'N/A' }}
+                        {{-- Prefer the dedicated salon service category over the generic
+                             product category -- see SalonService::salonCategory(). --}}
+                        {{ $service->salonCategory->name ?? $service->category->name ?? 'N/A' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">
                         ${{ number_format($service->price, 2) }}

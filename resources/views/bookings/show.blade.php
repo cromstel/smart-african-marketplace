@@ -70,7 +70,9 @@
                             @endif
                             <div>
                                 <p class="text-white font-semibold text-lg">{{ $booking->salonService->name }}</p>
-                                <p class="text-gray-400 text-sm">{{ $booking->salonService->category->name ?? 'N/A' }}</p>
+                                {{-- Prefer the dedicated salon service category over the generic
+                                     product category -- see SalonService::salonCategory(). --}}
+                                <p class="text-gray-400 text-sm">{{ $booking->salonService->salonCategory->name ?? $booking->salonService->category->name ?? 'N/A' }}</p>
                             </div>
                         </div>
                     </div>

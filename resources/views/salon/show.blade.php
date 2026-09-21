@@ -46,7 +46,14 @@
                         <div>
                             <h2 class="text-3xl font-bold text-white mb-2">{{ $service->name }}</h2>
                             <span class="px-3 py-1 text-sm rounded bg-indigo-900 text-indigo-300">
-                                {{ $service->category->name ?? 'N/A' }}
+                                {{-- Prefer the dedicated salon service category (salon_category_id)
+                                     over the generic product category (category_id) -- these are two
+                                     separate taxonomies (see SalonService::salonCategory() /
+                                     ::category()), and the listing page (salon/index.blade.php)
+                                     already prefers salonCategory the same way. This page previously
+                                     only checked category, which showed an unrelated/incorrect
+                                     category badge whenever the two didn't match. --}}
+                                {{ $service->salonCategory->name ?? $service->category->name ?? 'N/A' }}
                             </span>
                         </div>
                     </div>
