@@ -86,7 +86,12 @@ class VendorApplicationController extends Controller
             return redirect()->route('vendor.apply')->with('error', 'You do not have a vendor application yet.');
         }
 
-        $verification = VendorVerification::firstOrCreate(['vendor_id' => $vendor->id]);
+        // 'status' is passed explicitly (matching the migration's column
+        // default) so a freshly created record's in-memory model has it
+        // set immediately -- firstOrCreate()'s create() path doesn't
+        // re-fetch the row, so relying on the DB-level default alone left
+        // $verification->status null on a vendor's first status check.
+        $verification = VendorVerification::firstOrCreate(['vendor_id' => $vendor->id], ['status' => 'pending']);
 
         return view('vendor.application-status', compact('vendor', 'verification'));
     }
@@ -99,7 +104,7 @@ class VendorApplicationController extends Controller
             return redirect()->route('vendor.apply');
         }
 
-        $verification = VendorVerification::firstOrCreate(['vendor_id' => $vendor->id]);
+        $verification = VendorVerification::firstOrCreate(['vendor_id' => $vendor->id], ['status' => 'pending']);
 
         $validated = $request->validate([
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',

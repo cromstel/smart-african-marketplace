@@ -167,7 +167,16 @@ class DashboardController extends Controller
             ->latest()
             ->first();
 
-        $verification = VendorVerification::firstOrCreate(['vendor_id' => $vendor->id]);
+        // Pass the 'pending' status explicitly (matching the migration's column
+        // default) so a freshly created record's in-memory model already has
+        // it set -- firstOrCreate()'s create() path does not re-fetch the row,
+        // so relying on the DB-level default alone left $verification->status
+        // null on a vendor's very first dashboard visit, rendering a blank
+        // "Current status: " in the view.
+        $verification = VendorVerification::firstOrCreate(
+            ['vendor_id' => $vendor->id],
+            ['status' => 'pending']
+        );
 
         return view('vendor.dashboard', compact(
             'vendor',

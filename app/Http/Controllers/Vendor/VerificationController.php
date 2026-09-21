@@ -11,7 +11,15 @@ class VerificationController extends Controller
     public function index()
     {
         $vendorId = auth()->user()->vendor?->id;
-        $verification = VendorVerification::firstOrCreate(['vendor_id' => $vendorId]);
+        // Pass 'status' explicitly on create so a freshly created record's
+        // in-memory model has it set immediately -- firstOrCreate()'s create()
+        // path doesn't re-fetch the row, so relying on the migration's
+        // DB-level default alone left $verification->status null on a
+        // vendor's first visit to this page.
+        $verification = VendorVerification::firstOrCreate(
+            ['vendor_id' => $vendorId],
+            ['status' => 'pending']
+        );
 
         return view('vendor.verification.index', compact('verification'));
     }
@@ -19,7 +27,10 @@ class VerificationController extends Controller
     public function store(Request $request)
     {
         $vendorId = auth()->user()->vendor?->id;
-        $verification = VendorVerification::firstOrCreate(['vendor_id' => $vendorId]);
+        $verification = VendorVerification::firstOrCreate(
+            ['vendor_id' => $vendorId],
+            ['status' => 'pending']
+        );
 
         $validated = $request->validate([
             'documents.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
