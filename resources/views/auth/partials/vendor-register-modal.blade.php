@@ -114,7 +114,7 @@
                                 type="text" 
                                 name="business_name" 
                                 value="{{ old('business_name') }}"
-                                required
+                                :required="checkboxChecked"
                                 class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
                                 placeholder="Your Business Name"
                             >
@@ -136,7 +136,7 @@
                             <select 
                                 id="modal-vendor_category_id" 
                                 name="vendor_category_id"
-                                required
+                                :required="checkboxChecked"
                                 class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
                             >
                                 <option value="">Select a category</option>
@@ -169,7 +169,7 @@
                                     type="email" 
                                     name="business_email" 
                                     value="{{ old('business_email') }}"
-                                    required
+                                    :required="checkboxChecked"
                                     class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
                                     placeholder="business@domain.com"
                                 >
@@ -192,7 +192,7 @@
                                     type="tel" 
                                     name="business_phone" 
                                     value="{{ old('business_phone') }}"
-                                    required
+                                    :required="checkboxChecked"
                                     class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
                                     placeholder="+1234567890"
                                 >
@@ -217,7 +217,7 @@
                                 id="modal-business_address" 
                                 name="business_address" 
                                 rows="3"
-                                required
+                                :required="checkboxChecked"
                                 class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
                                 placeholder="Full business address"
                             >{{ old('business_address') }}</textarea>
@@ -238,7 +238,7 @@
                             id="vendor_terms" 
                             name="vendor_terms" 
                             value="1"
-                            required
+                            :required="checkboxChecked"
                             class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
                         >
                         <label for="vendor_terms" class="ml-2 text-sm text-gray-600">
