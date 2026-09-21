@@ -22,8 +22,15 @@
     <div class="max-w-6xl mx-auto space-y-6">
         <h2 class="text-3xl font-bold text-white">Reschedule {{ $service->name }}</h2>
 
+        {{--
+            @json() alone is unsafe inside a double-quoted HTML attribute --
+            it's plain json_encode(), and the JSON it produces still
+            contains literal double-quote characters that prematurely
+            terminate x-data="...". See bookings/create.blade.php for the
+            full explanation; same fix applied here.
+        --}}
         <form action="{{ route('bookings.update', $booking) }}" method="POST"
-              x-data="bookingSlotPicker(@json($availableSlots), '{{ $defaultDate ?? '' }}', @json($defaultSlot), '{{ route('bookings.available-slots', $service) }}', '{{ route('bookings.calendar', $service) }}')"
+              x-data="bookingSlotPicker({{ Illuminate\Support\Js::from($availableSlots) }}, '{{ $defaultDate ?? '' }}', {{ Illuminate\Support\Js::from($defaultSlot) }}, '{{ route('bookings.available-slots', $service) }}', '{{ route('bookings.calendar', $service) }}')"
               x-init="init()"
               x-cloak
               class="grid grid-cols-1 lg:grid-cols-3 gap-6">

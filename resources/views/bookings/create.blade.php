@@ -22,8 +22,23 @@
     <div class="max-w-6xl mx-auto space-y-6">
         <h2 class="text-3xl font-bold text-white">Reserve {{ $service->name }}</h2>
 
+        {{--
+            NOTE: @json() alone is unsafe here. Blade's @json() is plain
+            json_encode() -- correct for embedding inside a <script> block,
+            but the JSON it produces still contains literal double-quote
+            characters (they delimit every key/string value), which
+            prematurely terminates a double-quoted HTML attribute like
+            x-data="...". That previously broke this attribute at the very
+            first quote in $availableSlots, leaving Alpine unable to parse
+            bookingSlotPicker(...) at all (SyntaxError: missing ) after
+            argument list) -- the entire slot picker was non-functional.
+            Illuminate\Support\Js::from() is Laravel's helper for exactly
+            this case: it wraps the JSON as JSON.parse('...') with the
+            content hex-escaped so it contains no literal quote characters,
+            safe to embed raw inside an HTML attribute.
+        --}}
         <form action="{{ route('bookings.store', $service) }}" method="POST"
-              x-data="bookingSlotPicker(@json($availableSlots), '{{ $defaultDate ?? '' }}', @json($defaultSlot), '{{ route('bookings.available-slots', $service) }}', '{{ route('bookings.calendar', $service) }}')"
+              x-data="bookingSlotPicker({{ Illuminate\Support\Js::from($availableSlots) }}, '{{ $defaultDate ?? '' }}', {{ Illuminate\Support\Js::from($defaultSlot) }}, '{{ route('bookings.available-slots', $service) }}', '{{ route('bookings.calendar', $service) }}')"
               x-init="init()"
               x-cloak
               class="grid grid-cols-1 lg:grid-cols-3 gap-6">
