@@ -30,7 +30,11 @@ class MaintenanceController extends Controller
     public function index()
     {
         $isActive = $this->maintenanceService->isActive();
-        $config = config('maintenance');
+        // Regression: this read config('maintenance') -- the static file
+        // only -- so nothing an admin had previously saved ever showed up
+        // again after the request that saved it ended. getConfig() layers
+        // persisted Setting rows over those same file defaults.
+        $config = $this->maintenanceService->getConfig();
 
         return view('admin.maintenance.index', compact('isActive', 'config'));
     }
@@ -48,35 +52,35 @@ class MaintenanceController extends Controller
             'allowed_emails' => 'nullable|string',
         ]);
 
-        // Update config with values from the form
-        if ($request->has('title') && $request->title) {
-            config(['maintenance.title' => $request->title]);
+        $config = [];
+
+        if ($request->filled('title')) {
+            $config['title'] = $request->title;
         }
 
-        if ($request->has('message') && $request->message) {
-            config(['maintenance.message' => $request->message]);
+        if ($request->filled('message')) {
+            $config['message'] = $request->message;
         }
 
-        if ($request->has('retry') && $request->retry) {
-            config(['maintenance.retry' => (int) $request->retry]);
+        if ($request->filled('retry')) {
+            $config['retry'] = (int) $request->retry;
         }
 
-        if ($request->has('allowed_ips') && $request->allowed_ips) {
-            $ips = array_filter(array_map('trim', explode("\n", $request->allowed_ips)));
-            config(['maintenance.allowed_ips' => array_values($ips)]);
-        } else {
-            config(['maintenance.allowed_ips' => []]);
-        }
+        $config['allowed_ips'] = $request->filled('allowed_ips')
+            ? array_values(array_filter(array_map('trim', explode("\n", $request->allowed_ips))))
+            : [];
 
-        if ($request->has('allowed_emails') && $request->allowed_emails) {
-            $emails = array_filter(array_map('trim', explode("\n", $request->allowed_emails)));
-            config(['maintenance.allowed_emails' => array_values($emails)]);
-        } else {
-            config(['maintenance.allowed_emails' => []]);
-        }
+        $config['allowed_emails'] = $request->filled('allowed_emails')
+            ? array_values(array_filter(array_map('trim', explode("\n", $request->allowed_emails))))
+            : [];
 
-        // Store configuration in cache
-        $this->maintenanceService->updateConfig(config('maintenance'));
+        // Regression: this passed config('maintenance') (the still-static
+        // file, since the config() mutations above never persisted) to
+        // updateConfig(), which itself only wrote to Cache::put() /
+        // Config::set() -- neither survives past this request. Both layers
+        // of the bug are fixed: $config here is built directly from the
+        // submitted form, and updateConfig() now writes through Setting.
+        $this->maintenanceService->updateConfig($config);
 
         return redirect()->route('admin.maintenance.index')
             ->with('success', 'Maintenance mode configuration has been updated.');
@@ -93,19 +97,22 @@ class MaintenanceController extends Controller
             'allowed_emails' => 'nullable|string',
         ]);
 
-        // Update config with optional custom values
-        if ($request->has('message') && $request->message) {
-            config(['maintenance.message' => $request->message]);
+        $config = [];
+
+        if ($request->filled('message')) {
+            $config['message'] = $request->message;
         }
 
-        if ($request->has('allowed_ips') && $request->allowed_ips) {
-            $ips = array_filter(array_map('trim', explode(',', $request->allowed_ips)));
-            config(['maintenance.allowed_ips' => $ips]);
+        if ($request->filled('allowed_ips')) {
+            $config['allowed_ips'] = array_values(array_filter(array_map('trim', explode(',', $request->allowed_ips))));
         }
 
-        if ($request->has('allowed_emails') && $request->allowed_emails) {
-            $emails = array_filter(array_map('trim', explode(',', $request->allowed_emails)));
-            config(['maintenance.allowed_emails' => $emails]);
+        if ($request->filled('allowed_emails')) {
+            $config['allowed_emails'] = array_values(array_filter(array_map('trim', explode(',', $request->allowed_emails))));
+        }
+
+        if ($config) {
+            $this->maintenanceService->updateConfig($config);
         }
 
         $this->maintenanceService->enable();
@@ -155,16 +162,18 @@ class MaintenanceController extends Controller
      */
     public function preview()
     {
-        // Temporarily enable maintenance mode for preview
-        $previousState = $this->maintenanceService->isActive();
+        // Regression: this called enable(), which durably (see the
+        // persistence fix above) turned maintenance mode ON for every real
+        // visitor -- and never turned it back off, despite capturing
+        // $previousState as though it meant to. A "preview" action must not
+        // have a side effect at all; render the exact view a visitor would
+        // see instead, admin-only, with no state change.
+        $config = $this->maintenanceService->getConfig();
 
-        // Force enable for preview
-        $this->maintenanceService->enable();
-
-        // Note: In a real implementation, this would render the maintenance view
-        // For now, we'll just redirect back with a message
-
-        return redirect()->route('admin.maintenance.index')
-            ->with('info', 'Maintenance preview mode - site is now showing maintenance page to all visitors except admins.');
+        return response()->view('errors.maintenance', [
+            'title' => $config['title'],
+            'message' => $config['message'],
+            'expected' => $config['expected'],
+        ]);
     }
 }
