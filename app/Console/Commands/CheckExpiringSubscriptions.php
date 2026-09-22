@@ -36,10 +36,26 @@ class CheckExpiringSubscriptions extends Command
                 return $daysLeft <= 7 && $daysLeft >= 0;
             });
 
-        $legacyExpiringSubscriptions = VendorSubscription::where('status', 'trialing')
-            ->orWhere('status', 'active')
+        // Regression: Vendor\SubscriptionController::processUpgrade() writes
+        // matching current_period_end dates to both a UserSubscription and
+        // a legacy VendorSubscription row for the same vendor on every
+        // upgrade, to keep the legacy bridge (EffectiveSubscriptionResolver)
+        // populated for vendors that predate it. Without this exclusion,
+        // any vendor who has ever upgraded appears in both loops below with
+        // the same expiry window and gets the same notification twice. This
+        // loop is meant to catch vendors on the legacy table only -- ones
+        // with no native UserSubscription at all -- so skip anyone the
+        // first loop above already covers.
+        $legacyExpiringSubscriptions = VendorSubscription::with('vendor.user.subscription')
+            ->where(function ($query) {
+                $query->where('status', 'trialing')->orWhere('status', 'active');
+            })
             ->get()
             ->filter(function ($subscription) {
+                if ($subscription->vendor?->user?->subscription) {
+                    return false;
+                }
+
                 return $subscription->shouldNotifyExpiring();
             });
 
