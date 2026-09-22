@@ -1,6 +1,6 @@
 # Mobile App Build & Release Guide
 
-This document provides complete instructions for building, testing, and releasing the Smart African Marketplace mobile app.
+This document provides complete instructions for building, testing, and releasing the Smart African Market mobile app.
 
 ---
 

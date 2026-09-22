@@ -5,7 +5,7 @@ import './bootstrap';
 // Livewire will handle Alpine initialization
 
 const normalizeImageMetadata = () => {
-  const appName = document.title?.split(' - ').pop()?.trim() || 'Smart African Marketplace';
+  const appName = document.title?.split(' - ').pop()?.trim() || 'Smart African Market';
   const images = document.querySelectorAll('img');
 
   images.forEach((img) => {

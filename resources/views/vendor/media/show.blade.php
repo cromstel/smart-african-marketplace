@@ -1,6 +1,6 @@
 @extends('vendor.layout')
 
-@section('title', $media->title ?? $media->original_name . ' - ' . config('app.name', 'Smart African Marketplace'))
+@section('title', $media->title ?? $media->original_name . ' - ' . config('app.name', 'Smart African Market'))
 @section('header', 'Media Details')
 
 @section('content')

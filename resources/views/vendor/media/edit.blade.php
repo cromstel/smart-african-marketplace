@@ -1,6 +1,6 @@
 @extends('vendor.layout')
 
-@section('title', 'Edit Media - ' . config('app.name', 'Smart African Marketplace'))
+@section('title', 'Edit Media - ' . config('app.name', 'Smart African Market'))
 @section('header', 'Edit Media')
 
 @section('content')

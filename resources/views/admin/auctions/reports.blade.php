@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Auction Reports - ' . config('app.name', 'Smart African Marketplace'))
+@section('title', 'Auction Reports - ' . config('app.name', 'Smart African Market'))
 
 @section('header', 'Auction Reports')
 

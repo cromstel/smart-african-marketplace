@@ -18,7 +18,7 @@
       "status": "succeeded",
       "payment_intent": "pi_fixture_000000000001",
       "receipt_email": "customer@example.com",
-      "description": "Smart African Marketplace order",
+      "description": "Smart African Market order",
       "metadata": {
         "order_id": "1"
       }

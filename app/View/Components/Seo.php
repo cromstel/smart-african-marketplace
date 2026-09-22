@@ -60,7 +60,7 @@ class Seo extends Component
         bool $index = true,
         bool $follow = true
     ) {
-        $this->title = $title ?? config('app.name', 'Smart African Marketplace');
+        $this->title = $title ?? config('app.name', 'Smart African Market');
         $this->description = $description;
         $this->keywords = $keywords;
         $this->canonical = $canonical;

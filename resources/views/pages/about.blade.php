@@ -94,7 +94,7 @@
                     <h2 class="text-4xl md:text-5xl font-bold mb-8 text-gray-900 text-center">Our Story</h2>
                     <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
                         <p class="mb-6 text-lg">
-                            Smart African Marketplace was founded with a simple yet powerful mission: to bring authentic African products and services to communities worldwide. We understand the importance of staying connected to your roots, enjoying the flavors of home, and celebrating the rich tapestry of African culture that spans across continents and generations.
+                            Smart African Market was founded with a simple yet powerful mission: to bring authentic African products and services to communities worldwide. We understand the importance of staying connected to your roots, enjoying the flavors of home, and celebrating the rich tapestry of African culture that spans across continents and generations.
                         </p>
                         <p class="mb-6 text-lg">
                             Our journey began when we recognized a gap in the market for genuine African products and services. Many people in the diaspora struggled to find authentic ingredients for their favorite dishes, traditional clothing that reflected their heritage, or professional salon services that understood their unique hair and beauty needs. We knew we had to do something about it.

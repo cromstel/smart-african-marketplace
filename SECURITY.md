@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-We provide security fixes for the latest stable release of the Smart African Marketplace
+We provide security fixes for the latest stable release of the Smart African Market
 application. Older releases are no longer actively maintained.
 
 | Version            | Supported          |

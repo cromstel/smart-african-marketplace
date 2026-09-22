@@ -1,4 +1,4 @@
-Here’s a **plan-tiered breakdown of the premium modules available in the **Smart African Marketplace** ecosystem** — grouped by the subscription tiers where they’re offered (based on official module listings and features pricing info).
+Here’s a **plan-tiered breakdown of the premium modules available in the **Smart African Market** ecosystem** — grouped by the subscription tiers where they’re offered (based on official module listings and features pricing info).
 
 ---
 
@@ -69,12 +69,12 @@ Everything in Professional **plus** more feature-rich modules:
 Includes **everything from Business** **plus:**
 
 * **Priority support** and **services** (e.g., 1-hour theme compatibility/installation support)
-* Full access to all Smart African Marketplace modules included in Business
+* Full access to all Smart African Market modules included in Business
   *(There are no additional modules beyond Business — the Enterprise differences are support and site subscriptions, not extra add-ons.)* 
 
 ---
 
-## 🗂 **Free / Separate Smart African Marketplace Add-ons**
+## 🗂 **Free / Separate Smart African Market Add-ons**
 
 These are not part of the module toggles in the Dokan Pro Modules screen; instead, they are separate plugins you install:
 

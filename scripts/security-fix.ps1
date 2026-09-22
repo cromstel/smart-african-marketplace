@@ -1,5 +1,5 @@
 #!/usr/bin/env pwsh
-# Security Fix Script for Smart African Marketplace
+# Security Fix Script for Smart African Market
 # Automatically scans and fixes npm and composer vulnerabilities
 
 Write-Host "🔍 Scanning for vulnerabilities..." -ForegroundColor Cyan

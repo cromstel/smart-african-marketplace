@@ -1,6 +1,6 @@
-# Smart African Marketplace Android App
+# Smart African Market Android App
 
-Native Android shell for the Smart African Marketplace website.
+Native Android shell for the Smart African Market website.
 
 ## Purpose
 

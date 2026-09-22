@@ -1,7 +1,7 @@
-# Smart African Marketplace
+# Smart African Market
 
 <p align="center">
-  <img src="./public/assets/hero-banner.svg" alt="Smart African Marketplace" width="100%">
+  <img src="./public/assets/hero-banner.svg" alt="Smart African Market" width="100%">
 </p>
 
 > A self-hostable, multi-vendor marketplace for African food, fashion and salon

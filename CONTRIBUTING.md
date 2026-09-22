@@ -2,7 +2,7 @@
 
 [Documentation Hub](docs/README.md) › Contributing
 
-Thanks for working on Smart African Marketplace. This page covers how to get a
+Thanks for working on Smart African Market. This page covers how to get a
 change reviewed and merged.
 
 New to the codebase? Start with

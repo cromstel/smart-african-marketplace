@@ -1,10 +1,10 @@
-# Smart African Marketplace - Agent/Copilot Context
+# Smart African Market - Agent/Copilot Context
 
 This document provides context for AI agents and Copilot about the codebase architecture, coding standards, and preferred patterns.
 
 ## Project Overview
 
-**Smart African Marketplace** is a Laravel-based multi-vendor e-commerce platform for African products and services. It uses:
+**Smart African Market** is a Laravel-based multi-vendor e-commerce platform for African products and services. It uses:
 - Laravel 12 (PHP 8.2+)
 - Livewire 3 for reactive UI components
 - Tailwind CSS 3 for styling

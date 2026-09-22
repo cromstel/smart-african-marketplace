@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     <x-seo
-        :title="trim($__env->yieldContent('title', 'Vendor Dashboard')).' - '.config('app.name', 'Smart African Marketplace')"
+        :title="trim($__env->yieldContent('title', 'Vendor Dashboard')).' - '.config('app.name', 'Smart African Market')"
         :description="$seoDescription ?? 'Vendor dashboard for managing products, orders, subscriptions, and storefront performance.'"
         :keywords="$seoKeywords ?? 'vendor dashboard, marketplace vendor, product management'"
         :image="$seoImage ?? null"
@@ -122,8 +122,8 @@
         <aside id="sidebar" class="fixed lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden inset-y-0 left-0 z-40 w-72 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
             <div class="px-4 py-6 border-b border-gray-700">
                 <div class="flex items-center space-x-2">
-                    <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
-                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Marketplace') }}" class="h-8 w-8">
+                    <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0" aria-label="{{ config('app.name', 'Smart African Market') }} - Go to homepage">
+                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Market') }}" class="h-8 w-8">
                         <div class="sidebar-brand-text min-w-0">
                             <h2 class="text-sm font-bold uppercase tracking-wide leading-tight text-white">Smart <span class="text-indigo-400">African</span></h2>
                             <p class="text-xs text-gray-400 tracking-wide">VENDOR PORTAL</p>

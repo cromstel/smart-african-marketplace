@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'welcome' => 'Bienvenue sur Smart African Marketplace',
+    'welcome' => 'Bienvenue sur Smart African Market',
     'shop' => 'Boutique',
     'cart' => 'Panier',
     'checkout' => 'Caisse',

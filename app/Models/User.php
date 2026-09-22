@@ -418,7 +418,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
         }
 
         // Generate QR code URL for authenticator apps
-        $issuer = config('app.name', 'Smart African Marketplace');
+        $issuer = config('app.name', 'Smart African Market');
         $email = $this->email;
 
         return 'otpauth://totp/'.urlencode($issuer).':'.urlencode($email).'?secret='.$this->two_factor_secret.'&issuer='.urlencode($issuer);

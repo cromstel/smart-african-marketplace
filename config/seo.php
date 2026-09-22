@@ -16,7 +16,7 @@
 */
 
 return [
-    'title' => env('SEO_TITLE', 'Smart African Marketplace'),
+    'title' => env('SEO_TITLE', 'Smart African Market'),
 
     'description' => env(
         'SEO_DESCRIPTION',
