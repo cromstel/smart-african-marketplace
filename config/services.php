@@ -29,4 +29,17 @@ return [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
 
+    /*
+    | Read through config() rather than env() directly in views — env()
+    | returns null outside config files once `php artisan config:cache`
+    | has run, which silently dropped these tags in production.
+    */
+    'google_analytics' => [
+        'id' => env('GOOGLE_ANALYTICS_ID'),
+    ],
+
+    'facebook_pixel' => [
+        'id' => env('FACEBOOK_PIXEL_ID'),
+    ],
+
 ];

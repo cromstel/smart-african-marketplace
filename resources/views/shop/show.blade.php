@@ -1,57 +1,16 @@
 @extends('layouts.shop')
 
-@section('title', $product->name . ' - ' . config('app.name'))
-
-@push('head')
-<meta name="description" content="{{ Str::limit(strip_tags($product->description), 160) }}">
-<meta name="keywords" content="{{ $product->category->name }}, {{ $product->name }}, {{ config('app.name') }}, buy {{ $product->name }}">
-<link rel="canonical" href="{{ route('shop.show', $product->slug) }}">
-
-<meta property="og:title" content="{{ $product->name }}">
-<meta property="og:description" content="{{ Str::limit(strip_tags($product->description), 200) }}">
-<meta property="og:image" content="{{ $product->featured_image ? '/storage/' . ltrim($product->featured_image ?? '', '/') : '/images/default-product.jpg' }}">
-<meta property="og:url" content="{{ route('shop.show', $product->slug) }}">
-<meta property="og:type" content="product">
-<meta property="og:site_name" content="{{ config('app.name') }}">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $product->name }}">
-<meta name="twitter:description" content="{{ Str::limit(strip_tags($product->description), 200) }}">
-<meta name="twitter:image" content="{{ $product->featured_image ? '/storage/' . ltrim($product->featured_image ?? '', '/') : '/images/default-product.jpg' }}">
-
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "{{ $product->name }}",
-  "image": "{{ $product->featured_image ? '/storage/' . ltrim($product->featured_image ?? '', '/') : '' }}",
-  "description": "{{ strip_tags($product->description) }}",
-  "sku": "{{ $product->sku }}",
-  "brand": {
-    "@type": "Brand",
-    "name": "{{ $product->vendor ? $product->vendor->business_name : config('app.name') }}"
-  },
-  "offers": {
-    "@type": "Offer",
-    "url": "{{ route('shop.show', $product->slug) }}",
-    "priceCurrency": "USD",
-    "price": "{{ $product->price }}",
-    "availability": "{{ $product->stock_quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
-    "seller": {
-      "@type": "Organization",
-      "name": "{{ config('app.name') }}"
-    }
-  }
-  @if($product->reviews->count() > 0)
-  ,"aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "{{ $product->reviews->avg('rating') }}",
-    "reviewCount": "{{ $product->reviews->count() }}"
-  }
-  @endif
-}
-</script>
-@endpush
+{{--
+    Title, description, keywords, canonical, OG/Twitter tags and structured
+    data (Product + Breadcrumb schema) all used to be hand-rolled here, in
+    parallel with what ShopController::show() already builds via
+    SeoService -- and the hand-rolled JSON-LD had a real bug (Blade's {{ }}
+    doesn't escape JSON control characters, so a multi-line description
+    produced invalid JSON-LD). None of that duplication was actually
+    necessary: layouts.shop's view composer now feeds the controller's
+    SeoService state into <x-seo>, and the layout renders
+    getStructuredData() once for every page. This view just needs content.
+--}}
 
 @section('content')
 <x-hero-section

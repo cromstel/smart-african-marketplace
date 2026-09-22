@@ -40,7 +40,6 @@ Artisan::command('market:setup', function () {
 */
 
 Schedule::command('inventory:check-low-stock')->dailyAt('09:00');
-Schedule::command('sitemap:generate')->daily();
 Schedule::command('subscriptions:check-expiring')->dailyAt('09:00');
 Schedule::command('chatbot:reindex-knowledge')->dailyAt('02:00');
 Schedule::command('booking:send-reminders')->hourly();

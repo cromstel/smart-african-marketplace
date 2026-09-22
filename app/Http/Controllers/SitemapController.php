@@ -12,6 +12,66 @@ use Illuminate\Http\Response;
 
 class SitemapController extends Controller
 {
+    /**
+     * Served as a route rather than a static public/robots.txt file so the
+     * Sitemap: directive always reflects the actual configured app.url.
+     * A static file previously shipped here with unprocessed Blade syntax
+     * ("{{ url(...) }}") served verbatim to every crawler — see the fixed
+     * bug this replaces.
+     */
+    public function robots(): Response
+    {
+        $lines = [
+            'User-agent: *',
+            'Allow: /',
+            '',
+            'Disallow: /admin/',
+            'Disallow: /vendor/',
+            'Disallow: /cart/',
+            'Disallow: /checkout/',
+            'Disallow: /orders/',
+            'Disallow: /bookings/',
+            'Disallow: /profile/',
+            'Disallow: /dashboard/',
+            'Disallow: /wishlist/',
+            'Disallow: /payment/',
+            'Disallow: /api/',
+            'Disallow: /login',
+            'Disallow: /register',
+            'Disallow: /password/',
+            'Disallow: /email/',
+            '',
+            'Allow: /shop',
+            'Allow: /shop/*',
+            'Allow: /salon',
+            'Allow: /salon/*',
+            'Allow: /blog',
+            'Allow: /blog/*',
+            'Allow: /about',
+            'Allow: /contact',
+            'Allow: /faq',
+            '',
+            'Crawl-delay: 1',
+            '',
+            'User-agent: Googlebot',
+            'Allow: /',
+            'Crawl-delay: 0',
+            '',
+            'User-agent: Bingbot',
+            'Allow: /',
+            'Crawl-delay: 1',
+            '',
+            'User-agent: Yandex',
+            'Allow: /',
+            'Crawl-delay: 2',
+            '',
+            'Sitemap: '.route('sitemap.index'),
+        ];
+
+        return response(implode("\n", $lines)."\n", 200)
+            ->header('Content-Type', 'text/plain');
+    }
+
     public function index(): Response
     {
         $sitemap = '<?xml version="1.0" encoding="UTF-8"?>';

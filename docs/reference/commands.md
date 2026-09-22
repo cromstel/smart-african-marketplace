@@ -99,7 +99,6 @@ when set it redirects every message to one inbox
 
 | Command | Purpose |
 |---|---|
-| `sitemap:generate` | Regenerate `sitemap.xml` |
 | `media:backfill` | Backfill legacy uploads into the media library |
 | `media:optimize-pending` | Compress and resize queued images |
 
@@ -139,7 +138,7 @@ Indicative starting point — tune to your traffic. Register in the console kern
 | Every minute | `auction:process` |
 | Every 15 minutes | `media:optimize-pending` |
 | Hourly | `subscriptions:process-renewals`, `booking:send-reminders` |
-| Daily | `inventory:check-low-stock`, `subscriptions:check-expiring`, `subscriptions:check-trial-expiry`, `subscriptions:send-trial-reminders`, `campaigns:*`, `loyalty:expire-points`, `sitemap:generate` |
+| Daily | `inventory:check-low-stock`, `subscriptions:check-expiring`, `subscriptions:check-trial-expiry`, `subscriptions:send-trial-reminders`, `campaigns:*`, `loyalty:expire-points` |
 | Weekly | `chatbot:purge-old`, `vendors:normalize-pending-status` |
 
 The scheduler needs one cron entry:

@@ -4,7 +4,7 @@
 
 [Documentation Hub](../README.md) › Architecture › Overview
 
-This document describes how Smart African Marketplace is actually built, as
+This document describes how Smart African Market is actually built, as
 opposed to how earlier documents described it. Read it before making structural
 changes.
 
@@ -233,7 +233,7 @@ Custom Artisan commands under `app/Console/Commands/` handle recurring work:
 | Marketing | `SendWelcomeEmailSeriesCommand`, `SendWinBackCampaignCommand` |
 | Chatbot | `ReindexChatbotKnowledge`, `PurgeChatbotData` |
 | Media | `BackfillMediaLibrary`, `OptimizePendingMediaCommand` |
-| Ops | `VerifyReadinessCommand`, `ReplayWebhookFixtureCommand`, `GenerateSitemap`, maintenance toggles |
+| Ops | `VerifyReadinessCommand`, `ReplayWebhookFixtureCommand`, maintenance toggles |
 
 See [Queue Workers & Background Jobs](../operations/queue-workers.md)
 for supervision, and [Artisan Commands](../reference/commands.md) for signatures.

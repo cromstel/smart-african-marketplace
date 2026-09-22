@@ -16,7 +16,7 @@ class SeoService
 
     public function setTitle(string $title, bool $appendSiteName = true): self
     {
-        $siteName = config('app.name', 'Smart African Marketplace');
+        $siteName = config('app.name', 'Smart African Market');
         $this->meta['title'] = $appendSiteName ? "{$title} - {$siteName}" : $title;
         $this->og['title'] = $title;
         $this->twitter['title'] = $title;
@@ -82,7 +82,7 @@ class SeoService
 
     public function getTitle(): ?string
     {
-        return $this->meta['title'] ?? config('app.name', 'Smart African Marketplace');
+        return $this->meta['title'] ?? config('app.name', 'Smart African Market');
     }
 
     public function getDescription(): ?string
@@ -103,7 +103,7 @@ class SeoService
     public function getOpenGraph(): array
     {
         return array_merge([
-            'site_name' => config('app.name', 'Smart African Marketplace'),
+            'site_name' => config('app.name', 'Smart African Market'),
             'type' => 'website',
             'locale' => 'en_US',
         ], $this->og);
@@ -130,12 +130,16 @@ class SeoService
             'name' => $product->name,
             'description' => $product->description,
             'sku' => $product->sku ?? $product->id,
+            'brand' => [
+                '@type' => 'Brand',
+                'name' => $product->vendor->business_name ?? config('app.name'),
+            ],
             'offers' => [
                 '@type' => 'Offer',
                 'url' => route('shop.show', $product->slug),
                 'priceCurrency' => 'USD',
                 'price' => $product->price,
-                'availability' => $product->stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                'availability' => $product->isInStock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
                 'seller' => [
                     '@type' => 'Organization',
                     'name' => $product->vendor->business_name ?? config('app.name'),
@@ -144,7 +148,7 @@ class SeoService
         ];
 
         if ($product->images && $product->images->isNotEmpty()) {
-            $schema['image'] = $product->images->first()->image_path;
+            $schema['image'] = url('/storage/'.ltrim($product->images->first()->image_path, '/'));
         }
 
         if ($product->reviews && $product->reviews->isNotEmpty()) {
@@ -187,7 +191,7 @@ class SeoService
         return [
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
-            'name' => config('app.name', 'Smart African Marketplace'),
+            'name' => config('app.name', 'Smart African Market'),
             'url' => url('/'),
             'logo' => asset(config('branding.logo')),
             'sameAs' => array_values(array_filter(config('seo.social', []))),
@@ -214,7 +218,7 @@ class SeoService
             ],
             'publisher' => [
                 '@type' => 'Organization',
-                'name' => config('app.name', 'Smart African Marketplace'),
+                'name' => config('app.name', 'Smart African Market'),
                 'logo' => [
                     '@type' => 'ImageObject',
                     'url' => asset(config('branding.logo')),
