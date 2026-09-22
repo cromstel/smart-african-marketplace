@@ -191,7 +191,7 @@ class CheckoutTest extends TestCase
         ])->assertRedirect();
 
         $parent = Order::where('user_id', $user->id)->where('is_parent', true)->firstOrFail();
-        $children = Order::where('order_group_id', $parent->order_group_id)->where('is_parent', false)->get();
+        $children = Order::with('items')->where('order_group_id', $parent->order_group_id)->where('is_parent', false)->get();
 
         $this->assertCount(2, $children);
         $this->assertEqualsWithDelta(
