@@ -35,11 +35,40 @@ roadmap) — don't pull tasks from it.
 
 ## Current session
 
-**Work complete, tests green, NOT YET COMMITTED** — 82 files changed in the
-working tree (rename + SEO fixes below). All 307 tests pass
-(`php artisan test --testsuite=Feature,Unit`), Pint clean on every touched
-file. Ask the user before committing — nothing here has been asked to be
-committed yet.
+**Subscription lifecycle fix in progress, not yet committed.** The rename
+and SEO work below are committed (`13a0f3b`, `dd9bbd0`). Working tree right
+now has: `routes/console.php`, `app/Console/Commands/ProcessSubscriptionRenewals.php`,
+`tests/Feature/SubscriptionLifecycleTest.php` (new). 314 tests pass, Pint
+clean.
+
+4. **Subscription lifecycle was never running** — continuing the
+   browse-testing sweep into subscriptions surfaced the highest-value bug
+   found this session. Three commands existed but were **never scheduled**,
+   not in `routes/console.php` and not in the pre-3.3 `Kernel.php` it
+   replaced (confirmed via `git show` on the pre-migration commit — this
+   predates that migration, not a regression from it):
+   `subscriptions:check-trial-expiry`, `subscriptions:process-renewals`,
+   `subscriptions:send-trial-reminders`. Since
+   `UserSubscription::isActive()` only checks `status`, never
+   `current_period_end`, the gap was silent: trials never converted to
+   billed subscriptions or expired, active subscriptions never renewed
+   (`current_period_end` just sat in the past forever with no new
+   `SubscriptionPayment` rows), and grace-period cancellations never
+   actually canceled anything. Added all three to the schedule.
+   **Scheduling `process-renewals` for the first time immediately surfaced
+   a real, previously-untested bug in it**: its renewal query didn't
+   exclude `cancel_at_period_end = true`, so a customer who explicitly
+   canceled "at period end" would get silently auto-renewed (and re-billed)
+   instead of canceled, because the renewal loop ran before the
+   grace-period-cancellation loop and unconditionally pushed
+   `current_period_end` back into the future. Fixed by excluding
+   `cancel_at_period_end` from the renewal query. New coverage:
+   `tests/Feature/SubscriptionLifecycleTest.php` (7 tests) — schedule
+   registration itself, trial→paid conversion, trial→expired on a free
+   plan, renewal advancing the period + recording a payment, the
+   grace-period-cancellation-vs-renewal race, and the reminder email.
+
+Earlier this session (committed):
 
 1. **Rename**: "Smart African Marketplace" → "Smart African Market" across
    67 tracked files (docs, config, Blade, lang/*, mobile app strings) —
@@ -111,11 +140,16 @@ committed yet.
    pass) — a full N+1 audit is still open on the roadmap.
 
 Next candidates, not yet chosen:
-- Continue the browse-testing sweep into subscriptions or the remaining
-  auction/checkout edge cases.
+- Continue the browse-testing sweep into the remaining auction/checkout
+  edge cases, or the legacy `VendorSubscription` system (the older, parallel
+  subscription table `EffectiveSubscriptionResolver` bridges from — not
+  audited this session beyond confirming the bridge exists).
 - Broader Phase 4 N+1 audit across admin/vendor controllers.
 - Accessibility (WCAG) pass — see
   [roadmap.md §4.2](docs/product/roadmap.md#42-accessibility-and-responsive-quality).
+- `SubscriptionService::changePlan()` (upgrade/downgrade) doesn't recalculate
+  `current_period_end` or charge/credit proration — worth a deliberate look
+  at whether that's intended (bill-at-next-renewal) or a gap.
 
 ---
 

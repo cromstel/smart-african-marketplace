@@ -17,7 +17,14 @@ class ProcessSubscriptionRenewals extends Command
     {
         $this->info('Processing subscription renewals...');
 
+        // cancel_at_period_end must be excluded here: without it, a customer
+        // who explicitly canceled "at period end" gets auto-renewed (and
+        // re-billed via the SubscriptionPayment row below) the moment their
+        // period lapses, instead of being caught by the grace-period
+        // cancellation pass further down -- silently reversing their
+        // cancellation.
         $toRenew = UserSubscription::where('status', 'active')
+            ->where('cancel_at_period_end', false)
             ->where('current_period_end', '<=', now())
             ->whereDoesntHave('payments', function ($query) {
                 $query->where('created_at', '>=', now()->subDays(1))
