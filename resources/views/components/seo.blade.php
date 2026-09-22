@@ -36,7 +36,7 @@
 @if($canonical)
 <meta property="og:url" content="{{ $canonical }}">
 @endif
-<meta property="og:site_name" content="{{ config('app.name', 'Smart African Marketplace') }}">
+<meta property="og:site_name" content="{{ config('app.name', 'Smart African Market') }}">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
@@ -56,18 +56,18 @@
 <link rel="manifest" href="{{ asset(config('branding.webmanifest')) }}">
 
 <!-- Google Analytics -->
-@if(env('GOOGLE_ANALYTICS_ID'))
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ env('GOOGLE_ANALYTICS_ID') }}"></script>
+@if(config('services.google_analytics.id'))
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google_analytics.id') }}"></script>
 <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', '{{ env('GOOGLE_ANALYTICS_ID') }}');
+    gtag('config', '{{ config('services.google_analytics.id') }}');
 </script>
 @endif
 
 <!-- Facebook Pixel -->
-@if(env('FACEBOOK_PIXEL_ID'))
+@if(config('services.facebook_pixel.id'))
 <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -77,11 +77,11 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '{{ env('FACEBOOK_PIXEL_ID') }}');
+    fbq('init', '{{ config('services.facebook_pixel.id') }}');
     fbq('track', 'PageView');
 </script>
 <noscript>
-    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ env('FACEBOOK_PIXEL_ID') }}&ev=PageView&noscript=1" />
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ config('services.facebook_pixel.id') }}&ev=PageView&noscript=1" />
 </noscript>
 @endif
 

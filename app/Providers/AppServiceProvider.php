@@ -13,6 +13,7 @@ use App\Observers\KnowledgeBaseObserver;
 use App\Observers\OrderObserver;
 use App\Observers\VendorObserver;
 use App\Services\QrCodeService;
+use App\Services\SeoService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -43,11 +45,41 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(QrCodeService::class, function ($app) {
             return new QrCodeService;
         });
+
+        // Singleton so a controller's addStructuredData() calls are visible
+        // to app(SeoService::class)->getStructuredData() later in the same
+        // request (the view). An unbound class resolves to a fresh instance
+        // on every app() call, which silently dropped every structured-data
+        // block a controller had built.
+        $this->app->singleton(SeoService::class);
     }
 
     public function boot(): void
     {
         $this->configureRateLimiting();
+
+        // Controllers configure per-page SEO via SeoService::setTitle() /
+        // setDescription() / etc., but layouts.shop's <x-seo> component only
+        // ever reads plain $seoTitle / $seoDescription / ... view variables
+        // -- and no controller passes them. Every page using this layout
+        // (shop, blog, salon, auctions) was silently falling back to the
+        // component's generic defaults regardless of what the controller
+        // set. This composer is the missing link: it runs whenever
+        // layouts.shop is rendered (including via @extends) and pulls
+        // whatever the controller already built on the SeoService singleton.
+        View::composer('layouts.shop', function ($view) {
+            $seo = $this->app->make(SeoService::class);
+            $og = $seo->getOpenGraph();
+
+            $view->with([
+                'seoTitle' => $seo->getTitle(),
+                'seoDescription' => $seo->getDescription(),
+                'seoKeywords' => $seo->getKeywords(),
+                'seoCanonical' => $seo->getCanonical(),
+                'seoImage' => $og['image'] ?? null,
+                'seoType' => $og['type'] ?? 'website',
+            ]);
+        });
 
         Blade::if('canModule', function (string $moduleKey) {
             return auth()->check() && auth()->user()->hasModuleAccess($moduleKey);

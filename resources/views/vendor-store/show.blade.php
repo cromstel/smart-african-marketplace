@@ -3,9 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $vendor->business_name }} - Store</title>
 
-    <x-seo />
+    {{--
+        VendorStoreController::renderStore() already builds a full SeoService
+        state (title, description, keywords, canonical, OG image, and an
+        Organization schema via addStructuredData()) and passes it here as
+        $seo -- but <x-seo /> previously rendered with no props at all,
+        producing a second, empty <title> alongside a hardcoded one above it
+        and silently dropping the vendor's own description/canonical/image
+        and Organization rich result on every storefront page.
+    --}}
+    <x-seo
+        :title="$seo->getTitle()"
+        :description="$seo->getDescription()"
+        :keywords="$seo->getKeywords()"
+        :canonical="$seo->getCanonical()"
+        :image="$seo->getOpenGraph()['image'] ?? null"
+        :type="$seo->getOpenGraph()['type'] ?? 'website'"
+    />
+    @foreach($seo->getStructuredData() as $schema)
+    <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
+    @endforeach
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

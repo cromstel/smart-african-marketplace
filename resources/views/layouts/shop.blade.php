@@ -32,7 +32,7 @@
             $headerPreset = 'centered';
         }
     @endphp
-    <x-seo 
+    <x-seo
         :title="$seoTitle ?? null"
         :description="$seoDescription ?? null"
         :keywords="$seoKeywords ?? null"
@@ -40,6 +40,18 @@
         :canonical="$seoCanonical ?? null"
         :type="$seoType ?? 'website'"
     />
+
+    {{--
+        Controllers build Product/Article/Breadcrumb/etc. schema via
+        SeoService::addStructuredData() (ShopController, BlogController,
+        SalonController, AuctionController, PageController), but nothing
+        ever rendered getStructuredData() -- every rich-result block was
+        silently discarded. Rendered once here so every page on this layout
+        picks it up, rather than duplicating the loop in each view.
+    --}}
+    @foreach(app(\App\Services\SeoService::class)->getStructuredData() as $schema)
+    <script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) !!}</script>
+    @endforeach
 
         <!-- Theme fonts (Inter / Poppins per theme settings) -->
         <link rel="preconnect" href="https://fonts.bunny.net">

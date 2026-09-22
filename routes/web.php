@@ -118,6 +118,8 @@ Route::redirect('/salons/{slug}', '/salon/{slug}', 301)->name('salons.show');
 Route::redirect('/salons/{service}/book/calendar', '/salon/{service}/book/calendar', 301)->name('salons.book.calendar');
 Route::redirect('/salons/{service}/book', '/salon/{service}/book', 301)->name('salons.book');
 
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
 Route::get('/sitemap-static.xml', [SitemapController::class, 'static'])->name('sitemap.static');
 Route::get('/sitemap-products.xml', [SitemapController::class, 'products'])->name('sitemap.products');
