@@ -2,32 +2,37 @@
 
 namespace App\Services;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 
 class MaintenanceService
 {
     private const CACHE_KEY = 'maintenance_mode';
 
-    private const CONFIG_KEY = 'maintenance.enabled';
+    /**
+     * Config keys this service persists, and the config/maintenance.php
+     * default each falls back to when no Setting row exists yet.
+     *
+     * Everything here used to be read/written through the Config facade or
+     * a 5-minute Cache::put() -- both process-local or TTL-bound, so every
+     * write path (this service, the admin controller, and the
+     * maintenance:enable/disable console commands) silently lost its
+     * changes: a custom title/message never survived past the request or
+     * CLI process that set it, and the boolean "enabled" flag itself
+     * expired after 5 minutes, quietly taking a site out of maintenance
+     * mode while work was still in progress. Setting has no TTL, so this
+     * makes the config actually durable.
+     */
+    private const KEYS = ['title', 'message', 'retry', 'expected', 'allowed_ips', 'allowed_emails'];
 
     /**
      * Check if maintenance mode is currently active.
      */
     public function isActive(): bool
     {
-        // Check cache first for performance
-        if (Cache::has(self::CACHE_KEY)) {
-            return Cache::get(self::CACHE_KEY);
-        }
-
-        // Fall back to config value
-        $value = Config::get(self::CONFIG_KEY, false);
-
-        // Cache the value for subsequent requests
-        Cache::put(self::CACHE_KEY, $value, 300); // Cache for 5 minutes
-
-        return $value;
+        return Cache::remember(self::CACHE_KEY, 300, function () {
+            return (bool) Setting::getValue('maintenance_enabled', config('maintenance.enabled', false));
+        });
     }
 
     /**
@@ -62,43 +67,26 @@ class MaintenanceService
      */
     private function setMaintenanceMode(bool $enabled): void
     {
-        // Update config
-        Config::set(self::CONFIG_KEY, $enabled);
+        Setting::set('maintenance_enabled', $enabled);
+        Cache::forget(self::CACHE_KEY);
+    }
 
-        // Update cache
-        Cache::put(self::CACHE_KEY, $enabled, 300);
+    /**
+     * The full maintenance configuration, persisted values layered over the
+     * config/maintenance.php defaults. This is what admin.maintenance.index
+     * and the enforcing middleware should both read -- reading config()
+     * directly, as both used to, only ever sees the static file, never
+     * anything an admin has actually saved.
+     */
+    public function getConfig(): array
+    {
+        $config = [];
 
-        // If enabling, also set Laravel's built-in maintenance mode
-        if ($enabled) {
-            $this->enableLaravelMaintenanceMode();
-        } else {
-            $this->disableLaravelMaintenanceMode();
+        foreach (self::KEYS as $key) {
+            $config[$key] = Setting::getValue("maintenance_{$key}", config("maintenance.{$key}"));
         }
-    }
 
-    /**
-     * Enable Laravel's built-in maintenance mode.
-     */
-    private function enableLaravelMaintenanceMode(): void
-    {
-        // The custom maintenance.php file in storage/framework handles
-        // Laravel's built-in maintenance mode display.
-        // This is used by public/index.php to show maintenance page
-        // before the framework boots.
-
-        // If you want to use Laravel's artisan down command instead,
-        // use the console commands: php artisan maintenance:enable
-        // which handles both custom and Laravel maintenance mode.
-    }
-
-    /**
-     * Disable Laravel's built-in maintenance mode.
-     */
-    private function disableLaravelMaintenanceMode(): void
-    {
-        // The custom maintenance mode uses config/cache.
-        // To disable Laravel's built-in maintenance mode,
-        // use: php artisan maintenance:disable
+        return $config;
     }
 
     /**
@@ -106,11 +94,13 @@ class MaintenanceService
      */
     public function getStatus(): array
     {
+        $config = $this->getConfig();
+
         return [
             'active' => $this->isActive(),
-            'message' => Config::get('maintenance.message', 'Site is under maintenance'),
-            'allowed_ips' => Config::get('maintenance.allowed_ips', []),
-            'allowed_emails' => Config::get('maintenance.allowed_emails', []),
+            'message' => $config['message'],
+            'allowed_ips' => $config['allowed_ips'],
+            'allowed_emails' => $config['allowed_emails'],
         ];
     }
 
@@ -140,13 +130,27 @@ class MaintenanceService
             return true;
         }
 
-        // Check allowed emails from config
-        $allowedEmails = Config::get('maintenance.allowed_emails', []);
+        // Check allowed emails from persisted config
+        $allowedEmails = Setting::getValue('maintenance_allowed_emails', config('maintenance.allowed_emails', []));
         if (! empty($allowedEmails) && isset($user->email) && in_array($user->email, $allowedEmails)) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Determine whether a client IP is on the allowed list.
+     */
+    public function isIpAllowed(?string $ip): bool
+    {
+        $allowedIps = Setting::getValue('maintenance_allowed_ips', config('maintenance.allowed_ips', []));
+
+        if (empty($allowedIps) || ! $ip) {
+            return false;
+        }
+
+        return in_array($ip, $allowedIps);
     }
 
     /**
@@ -158,16 +162,19 @@ class MaintenanceService
     }
 
     /**
-     * Update the maintenance mode configuration.
+     * Persist the maintenance mode configuration. Only keys in self::KEYS
+     * are written -- anything else in $config (e.g. 'enabled', which has
+     * its own dedicated setMaintenanceMode() path) is ignored rather than
+     * silently creating a stray Setting row.
      */
     public function updateConfig(array $config): void
     {
-        // Update each config value
-        foreach ($config as $key => $value) {
-            Config::set("maintenance.{$key}", $value);
+        foreach (self::KEYS as $key) {
+            if (array_key_exists($key, $config)) {
+                Setting::set("maintenance_{$key}", $config[$key]);
+            }
         }
 
-        // Clear cache so next request gets fresh config
         $this->clearCache();
     }
 }

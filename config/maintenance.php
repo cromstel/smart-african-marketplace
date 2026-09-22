@@ -16,6 +16,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Maintenance Title
+    |--------------------------------------------------------------------------
+    |
+    | The heading shown on the maintenance page. admin/maintenance/index.blade.php
+    | and MaintenanceController::update() both read/write a 'title' key that
+    | had no default here, which crashed the admin settings page outright.
+    |
+    */
+
+    'title' => env('MAINTENANCE_TITLE', "We'll be back soon!"),
+
+    /*
+    |--------------------------------------------------------------------------
     | Maintenance Message
     |--------------------------------------------------------------------------
     |

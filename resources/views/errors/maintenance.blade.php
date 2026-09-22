@@ -166,7 +166,7 @@
                 Site Under Maintenance
             </div>
             
-            <h1 class="hero-title">We'll Be <span>Back Soon!</span></h1>
+            <h1 class="hero-title">{{ $title ?? "We'll be back soon!" }}</h1>
             
             <p class="hero-subtitle">
                 {{ $message ?? 'The ' . config('app.name') . ' is currently undergoing scheduled maintenance to bring you an even better shopping experience. We appreciate your patience!' }}

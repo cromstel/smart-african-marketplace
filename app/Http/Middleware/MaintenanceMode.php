@@ -102,15 +102,7 @@ class MaintenanceMode
      */
     protected function isIpAllowed(Request $request): bool
     {
-        $allowedIps = config('maintenance.allowed_ips', []);
-
-        if (empty($allowedIps)) {
-            return false;
-        }
-
-        $clientIp = $request->getClientIp();
-
-        return in_array($clientIp, $allowedIps);
+        return $this->maintenanceService->isIpAllowed($request->getClientIp());
     }
 
     /**
@@ -118,16 +110,23 @@ class MaintenanceMode
      */
     protected function respondInMaintenanceMode(Request $request): Response
     {
-        // Set appropriate HTTP status code and headers
+        // Regression: this read config('maintenance.*') directly, which is
+        // only ever the static file default -- an admin's saved
+        // title/message/expected/retry never reached the page real
+        // visitors see, even before the persistence fix, because this
+        // middleware never consulted MaintenanceService/Setting at all.
+        $config = $this->maintenanceService->getConfig();
+
         $response = response()->view('errors.maintenance', [
-            'message' => config('maintenance.message', 'Site is under maintenance'),
-            'expected' => config('maintenance.expected', null),
+            'title' => $config['title'],
+            'message' => $config['message'],
+            'expected' => $config['expected'],
         ], 503);
 
         // Add cache control headers
         $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate');
         $response->headers->set('Pragma', 'no-cache');
-        $response->headers->set('Retry-After', config('maintenance.retry', 3600));
+        $response->headers->set('Retry-After', $config['retry']);
 
         return $response;
     }

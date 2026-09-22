@@ -488,6 +488,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'verified']
     Route::post('/maintenance/disable', [MaintenanceController::class, 'disable'])->name('maintenance.disable');
     Route::post('/maintenance/toggle', [MaintenanceController::class, 'toggle'])->name('maintenance.toggle');
     Route::get('/maintenance/status', [MaintenanceController::class, 'status'])->name('maintenance.status');
+    // Never wired up at all -- preview() existed and (once fixed) is safe
+    // to expose: it now renders the visitor-facing view directly with no
+    // side effects, rather than the destructive enable()-with-no-restore
+    // it used to call.
+    Route::get('/maintenance/preview', [MaintenanceController::class, 'preview'])->name('maintenance.preview');
 });
 
 Route::get('/brands/{brand:slug}', [BrandController::class, 'show'])->name('brands.show');
