@@ -47,7 +47,20 @@ class UserSubscription extends Model
 
     public function isActive(): bool
     {
-        return $this->status === 'active' || $this->status === 'trialing';
+        // The legacy VendorSubscription::isActive() already checks
+        // current_period_end; this one didn't, and every access-control
+        // call site (CheckSubscription/CheckSubscriptionLimits middleware,
+        // User::hasActiveSubscription()-style helpers, Vendor gating) reads
+        // this directly. subscriptions:process-renewals now runs hourly and
+        // flips a lapsed row's status, but that still leaves up to an hour
+        // where status says "active" and the period has already ended --
+        // this check makes the row correct on read, not just eventually
+        // consistent after the next cron tick.
+        if (! in_array($this->status, ['active', 'trialing'], true)) {
+            return false;
+        }
+
+        return ! $this->current_period_end || $this->current_period_end->isFuture();
     }
 
     public function isTrialing(): bool

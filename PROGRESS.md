@@ -35,11 +35,10 @@ roadmap) — don't pull tasks from it.
 
 ## Current session
 
-**Subscription lifecycle fix in progress, not yet committed.** The rename
-and SEO work below are committed (`13a0f3b`, `dd9bbd0`). Working tree right
-now has: `routes/console.php`, `app/Console/Commands/ProcessSubscriptionRenewals.php`,
-`tests/Feature/SubscriptionLifecycleTest.php` (new). 314 tests pass, Pint
-clean.
+**Working through the "next candidates" list end to end, testing and
+committing after each.** Committed so far: `13a0f3b` (rename), `dd9bbd0`
+(SEO), `f0256a9` (subscription scheduling). Item 5 below (vendor upgrade
+payment bypass) is fixed, 319 tests pass, Pint clean, **not yet committed**.
 
 4. **Subscription lifecycle was never running** — continuing the
    browse-testing sweep into subscriptions surfaced the highest-value bug
@@ -67,6 +66,31 @@ clean.
    registration itself, trial→paid conversion, trial→expired on a free
    plan, renewal advancing the period + recording a payment, the
    grace-period-cancellation-vs-renewal race, and the reminder email.
+5. **Vendor self-service plan upgrade had no payment gate at all** —
+   investigating the legacy `VendorSubscription` bridge (a "next candidate"
+   from last session) led to `UserSubscription::isActive()` not checking
+   `current_period_end` (unlike the legacy model, which already does).
+   Fixed defensively — `isActive()` now checks both, closing even the
+   ~1-hour drift window the hourly `process-renewals` leaves. That led into
+   `Vendor\SubscriptionController::processUpgrade()`: the "Choose {plan}"
+   button on `/vendor/subscription/upgrade` called **no payment gateway at
+   all** — it just wrote `subscription_plan_id` and a new
+   `current_period_end` straight to the DB. Any vendor could self-upgrade to
+   the $199 Enterprise plan for free with one POST request, despite
+   `StripePaymentService::changePlan()` (real Stripe API call, proration
+   handled by Stripe) already existing and simply never being called. Fixed:
+   a paid-plan switch now calls `changePlan()` when the subscription has a
+   Stripe `payment_provider_subscription_id` on file, or redirects to the
+   real checkout flow (which collects payment) otherwise; a Stripe failure
+   (including "not configured", which `changePlan()` throws outside its own
+   try/catch) degrades to an error message instead of granting the plan or
+   500ing. Paystack has no equivalent swap method in this codebase, so
+   Paystack-billed vendors also go through checkout for now. New coverage:
+   `tests/Feature/Vendor/SubscriptionUpgradeTest.php` (4 tests, including
+   the real — not mocked — "Stripe unconfigured" failure path) and one new
+   case in `SubscriptionLifecycleTest.php` for the `isActive()` fix.
+   `SubscriptionService::upgradePlan()/downgradePlan()/changePlan()` remain
+   unused dead code — not wired into this fix, noted below as a follow-up.
 
 Earlier this session (committed):
 
