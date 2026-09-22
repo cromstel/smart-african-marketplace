@@ -57,7 +57,7 @@
             <form method="GET" class="flex items-center gap-2 bg-white rounded-full border border-gray-200 px-4 py-2 shadow-sm">
                 <input type="hidden" name="filter" value="{{ $filter }}">
                 <input type="search" name="q" value="{{ $searchTerm }}" placeholder="Search notifications"
-                       class="text-sm text-gray-700 placeholder-gray-400 bg-transparent outline-none">
+                       class="text-sm text-gray-700 placeholder-gray-400 bg-transparent outline-none focus:ring-2 focus:ring-orange-500 rounded">
                 <button type="submit" class="text-xs font-semibold uppercase tracking-wide text-orange-600">Filter</button>
             </form>
 
