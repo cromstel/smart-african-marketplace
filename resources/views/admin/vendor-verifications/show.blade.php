@@ -16,19 +16,19 @@
             <h3 class="text-lg font-bold text-white mb-4">Vendor Details</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div>
-                    <p class="text-gray-500">Business Name</p>
+                    <p class="text-gray-400">Business Name</p>
                     <p class="text-white">{{ $verification->vendor?->business_name ?? 'N/A' }}</p>
                 </div>
                 <div>
-                    <p class="text-gray-500">Contact Email</p>
+                    <p class="text-gray-400">Contact Email</p>
                     <p class="text-white">{{ $verification->vendor?->business_email ?? 'N/A' }}</p>
                 </div>
                 <div>
-                    <p class="text-gray-500">Contact Phone</p>
+                    <p class="text-gray-400">Contact Phone</p>
                     <p class="text-white">{{ $verification->vendor?->business_phone ?? 'N/A' }}</p>
                 </div>
                 <div>
-                    <p class="text-gray-500">Status</p>
+                    <p class="text-gray-400">Status</p>
                     <p class="text-white">{{ ucfirst($verification->status) }}</p>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                         <li class="flex items-center justify-between bg-gray-900 border border-gray-700 rounded px-3 py-2">
                             <div>
                                 <p class="text-white text-sm">{{ $docName }}</p>
-                                <p class="text-xs text-gray-500">{{ $docSize }}</p>
+                                <p class="text-xs text-gray-400">{{ $docSize }}</p>
                             </div>
                             @if(is_array($doc) && isset($doc['path']))
                                 <a href="{{ route('admin.vendor-verifications.document', [$verification, $index]) }}"
@@ -99,13 +99,13 @@
 
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 text-sm text-gray-300">
             <h3 class="text-lg font-bold text-white mb-4">Audit Info</h3>
-            <p class="text-gray-500">Submitted IP</p>
+            <p class="text-gray-400">Submitted IP</p>
             <p class="text-white mb-2">{{ $verification->submitted_ip ?? 'N/A' }}</p>
-            <p class="text-gray-500">User Agent</p>
+            <p class="text-gray-400">User Agent</p>
             <p class="text-white mb-2">{{ $verification->submitted_user_agent ?? 'N/A' }}</p>
-            <p class="text-gray-500">Reviewed By</p>
+            <p class="text-gray-400">Reviewed By</p>
             <p class="text-white mb-2">{{ $verification->reviewer?->email ?? 'N/A' }}</p>
-            <p class="text-gray-500">Reviewed At</p>
+            <p class="text-gray-400">Reviewed At</p>
             <p class="text-white">{{ $verification->reviewed_at?->format('M d, Y g:i A') ?? 'N/A' }}</p>
         </div>
     </div>

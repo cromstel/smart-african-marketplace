@@ -36,7 +36,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
             </svg>
             <p class="text-gray-300 mb-2">Drag and drop files here or click to browse</p>
-            <p class="text-xs text-gray-500">Supported: Images (JPG, PNG, SVG, WebP), Documents (PDF, DOC, XLS), Videos (MP4, MOV, AVI)</p>
+            <p class="text-xs text-gray-400">Supported: Images (JPG, PNG, SVG, WebP), Documents (PDF, DOC, XLS), Videos (MP4, MOV, AVI)</p>
             <input type="file" name="files[]" multiple accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx" class="mt-4" required>
         </div>
         <div class="flex items-center justify-end space-x-2">

@@ -95,7 +95,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Publishable Key
-                        <span class="text-gray-500">(pk_test_... or pk_live_...)</span>
+                        <span class="text-gray-400">(pk_test_... or pk_live_...)</span>
                     </label>
                     <input type="text" name="stripe_public_key" value="{{ $settings['stripe_public_key'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -105,7 +105,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Secret Key
-                        <span class="text-gray-500">(sk_test_... or sk_live_...)</span>
+                        <span class="text-gray-400">(sk_test_... or sk_live_...)</span>
                     </label>
                     <input type="password" name="stripe_secret_key" value="{{ $settings['stripe_secret_key'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -115,7 +115,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Webhook Secret (Optional)
-                        <span class="text-gray-500">(whsec_...)</span>
+                        <span class="text-gray-400">(whsec_...)</span>
                     </label>
                     <input type="password" name="stripe_webhook_secret" value="{{ $settings['stripe_webhook_secret'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -155,7 +155,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Public Key
-                        <span class="text-gray-500">(pk_test_... or pk_live_...)</span>
+                        <span class="text-gray-400">(pk_test_... or pk_live_...)</span>
                     </label>
                     <input type="text" name="paystack_public_key" value="{{ $settings['paystack_public_key'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -165,7 +165,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Secret Key
-                        <span class="text-gray-500">(sk_test_... or sk_live_...)</span>
+                        <span class="text-gray-400">(sk_test_... or sk_live_...)</span>
                     </label>
                     <input type="password" name="paystack_secret_key" value="{{ $settings['paystack_secret_key'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -205,7 +205,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         API Key
-                        <span class="text-gray-500">(Your MOMO API Key)</span>
+                        <span class="text-gray-400">(Your MOMO API Key)</span>
                     </label>
                     <input type="text" name="momo_api_key" value="{{ $settings['momo_api_key'] ?? '' }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -215,7 +215,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         API Secret
-                        <span class="text-gray-500">(Your MOMO API Secret)</span>
+                        <span class="text-gray-400">(Your MOMO API Secret)</span>
                     </label>
                     <input type="password" name="momo_api_secret" value="{{ $settings['momo_api_secret'] ?? '' }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -225,7 +225,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Collection ID (User ID)
-                        <span class="text-gray-500">(Your MOMO User ID)</span>
+                        <span class="text-gray-400">(Your MOMO User ID)</span>
                     </label>
                     <input type="text" name="momo_user_id" value="{{ $settings['momo_user_id'] ?? '' }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -308,7 +308,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2">
                     COD Fee (Optional)
-                    <span class="text-gray-500">Extra charge for cash on delivery</span>
+                    <span class="text-gray-400">Extra charge for cash on delivery</span>
                 </label>
                 <input type="number" name="cod_fee" value="{{ $settings['cod_fee'] }}" min="0" step="0.01"
                        class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -323,13 +323,13 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Low Stock Threshold
-                        <span class="text-gray-500">(Alert when stock falls below this number)</span>
+                        <span class="text-gray-400">(Alert when stock falls below this number)</span>
                     </label>
                     <input type="number" name="low_stock_threshold" value="{{ $settings['low_stock_threshold'] }}"
                            min="1" max="100"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                            placeholder="10">
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="text-xs text-gray-400 mt-1">
                         Daily email alerts will be sent to admins when products fall below this stock level.
                     </p>
                 </div>
@@ -351,7 +351,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Account SID
-                        <span class="text-gray-500">(From Twilio Console)</span>
+                        <span class="text-gray-400">(From Twilio Console)</span>
                     </label>
                     <input type="text" name="twilio_account_sid" value="{{ $settings['twilio_account_sid'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -361,7 +361,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Auth Token
-                        <span class="text-gray-500">(From Twilio Console)</span>
+                        <span class="text-gray-400">(From Twilio Console)</span>
                     </label>
                     <input type="password" name="twilio_auth_token" value="{{ $settings['twilio_auth_token'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -371,12 +371,12 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Phone Number
-                        <span class="text-gray-500">(Your Twilio phone number)</span>
+                        <span class="text-gray-400">(Your Twilio phone number)</span>
                     </label>
                     <input type="text" name="twilio_phone_number" value="{{ $settings['twilio_phone_number'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                            placeholder="+1234567890">
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="text-xs text-gray-400 mt-1">
                         SMS notifications will be sent for order status updates and booking confirmations.
                     </p>
                 </div>
@@ -398,7 +398,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         FCM Server Key
-                        <span class="text-gray-500">(Firebase Cloud Messaging key)</span>
+                        <span class="text-gray-400">(Firebase Cloud Messaging key)</span>
                     </label>
                     <input type="password" name="fcm_server_key" value="{{ $settings['fcm_server_key'] }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -420,12 +420,12 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Mail Host
-                        <span class="text-gray-500">(SMTP server address)</span>
+                        <span class="text-gray-400">(SMTP server address)</span>
                     </label>
                     <input type="text" name="mail_host" value="{{ $settings['mail_host'] ?? '' }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                            placeholder="smtp.gmail.com">
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="text-xs text-gray-400 mt-1">
                         Common: smtp.gmail.com, smtp.mailtrap.io, smtp.sendgrid.net, smtp-relay.sendinblue.com
                     </p>
                 </div>
@@ -438,7 +438,7 @@
                         <input type="number" name="mail_port" value="{{ $settings['mail_port'] ?? 587 }}"
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                                placeholder="587">
-                        <p class="text-xs text-gray-500 mt-1">Common: 587 (TLS), 465 (SSL), 25 (no encryption)</p>
+                        <p class="text-xs text-gray-400 mt-1">Common: 587 (TLS), 465 (SSL), 25 (no encryption)</p>
                     </div>
 
                     <div>
@@ -456,7 +456,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Username
-                        <span class="text-gray-500">(SMTP username / Email address)</span>
+                        <span class="text-gray-400">(SMTP username / Email address)</span>
                     </label>
                     <input type="text" name="mail_username" value="{{ $settings['mail_username'] ?? '' }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
@@ -466,12 +466,12 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Password
-                        <span class="text-gray-500">(SMTP password / App password)</span>
+                        <span class="text-gray-400">(SMTP password / App password)</span>
                     </label>
                     <input type="password" name="mail_password" value="{{ $settings['mail_password'] ?? '' }}"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                            placeholder="••••••••">
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="text-xs text-gray-400 mt-1">
                         For Gmail, use App Password (not your account password)
                     </p>
                 </div>
@@ -532,7 +532,7 @@
                     Send Test Email
                 </button>
             </form>
-            <p class="text-xs text-gray-500 mt-2">
+            <p class="text-xs text-gray-400 mt-2">
                 Click "Send Test Email" to verify your SMTP configuration. Make sure to save settings first.
             </p>
         </div>
@@ -550,7 +550,7 @@
                         <input type="text" value="{{ \App\Models\Setting::getValue('brand_color_from', '#ea580c') }}" 
                                readonly class="flex-1 bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2 font-mono">
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">Default: #ea580c (Orange)</p>
+                    <p class="text-xs text-gray-400 mt-1">Default: #ea580c (Orange)</p>
                 </div>
 
                 <div>
@@ -561,7 +561,7 @@
                         <input type="text" value="{{ \App\Models\Setting::getValue('brand_color_to', '#dc2626') }}" 
                                readonly class="flex-1 bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2 font-mono">
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">Default: #dc2626 (Red)</p>
+                    <p class="text-xs text-gray-400 mt-1">Default: #dc2626 (Red)</p>
                 </div>
             </div>
 

@@ -68,7 +68,7 @@
                     <div>
                         <label for="title" class="block text-sm font-medium text-gray-300 mb-2">
                             Title
-                            <span class="text-gray-500">(Optional)</span>
+                            <span class="text-gray-400">(Optional)</span>
                         </label>
                         <input 
                             type="text" 
@@ -81,7 +81,7 @@
                         @error('title')
                             <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                         @enderror
-                        <p class="mt-1 text-xs text-gray-500">A descriptive title helps with organization and SEO</p>
+                        <p class="mt-1 text-xs text-gray-400">A descriptive title helps with organization and SEO</p>
                     </div>
 
                     <div>
@@ -99,7 +99,7 @@
                         @error('alt_text')
                             <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                         @enderror
-                        <p class="mt-1 text-xs text-gray-500">Alt text is crucial for accessibility and SEO. Describe the image content clearly.</p>
+                        <p class="mt-1 text-xs text-gray-400">Alt text is crucial for accessibility and SEO. Describe the image content clearly.</p>
                     </div>
 
                     <div class="bg-blue-900 bg-opacity-30 border border-blue-700 rounded-lg p-4">

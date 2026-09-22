@@ -166,7 +166,7 @@
                                 <button type="submit" class="text-red-400 hover:text-red-300" onclick="return confirm('Reject this referral?')">Reject</button>
                             </form>
                         @else
-                            <span class="text-gray-500">-</span>
+                            <span class="text-gray-400">-</span>
                         @endif
                     </td>
                 </tr>

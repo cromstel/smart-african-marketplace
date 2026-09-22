@@ -10,7 +10,7 @@
             <div class="text-sm text-gray-400">Session</div>
             <div class="font-mono text-xs text-gray-200">{{ $session->session_key }}</div>
             <div class="text-sm text-gray-400">User: {{ $session->user?->name ?? 'Guest' }}</div>
-            <div class="text-sm text-gray-500">Last active: {{ $session->last_active_at?->diffForHumans() ?? 'n/a' }}</div>
+            <div class="text-sm text-gray-400">Last active: {{ $session->last_active_at?->diffForHumans() ?? 'n/a' }}</div>
         </div>
         <div class="flex items-center gap-3">
             <span class="px-2 py-1 rounded text-xs {{ $session->handoff_active ? 'bg-emerald-900 text-emerald-200' : 'bg-gray-700 text-gray-300' }}">
@@ -28,7 +28,7 @@
         @forelse($session->messages as $message)
             <div class="flex {{ $message->role === 'user' ? 'justify-end' : 'justify-start' }}">
                 <div class="max-w-[75%] px-3 py-2 rounded text-sm {{ $message->role === 'user' ? 'bg-gray-800 text-white' : ($message->role === 'agent' ? 'bg-emerald-900 text-emerald-100' : 'bg-white text-gray-800') }}">
-                    <div class="text-[10px] uppercase tracking-wide mb-1 {{ $message->role === 'user' ? 'text-gray-400' : 'text-gray-500' }}">
+                    <div class="text-[10px] uppercase tracking-wide mb-1 {{ $message->role === 'user' ? 'text-gray-400' : ($message->role === 'agent' ? 'text-emerald-300' : 'text-gray-600') }}">
                         {{ ucfirst($message->role) }}
                     </div>
                     <div class="whitespace-pre-line">{{ $message->content }}</div>

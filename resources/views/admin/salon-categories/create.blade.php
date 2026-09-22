@@ -36,7 +36,7 @@
                 @error('description')
                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-500 text-xs mt-1">Max 1000 characters</p>
+                <p class="text-gray-400 text-xs mt-1">Max 1000 characters</p>
             </div>
 
             <div>
@@ -47,7 +47,7 @@
                 @error('icon')
                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-500 text-xs mt-1">Optional emoji or icon to represent this category</p>
+                <p class="text-gray-400 text-xs mt-1">Optional emoji or icon to represent this category</p>
             </div>
 
             <div>
@@ -57,7 +57,7 @@
                 @error('banner_image')
                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-500 text-xs mt-1">Used as the hero banner when this service category is selected on the salons page.</p>
+                <p class="text-gray-400 text-xs mt-1">Used as the hero banner when this service category is selected on the salons page.</p>
             </div>
 
             <div>
@@ -68,7 +68,7 @@
                 @error('sort_order')
                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-500 text-xs mt-1">Lower numbers appear first</p>
+                <p class="text-gray-400 text-xs mt-1">Lower numbers appear first</p>
             </div>
 
             <div>

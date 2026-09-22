@@ -95,7 +95,7 @@
                         <div class="mb-3">
                             <label class="form-label text-gray-300">Alt Text</label>
                             <input type="text" name="alt_text" value="{{ old('alt_text', $media->alt_text) }}" class="form-control bg-gray-700 border-gray-600 text-white">
-                            <small class="text-gray-500">Used for SEO and accessibility</small>
+                            <small class="text-gray-400">Used for SEO and accessibility</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label text-gray-300">Caption</label>

@@ -53,7 +53,7 @@
                             @endif
                         @endforeach
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Select the most appropriate category for your product.</p>
+                    <p class="text-xs text-gray-400 mt-1">Select the most appropriate category for your product.</p>
                     @error('category_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -67,7 +67,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Assign a brand to your product. <a href="{{ route('vendor.brands.create') }}" class="text-indigo-400 hover:text-indigo-300">Create new brand</a></p>
+                    <p class="text-xs text-gray-400 mt-1">Assign a brand to your product. <a href="{{ route('vendor.brands.create') }}" class="text-indigo-400 hover:text-indigo-300">Create new brand</a></p>
                     @error('brand_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -80,7 +80,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple tags.</p>
+                    <p class="text-xs text-gray-400 mt-1">Hold Ctrl/Cmd to select multiple tags.</p>
                     @error('tags') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -130,7 +130,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Compare Price ($)</label>
                     <input type="number" name="compare_price" value="{{ old('compare_price', $product->compare_price) }}" step="0.01" min="0"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">Original price (for sale badge)</p>
+                    <p class="text-xs text-gray-400 mt-1">Original price (for sale badge)</p>
                     @error('compare_price') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -138,7 +138,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Cost Price ($)</label>
                     <input type="number" name="cost_price" value="{{ old('cost_price', $product->cost_price) }}" step="0.01" min="0"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">Your cost (for profit tracking)</p>
+                    <p class="text-xs text-gray-400 mt-1">Your cost (for profit tracking)</p>
                     @error('cost_price') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -164,7 +164,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Low Stock Threshold</label>
                     <input type="number" name="low_stock_threshold" value="{{ old('low_stock_threshold', $product->low_stock_threshold) }}" min="0"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">Used for low-stock alerts and inventory filters.</p>
+                    <p class="text-xs text-gray-400 mt-1">Used for low-stock alerts and inventory filters.</p>
                     @error('low_stock_threshold') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
@@ -249,7 +249,7 @@
                 <label class="block text-sm font-medium text-gray-300 mb-2">Upload Images</label>
                 <input type="file" name="images[]" multiple accept="image/*"
                        class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                <p class="text-xs text-gray-500 mt-1">Upload additional images (Max 2MB each)</p>
+                <p class="text-xs text-gray-400 mt-1">Upload additional images (Max 2MB each)</p>
                 @error('images') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 @error('images.*') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
             </div>

@@ -53,7 +53,7 @@
                             @endforeach
                         </select>
                         @error('salon_category_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
-                        <p class="text-xs text-gray-500 mt-1">Optional predefined type</p>
+                        <p class="text-xs text-gray-400 mt-1">Optional predefined type</p>
                     </div>
 
                     <div>
@@ -69,7 +69,7 @@
                         <input type="number" name="duration_minutes" value="{{ old('duration_minutes', 60) }}" required min="15" step="15"
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                                placeholder="60">
-                        <p class="text-xs text-gray-500 mt-1">Minimum 15 minutes</p>
+                        <p class="text-xs text-gray-400 mt-1">Minimum 15 minutes</p>
                         @error('duration_minutes') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Service Image</label>
                     <input type="file" name="image" accept="image/*"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">Recommended size: 800x600px (JPG, PNG, max 2MB)</p>
+                    <p class="text-xs text-gray-400 mt-1">Recommended size: 800x600px (JPG, PNG, max 2MB)</p>
                     @error('image') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 

@@ -74,7 +74,7 @@
                         @endif
                     </div>
                     <p class="text-gray-400 text-sm mt-2">{{ $preset['description'] }}</p>
-                    <div class="text-xs text-gray-500 mt-3">Header: {{ $preset['header'] }} | Footer: {{ $preset['footer'] }}</div>
+                    <div class="text-xs text-gray-400 mt-3">Header: {{ $preset['header'] }} | Footer: {{ $preset['footer'] }}</div>
 
                     <form action="{{ route('admin.appearance.theme.preset') }}" method="POST" class="mt-4">
                         @csrf

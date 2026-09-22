@@ -7,3 +7,18 @@
 [x-cloak] {
     display: none !important;
 }
+
+/* WCAG 2.3.3: respect the OS-level reduced-motion preference by collapsing
+   all CSS transitions/animations to near-instant instead of disabling them
+   outright, so state changes (e.g. Alpine x-show/x-transition) still apply
+   correctly rather than getting stuck mid-animation. */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

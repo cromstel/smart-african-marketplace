@@ -29,7 +29,7 @@
             </div>
             <p class="text-gray-400 text-base font-normal mb-3">Total Revenue</p>
             <p class="text-3xl font-semibold text-white mb-3">${{ number_format($stats['totalRevenue'] ?? 0, 2) }}</p>
-            <p class="text-gray-500 text-sm">{{ $stats['paidOrders'] ?? 0 }} paid orders</p>
+            <p class="text-gray-400 text-sm">{{ $stats['paidOrders'] ?? 0 }} paid orders</p>
         </div>
 
         <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-green-600 hover:shadow-lg transition-all w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(25%-1.5rem)]">
@@ -100,7 +100,7 @@
             </div>
             <p class="text-gray-400 text-base font-normal mb-3">Upcoming (24h)</p>
             <p class="text-3xl font-semibold text-white mb-3">{{ $stats['upcomingBookings'] ?? 0 }}</p>
-            <p class="text-gray-500 text-sm">Pending + Confirmed</p>
+            <p class="text-gray-400 text-sm">Pending + Confirmed</p>
         </div>
         <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-red-600 hover:shadow-lg transition-all w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(25%-1.5rem)]">
             <div class="flex items-center justify-between mb-6">
@@ -112,7 +112,7 @@
             </div>
             <p class="text-gray-400 text-base font-normal mb-3">Cancellations Today</p>
             <p class="text-3xl font-semibold text-white mb-3">{{ $stats['cancellationsToday'] ?? 0 }}</p>
-            <p class="text-gray-500 text-sm">Updated today</p>
+            <p class="text-gray-400 text-sm">Updated today</p>
         </div>
     </div>
 </div>
@@ -223,7 +223,7 @@
                         </div>
                     @empty
                         <div class="text-center py-12">
-                            <p class="text-gray-500 text-base">No orders yet</p>
+                            <p class="text-gray-400 text-base">No orders yet</p>
                         </div>
                     @endforelse
                 </div>
@@ -256,7 +256,7 @@
                             <svg class="w-16 h-16 mx-auto text-green-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
-                            <p class="text-gray-500 text-base">All products well stocked</p>
+                            <p class="text-gray-400 text-base">All products well stocked</p>
                         </div>
                     @endforelse
                 </div>
@@ -286,7 +286,7 @@
                         </div>
                     @empty
                         <div class="text-center py-8">
-                            <p class="text-gray-500 text-sm">No sales yet</p>
+                            <p class="text-gray-400 text-sm">No sales yet</p>
                         </div>
                     @endforelse
                 </div>
@@ -325,7 +325,7 @@
                         </div>
                     @empty
                         <div class="text-center py-8">
-                            <p class="text-gray-500 text-sm">No pending vendors</p>
+                            <p class="text-gray-400 text-sm">No pending vendors</p>
                         </div>
                     @endforelse
                 </div>
@@ -349,13 +349,13 @@
                                 <p class="text-white font-medium text-sm truncate">{{ optional($user)->name ?? 'Unknown User' }}</p>
                                 <p class="text-gray-400 text-xs truncate">{{ optional($user)->email ?? 'N/A' }}</p>
                             </div>
-                            <span class="text-gray-500 text-xs whitespace-nowrap ml-4">
+                            <span class="text-gray-400 text-xs whitespace-nowrap ml-4">
                                 {{ optional(optional($user)->created_at)->diffForHumans() ?? 'N/A' }}
                             </span>
                         </div>
                     @empty
                         <div class="text-center py-8">
-                            <p class="text-gray-500 text-sm">No customers yet</p>
+                            <p class="text-gray-400 text-sm">No customers yet</p>
                         </div>
                     @endforelse
                 </div>

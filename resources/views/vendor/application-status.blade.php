@@ -19,19 +19,19 @@
             <p class="text-gray-400 mt-1">Status: <span class="text-white">{{ ucfirst($vendor->status) }}</span></p>
             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
                 <div>
-                    <p class="text-gray-500">Business Name</p>
+                    <p class="text-gray-400">Business Name</p>
                     <p class="text-white">{{ $vendor->business_name }}</p>
                 </div>
                 <div>
-                    <p class="text-gray-500">Business Email</p>
+                    <p class="text-gray-400">Business Email</p>
                     <p class="text-white">{{ $vendor->business_email }}</p>
                 </div>
                 <div>
-                    <p class="text-gray-500">Business Phone</p>
+                    <p class="text-gray-400">Business Phone</p>
                     <p class="text-white">{{ $vendor->business_phone }}</p>
                 </div>
                 <div>
-                    <p class="text-gray-500">Business Address</p>
+                    <p class="text-gray-400">Business Address</p>
                     <p class="text-white">{{ $vendor->business_address }}</p>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                         @endphp
                         <li class="flex items-center justify-between bg-gray-900 border border-gray-700 rounded px-3 py-2">
                             <span>{{ $docName }}</span>
-                            <span class="text-xs text-gray-500">{{ $docSize }}</span>
+                            <span class="text-xs text-gray-400">{{ $docSize }}</span>
                         </li>
                     @endforeach
                 </ul>
@@ -67,7 +67,7 @@
                 <div>
                     <label class="block text-sm text-gray-300 mb-2">Upload Documents (PDF, JPG, PNG, WebP)</label>
                     <input type="file" name="documents[]" multiple class="w-full text-gray-300">
-                    <p class="text-xs text-gray-500 mt-1">Upload business registration, ID, and proof of address.</p>
+                    <p class="text-xs text-gray-400 mt-1">Upload business registration, ID, and proof of address.</p>
                 </div>
                 <div>
                     <label class="block text-sm text-gray-300 mb-2" for="notes">Notes</label>

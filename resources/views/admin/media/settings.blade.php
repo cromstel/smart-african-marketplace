@@ -67,7 +67,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">Allowed File Types</label>
                         <input type="text" name="allowed_types" value="jpeg,jpg,png,webp,svg,pdf,doc,docx,xls,xlsx,mp4,mov,avi" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                        <p class="text-xs text-gray-500 mt-1">Comma-separated list of allowed extensions</p>
+                        <p class="text-xs text-gray-400 mt-1">Comma-separated list of allowed extensions</p>
                     </div>
                 </div>
             </div>

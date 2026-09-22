@@ -17,7 +17,7 @@
             <div class="px-4 py-3 flex items-center justify-between">
                 <div>
                     <div class="text-gray-300">{{ $coupon->code }}</div>
-                    <div class="text-xs text-gray-500">{{ ucfirst($coupon->type) }} · {{ $coupon->value }}</div>
+                    <div class="text-xs text-gray-400">{{ ucfirst($coupon->type) }} · {{ $coupon->value }}</div>
                 </div>
                 <div class="text-sm text-gray-400">{{ $coupon->is_active ? 'Active' : 'Inactive' }}</div>
                 <div class="flex gap-2">

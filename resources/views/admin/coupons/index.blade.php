@@ -90,7 +90,7 @@
                         @if($coupon->expires_at)
                             {{ $coupon->expires_at->format('M d, Y') }}
                         @else
-                            <span class="text-gray-500">No expiry</span>
+                            <span class="text-gray-400">No expiry</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">

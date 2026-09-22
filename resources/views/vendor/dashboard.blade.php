@@ -90,7 +90,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
             </svg>
         </div>
-        <p class="text-xs text-gray-500 mt-2">{{ $activeProducts }} active</p>
+        <p class="text-xs text-gray-400 mt-2">{{ $activeProducts }} active</p>
     </div>
     @endif
 
@@ -105,7 +105,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
             </svg>
         </div>
-        <p class="text-xs text-gray-500 mt-2">{{ $pendingOrders }} pending</p>
+        <p class="text-xs text-gray-400 mt-2">{{ $pendingOrders }} pending</p>
     </div>
     @endif
 
@@ -120,7 +120,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
         </div>
-        <p class="text-xs text-gray-500 mt-2">From paid orders</p>
+        <p class="text-xs text-gray-400 mt-2">From paid orders</p>
     </div>
     @endif
 
@@ -135,7 +135,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
         </div>
-        <p class="text-xs text-gray-500 mt-2">≤ 10 units remaining</p>
+        <p class="text-xs text-gray-400 mt-2">≤ 10 units remaining</p>
     </div>
     @endif
 </div>
@@ -151,7 +151,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
         </div>
-        <p class="text-xs text-gray-500 mt-2">{{ $pendingWithdrawals }} pending withdrawals</p>
+        <p class="text-xs text-gray-400 mt-2">{{ $pendingWithdrawals }} pending withdrawals</p>
     </div>
 
     @if($canEnquiries)
@@ -165,7 +165,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
         </div>
-        <p class="text-xs text-gray-500 mt-2">Awaiting your response</p>
+        <p class="text-xs text-gray-400 mt-2">Awaiting your response</p>
     </div>
     @endif
 
@@ -180,7 +180,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"/>
             </svg>
         </div>
-        <p class="text-xs text-gray-500 mt-2">Return requests pending</p>
+        <p class="text-xs text-gray-400 mt-2">Return requests pending</p>
     </div>
     @endif
 
@@ -195,7 +195,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
         </div>
-        <p class="text-xs text-gray-500 mt-2">People following your store</p>
+        <p class="text-xs text-gray-400 mt-2">People following your store</p>
     </div>
     @endif
 </div>
@@ -314,7 +314,7 @@
                                 <img src="{{ '/storage/' . ltrim($product->featured_image ?? '', '/') }}" alt="{{ $product->name }}" class="w-12 h-12 object-cover rounded">
                             @else
                                 <div class="w-12 h-12 bg-gray-700 rounded flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
                                 </div>
@@ -350,7 +350,7 @@
                         </div>
                         <p class="text-gray-400 text-xs">{{ $order->user->name }}</p>
                         <div class="mt-2 flex items-center justify-between">
-                            <p class="text-gray-500 text-xs">{{ $order->created_at->format('M d, Y') }}</p>
+                            <p class="text-gray-400 text-xs">{{ $order->created_at->format('M d, Y') }}</p>
                             <p class="text-white font-semibold text-sm">
                                 ${{ number_format($order->items->sum('total'), 2) }}
                             </p>

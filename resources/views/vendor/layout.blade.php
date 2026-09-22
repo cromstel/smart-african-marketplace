@@ -112,7 +112,7 @@
     @stack('styles')
 </head>
 <body class="font-sans antialiased bg-gray-900 text-gray-100">
-    <button id="sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-lg">
+    <button id="sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-lg" aria-label="Toggle sidebar">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -420,7 +420,7 @@
                         <span class="sidebar-label">Logout</span>
                     </button>
                 </form>
-                <button type="button" class="border-t border-gray-700 mt-auto py-1 px-4 w-full text-left text-xs text-gray-500 sticky bottom-0 bg-gray-800 hover:bg-gray-700">
+                <button type="button" class="border-t border-gray-700 mt-auto py-1 px-4 w-full text-left text-xs text-gray-400 sticky bottom-0 bg-gray-800 hover:bg-gray-700">
                     <span class="sidebar-label">Version {{ config('app.version') }}</span>
                 </button>
             </nav>

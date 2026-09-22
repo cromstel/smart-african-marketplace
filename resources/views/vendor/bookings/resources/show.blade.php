@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-4xl space-y-6">
     <div class="flex flex-wrap items-center gap-4">
-        <a href="{{ route('vendor.booking-resources.index') }}" class="text-gray-400 hover:text-white transition">
+        <a href="{{ route('vendor.booking-resources.index') }}" class="text-gray-400 hover:text-white transition" aria-label="Back">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -37,17 +37,17 @@
         <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <h4 class="text-sm text-gray-400 mb-1">Pricing</h4>
             <p class="text-2xl font-bold text-white">{{ $bookingResource->price_label }}</p>
-            <p class="text-gray-500 text-xs mt-1">Min. {{ $bookingResource->minimum_rental_hours }} hour(s) per booking</p>
+            <p class="text-gray-400 text-xs mt-1">Min. {{ $bookingResource->minimum_rental_hours }} hour(s) per booking</p>
         </div>
         <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <h4 class="text-sm text-gray-400 mb-1">Availability</h4>
             <p class="text-2xl font-bold text-white">{{ $bookingResource->quantity_available }} / {{ $bookingResource->quantity_total }}</p>
-            <p class="text-gray-500 text-xs mt-1">units available now</p>
+            <p class="text-gray-400 text-xs mt-1">units available now</p>
         </div>
         <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <h4 class="text-sm text-gray-400 mb-1">Utilization (30 days)</h4>
             <p class="text-2xl font-bold text-white">{{ $stats['utilization_rate'] }}%</p>
-            <p class="text-gray-500 text-xs mt-1">{{ $stats['booking_count'] }} booking(s) &middot; ${{ number_format($stats['total_revenue'], 2) }} revenue</p>
+            <p class="text-gray-400 text-xs mt-1">{{ $stats['booking_count'] }} booking(s) &middot; ${{ number_format($stats['total_revenue'], 2) }} revenue</p>
         </div>
     </div>
 

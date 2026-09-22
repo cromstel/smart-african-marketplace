@@ -19,7 +19,7 @@
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2 uppercase"
                                placeholder="SUMMER2024"
                                style="text-transform: uppercase;">
-                        <p class="text-xs text-gray-500 mt-1">Will be automatically converted to uppercase</p>
+                        <p class="text-xs text-gray-400 mt-1">Will be automatically converted to uppercase</p>
                         @error('code') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -43,7 +43,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Choose a vendor to scope this coupon to their products only.</p>
+                    <p class="text-xs text-gray-400 mt-1">Choose a vendor to scope this coupon to their products only.</p>
                     @error('vendor_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -54,7 +54,7 @@
                     <input type="number" name="value" value="{{ old('value') }}" required min="0" step="0.01"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                            placeholder="10">
-                    <p class="text-xs text-gray-500 mt-1" id="value-hint">Enter discount value</p>
+                    <p class="text-xs text-gray-400 mt-1" id="value-hint">Enter discount value</p>
                     @error('value') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -77,7 +77,7 @@
                         <input type="number" name="min_purchase_amount" value="{{ old('min_purchase_amount') }}" min="0" step="0.01"
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                                placeholder="0.00">
-                        <p class="text-xs text-gray-500 mt-1">Leave empty for no minimum</p>
+                        <p class="text-xs text-gray-400 mt-1">Leave empty for no minimum</p>
                         @error('min_purchase_amount') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -86,7 +86,7 @@
                         <input type="number" name="max_discount_amount" value="{{ old('max_discount_amount') }}" min="0" step="0.01"
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                                placeholder="0.00">
-                        <p class="text-xs text-gray-500 mt-1">For percentage coupons only</p>
+                        <p class="text-xs text-gray-400 mt-1">For percentage coupons only</p>
                         @error('max_discount_amount') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -97,7 +97,7 @@
                         <input type="number" name="usage_limit" value="{{ old('usage_limit') }}" min="1"
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                                placeholder="Unlimited">
-                        <p class="text-xs text-gray-500 mt-1">Leave empty for unlimited uses</p>
+                        <p class="text-xs text-gray-400 mt-1">Leave empty for unlimited uses</p>
                         @error('usage_limit') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -106,7 +106,7 @@
                         <input type="number" name="per_user_limit" value="{{ old('per_user_limit') }}" min="1"
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                                placeholder="Unlimited">
-                        <p class="text-xs text-gray-500 mt-1">Max uses per customer</p>
+                        <p class="text-xs text-gray-400 mt-1">Max uses per customer</p>
                         @error('per_user_limit') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">Start Date</label>
                         <input type="datetime-local" name="starts_at" value="{{ old('starts_at') }}"
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                        <p class="text-xs text-gray-500 mt-1">Leave empty to start immediately</p>
+                        <p class="text-xs text-gray-400 mt-1">Leave empty to start immediately</p>
                         @error('starts_at') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -124,7 +124,7 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">Expiry Date</label>
                         <input type="datetime-local" name="expires_at" value="{{ old('expires_at') }}"
                                class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                        <p class="text-xs text-gray-500 mt-1">Leave empty for no expiry</p>
+                        <p class="text-xs text-gray-400 mt-1">Leave empty for no expiry</p>
                         @error('expires_at') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>

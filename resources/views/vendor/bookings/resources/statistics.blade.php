@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-4xl space-y-6">
     <div class="flex items-center gap-4">
-        <a href="{{ route('vendor.booking-resources.show', $bookingResource) }}" class="text-gray-400 hover:text-white transition">
+        <a href="{{ route('vendor.booking-resources.show', $bookingResource) }}" class="text-gray-400 hover:text-white transition" aria-label="Back">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -43,12 +43,12 @@
         <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <h4 class="text-sm text-gray-400 mb-1">Utilization</h4>
             <p class="text-2xl font-bold text-white">{{ $stats['utilization_rate'] }}%</p>
-            <p class="text-gray-500 text-xs mt-1">{{ $stats['booked_days'] }} / {{ $stats['total_days'] }} days</p>
+            <p class="text-gray-400 text-xs mt-1">{{ $stats['booked_days'] }} / {{ $stats['total_days'] }} days</p>
         </div>
         <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 sm:col-span-2">
             <h4 class="text-sm text-gray-400 mb-1">Revenue</h4>
             <p class="text-2xl font-bold text-white">${{ number_format($stats['total_revenue'], 2) }}</p>
-            <p class="text-gray-500 text-xs mt-1">across this date range</p>
+            <p class="text-gray-400 text-xs mt-1">across this date range</p>
         </div>
     </div>
 

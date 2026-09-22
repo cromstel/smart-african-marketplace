@@ -29,7 +29,7 @@
                     <tr class="border-t border-gray-800 hover:bg-gray-800/40">
                         <td class="px-4 py-3 text-gray-200">
                             #{{ $ticket->id }}
-                            <div class="text-xs text-gray-500">{{ $ticket->subject ?? 'Chatbot Handoff' }}</div>
+                            <div class="text-xs text-gray-400">{{ $ticket->subject ?? 'Chatbot Handoff' }}</div>
                         </td>
                         <td class="px-4 py-3 text-gray-300">{{ $ticket->user?->name ?? 'Guest' }}</td>
                         <td class="px-4 py-3">

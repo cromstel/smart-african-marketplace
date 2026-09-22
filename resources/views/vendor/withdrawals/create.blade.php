@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
     <div class="flex items-center gap-4">
-        <a href="{{ route('vendor.withdrawals.index') }}" class="text-gray-400 hover:text-white transition">
+        <a href="{{ route('vendor.withdrawals.index') }}" class="text-gray-400 hover:text-white transition" aria-label="Back">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>

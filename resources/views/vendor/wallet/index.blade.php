@@ -30,7 +30,7 @@
             <div class="px-4 py-3 flex items-center justify-between">
                 <div>
                     <div class="text-gray-300">{{ str_replace('_', ' ', ucfirst($entry->type)) }}</div>
-                    <div class="text-xs text-gray-500">{{ $entry->created_at->format('M d, Y') }}</div>
+                    <div class="text-xs text-gray-400">{{ $entry->created_at->format('M d, Y') }}</div>
                 </div>
                 <div class="text-sm text-gray-400">${{ number_format($entry->amount, 2) }}</div>
             </div>

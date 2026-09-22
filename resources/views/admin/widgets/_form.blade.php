@@ -6,7 +6,7 @@
     <div>
         <label class="block text-sm font-medium text-gray-300 mb-2">Page Identifier *</label>
         <input type="text" name="page_identifier" value="{{ old('page_identifier', $widget->page_identifier) }}" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2" placeholder="home, shop, blog-index, page-{slug}">
-        <p class="text-xs text-gray-500 mt-1">Examples: home, shop, blog-index, page-about</p>
+        <p class="text-xs text-gray-400 mt-1">Examples: home, shop, blog-index, page-about</p>
     </div>
 
     <div class="grid grid-cols-2 gap-4">
@@ -58,7 +58,7 @@
     <div id="settings-json">
         <label class="block text-sm font-medium text-gray-300 mb-2">Settings (JSON)</label>
         <textarea name="settings_json" rows="6" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2 font-mono text-sm">{{ old('settings_json', $widget->settings ? json_encode($widget->settings, JSON_PRETTY_PRINT) : '') }}</textarea>
-        <p class="text-xs text-gray-500 mt-1">Provide widget settings as JSON. Example: {"title":"Welcome","limit":4}</p>
+        <p class="text-xs text-gray-400 mt-1">Provide widget settings as JSON. Example: {"title":"Welcome","limit":4}</p>
     </div>
 
     <div class="flex items-center">

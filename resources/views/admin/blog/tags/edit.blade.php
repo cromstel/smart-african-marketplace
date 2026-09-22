@@ -37,7 +37,7 @@
                 @error('description')
                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-500 text-xs mt-1">Max 500 characters</p>
+                <p class="text-gray-400 text-xs mt-1">Max 500 characters</p>
             </div>
 
             <div>
@@ -51,7 +51,7 @@
                 @error('color')
                     <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
                 @enderror
-                <p class="text-gray-500 text-xs mt-1">Choose a color for this tag</p>
+                <p class="text-gray-400 text-xs mt-1">Choose a color for this tag</p>
             </div>
 
             <div class="bg-gray-900 rounded-lg p-4 border border-gray-700">

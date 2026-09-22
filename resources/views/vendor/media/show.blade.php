@@ -136,13 +136,13 @@
                 <div class="card-body">
                     <div class="input-group">
                         <input type="text" class="form-control bg-gray-700 border-gray-600 text-white" value="{{ $media->url }}" readonly id="mediaUrl">
-                        <button class="btn btn-outline-secondary" type="button" onclick="copyUrl()">
+                        <button class="btn btn-outline-secondary" type="button" onclick="copyUrl()" aria-label="Copy URL to clipboard">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                             </svg>
                         </button>
                     </div>
-                    <small class="text-gray-500 d-block mt-2">Use this URL to embed this file in your content</small>
+                    <small class="text-gray-400 d-block mt-2">Use this URL to embed this file in your content</small>
                 </div>
             </div>
         </div>

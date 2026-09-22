@@ -151,7 +151,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-300 align-top">
                                     <div>Updated {{ $page->updated_at->format('M d, Y') }}</div>
-                                    <div class="text-xs text-gray-500 mt-1">Created {{ $page->created_at->format('M d, Y') }}</div>
+                                    <div class="text-xs text-gray-400 mt-1">Created {{ $page->created_at->format('M d, Y') }}</div>
                                 </td>
                             </tr>
                         @empty

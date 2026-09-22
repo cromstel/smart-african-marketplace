@@ -81,7 +81,7 @@
                 <input type="number" name="retry" value="{{ $config['retry'] }}" min="1" max="3600"
                        class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                        placeholder="60">
-                <p class="text-xs text-gray-500 mt-1">
+                <p class="text-xs text-gray-400 mt-1">
                     Recommended: 60-300 seconds. Maximum: 3600 (1 hour).
                 </p>
             </div>
@@ -95,13 +95,13 @@
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-300 mb-2">
                     Allowed IP Addresses
-                    <span class="text-gray-500">(one per line)</span>
+                    <span class="text-gray-400">(one per line)</span>
                 </label>
                 <textarea name="allowed_ips" rows="3"
                           class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2 font-mono text-sm"
                           placeholder="127.0.0.1
 192.168.1.1">{{ is_array($config['allowed_ips']) ? implode("\n", $config['allowed_ips']) : '' }}</textarea>
-                <p class="text-xs text-gray-500 mt-1">
+                <p class="text-xs text-gray-400 mt-1">
                     Enter IP addresses (IPv4 or IPv6) that can access the site during maintenance.
                 </p>
             </div>
@@ -109,13 +109,13 @@
             <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2">
                     Allowed Emails
-                    <span class="text-gray-500">(one per line)</span>
+                    <span class="text-gray-400">(one per line)</span>
                 </label>
                 <textarea name="allowed_emails" rows="3"
                           class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2 font-mono text-sm"
                           placeholder="admin@example.com
 support@example.com">{{ is_array($config['allowed_emails']) ? implode("\n", $config['allowed_emails']) : '' }}</textarea>
-                <p class="text-xs text-gray-500 mt-1">
+                <p class="text-xs text-gray-400 mt-1">
                     Users with these emails can bypass maintenance mode.
                 </p>
             </div>

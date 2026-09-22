@@ -31,7 +31,7 @@
         @error('icon')
             <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
         @enderror
-        <p class="text-gray-500 text-xs mt-1">
+        <p class="text-gray-400 text-xs mt-1">
             The list page shows a built-in icon for the names Appointment, Reservation, Rental, Consultation, Class
             and Event automatically; this field is for your own reference or a future custom icon.
         </p>
@@ -72,7 +72,7 @@
             @error('booking_window_days')
                 <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
             @enderror
-            <p class="text-gray-500 text-xs mt-1">How far in advance customers can book</p>
+            <p class="text-gray-400 text-xs mt-1">How far in advance customers can book</p>
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Cancellation Notice (hours) *</label>
@@ -81,7 +81,7 @@
             @error('cancellation_policy_hours')
                 <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
             @enderror
-            <p class="text-gray-500 text-xs mt-1">Minimum notice required to cancel without penalty</p>
+            <p class="text-gray-400 text-xs mt-1">Minimum notice required to cancel without penalty</p>
         </div>
     </div>
 
@@ -92,7 +92,7 @@
         @error('sort_order')
             <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
         @enderror
-        <p class="text-gray-500 text-xs mt-1">Lower numbers appear first; you can also reorder from the list page</p>
+        <p class="text-gray-400 text-xs mt-1">Lower numbers appear first; you can also reorder from the list page</p>
     </div>
 
     <div>

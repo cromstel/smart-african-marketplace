@@ -37,7 +37,7 @@
                                 </label>
                                 <p class="pl-1">or drag and drop</p>
                             </div>
-                            <p class="text-xs text-gray-500">CSV, TXT or XLSX up to 10MB</p>
+                            <p class="text-xs text-gray-400">CSV, TXT or XLSX up to 10MB</p>
                         </div>
                     </div>
                     @error('file')
@@ -57,7 +57,7 @@
                                 <p class="text-xs text-gray-400" id="file-size"></p>
                             </div>
                         </div>
-                        <button type="button" onclick="removeFile()" class="text-gray-400 hover:text-red-400">
+                        <button type="button" onclick="removeFile()" class="text-gray-400 hover:text-red-400" aria-label="Remove selected file">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -72,7 +72,7 @@
                     </div>
                     <div class="ml-3 text-sm">
                         <label for="update_existing" class="font-medium text-gray-300">Update existing products</label>
-                        <p class="text-gray-500">If a product with the same SKU exists, it will be updated instead of created</p>
+                        <p class="text-gray-400">If a product with the same SKU exists, it will be updated instead of created</p>
                     </div>
                 </div>
 
@@ -85,7 +85,7 @@
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
-                    <p class="mt-1 text-xs text-gray-500">Products without a category in the CSV will use this category</p>
+                    <p class="mt-1 text-xs text-gray-400">Products without a category in the CSV will use this category</p>
                 </div>
 
                 <!-- Default Vendor -->
@@ -97,7 +97,7 @@
                             <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
                         @endforeach
                     </select>
-                    <p class="mt-1 text-xs text-gray-500">Products without a vendor in the CSV will use this vendor</p>
+                    <p class="mt-1 text-xs text-gray-400">Products without a vendor in the CSV will use this vendor</p>
                 </div>
 
                 <!-- Submit Button -->
@@ -158,7 +158,7 @@
                         <div class="flex items-center justify-between py-2 border-b border-gray-700 last:border-0">
                             <div>
                                 <p class="text-sm text-white truncate max-w-[150px]">{{ $import->file_name }}</p>
-                                <p class="text-xs text-gray-500">{{ $import->created_at->format('M d, Y H:i') }}</p>
+                                <p class="text-xs text-gray-400">{{ $import->created_at->format('M d, Y H:i') }}</p>
                             </div>
                             <span class="px-2 py-1 text-xs rounded-full status-badge-{{ $import->status }}">
                                 {{ ucfirst($import->status) }}
@@ -167,7 +167,7 @@
                     @endforeach
                 </div>
             @else
-                <p class="text-sm text-gray-500">No recent imports</p>
+                <p class="text-sm text-gray-400">No recent imports</p>
             @endif
         </div>
     </div>

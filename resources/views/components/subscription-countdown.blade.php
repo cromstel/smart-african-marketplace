@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" onclick="this.closest('[class*=\'bg-\']').remove()" class="flex-shrink-0 text-{{ $statusType === 'danger' ? 'red' : 'orange' }}-400 hover:text-{{ $statusType === 'danger' ? 'red' : 'orange' }}-600">
+            <button type="button" onclick="this.closest('[class*=\'bg-\']').remove()" class="flex-shrink-0 text-{{ $statusType === 'danger' ? 'red' : 'orange' }}-400 hover:text-{{ $statusType === 'danger' ? 'red' : 'orange' }}-600" aria-label="Dismiss">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>

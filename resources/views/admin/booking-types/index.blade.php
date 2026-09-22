@@ -67,14 +67,14 @@
                                     <form action="{{ route('admin.booking-types.reorder', $bookingType) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="direction" value="up">
-                                        <button type="submit" aria-label="Move {{ $bookingType->name }} up" class="block text-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 rounded leading-none">
+                                        <button type="submit" aria-label="Move {{ $bookingType->name }} up" class="block text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 rounded leading-none">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
                                         </button>
                                     </form>
                                     <form action="{{ route('admin.booking-types.reorder', $bookingType) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="direction" value="down">
-                                        <button type="submit" aria-label="Move {{ $bookingType->name }} down" class="block text-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 rounded leading-none">
+                                        <button type="submit" aria-label="Move {{ $bookingType->name }} down" class="block text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 rounded leading-none">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                         </button>
                                     </form>
@@ -93,7 +93,7 @@
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-end gap-2">
-                                <a href="{{ route('admin.booking-types.edit', $bookingType) }}" class="text-brand-from hover:text-orange-300 p-2">
+                                <a href="{{ route('admin.booking-types.edit', $bookingType) }}" class="text-brand-from hover:text-orange-300 p-2" aria-label="Edit {{ $bookingType->name }}">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
@@ -102,7 +102,7 @@
                                       onsubmit="return confirm('Are you sure? This will only work if there are no bookings using this type.')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-400 hover:text-red-300 p-2">
+                                    <button type="submit" class="text-red-400 hover:text-red-300 p-2" aria-label="Delete {{ $bookingType->name }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                         </svg>
@@ -118,7 +118,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                             <p class="text-gray-400 text-lg">No booking types yet</p>
-                            <p class="text-gray-500 mt-2">Create booking types like Appointment, Reservation, or Rental to categorize how services can be booked</p>
+                            <p class="text-gray-400 mt-2">Create booking types like Appointment, Reservation, or Rental to categorize how services can be booked</p>
                         </td>
                     </tr>
                 @endforelse

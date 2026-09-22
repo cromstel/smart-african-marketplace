@@ -60,7 +60,7 @@
                         <option value="standard" {{ ($settings['default_title_style']->value ?? 'standard') === 'standard' ? 'selected' : '' }}>Standard (Quality/Best)</option>
                         <option value="sale" {{ ($settings['default_title_style']->value ?? 'standard') === 'sale' ? 'selected' : '' }}>Sale (Discounted/Special Offer)</option>
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Controls the tone and style of AI-generated product titles</p>
+                    <p class="text-xs text-gray-400 mt-1">Controls the tone and style of AI-generated product titles</p>
                     @error('default_title_style') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -72,7 +72,7 @@
                         <option value="technical" {{ ($settings['default_description_style']->value ?? 'detailed') === 'technical' ? 'selected' : '' }}>Technical (Specs Focused)</option>
                         <option value="marketing" {{ ($settings['default_description_style']->value ?? 'detailed') === 'marketing' ? 'selected' : '' }}>Marketing (Engaging & Persuasive)</option>
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Controls the length and focus of AI-generated descriptions</p>
+                    <p class="text-xs text-gray-400 mt-1">Controls the length and focus of AI-generated descriptions</p>
                     @error('default_description_style') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>

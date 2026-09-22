@@ -90,7 +90,7 @@
                         </div>
                         <div class="ml-3 text-sm">
                             <label for="is_active" class="font-medium text-gray-300">Active products only</label>
-                            <p class="text-gray-500">Export only active products</p>
+                            <p class="text-gray-400">Export only active products</p>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@
                         <div class="flex items-center justify-between py-2 border-b border-gray-700 last:border-0">
                             <div>
                                 <p class="text-sm text-white truncate max-w-[150px]">{{ $export->file_name }}</p>
-                                <p class="text-xs text-gray-500">{{ $export->created_at->format('M d, Y H:i') }}</p>
+                                <p class="text-xs text-gray-400">{{ $export->created_at->format('M d, Y H:i') }}</p>
                             </div>
                             <span class="px-2 py-1 text-xs rounded-full status-badge-{{ $export->status }}">
                                 {{ ucfirst($export->status) }}
@@ -193,7 +193,7 @@
                     @endforeach
                 </div>
             @else
-                <p class="text-sm text-gray-500">No recent exports</p>
+                <p class="text-sm text-gray-400">No recent exports</p>
             @endif
         </div>
 

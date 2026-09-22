@@ -10,7 +10,7 @@
         @forelse($logs as $log)
             <div class="px-4 py-3">
                 <div class="text-gray-300">{{ $log->action }}</div>
-                <div class="text-xs text-gray-500">{{ $log->actor?->email ?? 'system' }} · {{ $log->created_at->format('M d, Y H:i') }}</div>
+                <div class="text-xs text-gray-400">{{ $log->actor?->email ?? 'system' }} · {{ $log->created_at->format('M d, Y H:i') }}</div>
             </div>
         @empty
             <div class="px-4 py-6 text-gray-400">No activity logged.</div>

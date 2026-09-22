@@ -30,7 +30,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Select a parent category to create a subcategory</p>
+                    <p class="text-xs text-gray-400 mt-1">Select a parent category to create a subcategory</p>
                     @error('parent_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -38,7 +38,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Description</label>
                     <textarea name="description" rows="4" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                               placeholder="Brief description of this category">{{ old('description') }}</textarea>
-                    <p class="text-xs text-gray-500 mt-1">This description will be displayed on category pages</p>
+                    <p class="text-xs text-gray-400 mt-1">This description will be displayed on category pages</p>
                     @error('description') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -46,7 +46,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Category Hero Banner</label>
                     <input type="file" name="banner_image" accept="image/png,image/jpeg,image/webp,image/avif"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">Used as the hero banner when this product category is selected in the shop.</p>
+                    <p class="text-xs text-gray-400 mt-1">Used as the hero banner when this product category is selected in the shop.</p>
                     @error('banner_image') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 

@@ -155,7 +155,7 @@
                                         'pending' => 'bg-yellow-500/20 text-yellow-500 border-yellow-500/50',
                                         'paid' => 'bg-green-500/20 text-green-500 border-green-500/50',
                                         'failed' => 'bg-red-500/20 text-red-500 border-red-500/50',
-                                        'refunded' => 'bg-gray-500/20 text-gray-500 border-gray-500/50',
+                                        'refunded' => 'bg-gray-500/20 text-gray-400 border-gray-500/50',
                                     ];
                                 @endphp
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full border {{ $paymentColors[$order->payment_status] ?? '' }}">
@@ -190,7 +190,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                                 </svg>
                                 <p class="text-gray-400 text-lg">No orders found</p>
-                                <p class="text-gray-500 text-sm mt-2">Orders from customers will appear here</p>
+                                <p class="text-gray-400 text-sm mt-2">Orders from customers will appear here</p>
                             </td>
                         </tr>
                     @endforelse

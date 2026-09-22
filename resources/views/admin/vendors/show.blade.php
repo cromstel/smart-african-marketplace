@@ -264,7 +264,7 @@
                             <tr class="bg-gray-900 rounded-lg">
                                 <td class="px-3 py-4 text-sm text-gray-300 whitespace-nowrap">
                                     {{ $booking->booking_date->format('M d, Y') }}<br>
-                                    <span class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($booking->booking_time)->format('g:i A') }}</span>
+                                    <span class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($booking->booking_time)->format('g:i A') }}</span>
                                 </td>
                                 <td class="px-3 py-4 text-sm text-white">{{ $booking->salonService->name }}</td>
                                 <td class="px-3 py-4 text-sm text-gray-300">{{ $booking->user->name }}</td>
@@ -312,7 +312,7 @@
                             <p class="text-white font-medium">{{ $product->name }}</p>
                             <div class="flex items-center gap-3 mt-1">
                                 <span class="text-gray-400 text-sm">${{ number_format($product->price, 2) }}</span>
-                                <span class="text-gray-500">•</span>
+                                <span class="text-gray-400">•</span>
                                 <span class="text-gray-400 text-sm">Stock: {{ $product->stock_quantity }}</span>
                             </div>
                         </div>
@@ -344,7 +344,7 @@
                 <svg class="w-16 h-16 mx-auto text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                 </svg>
-                <p class="text-gray-500">No products added yet</p>
+                <p class="text-gray-400">No products added yet</p>
             </div>
         @endif
     </div>

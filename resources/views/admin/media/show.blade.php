@@ -234,7 +234,7 @@ function hideReplaceModal() {
                 <label class="block text-sm font-medium text-gray-300 mb-2">Select Image</label>
                 <input type="file" name="file" accept="image/jpeg,image/jpg,image/png,image/webp" required
                     class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                <p class="text-xs text-gray-500 mt-1">Supported formats: JPEG, JPG, PNG, WebP (max 10MB)</p>
+                <p class="text-xs text-gray-400 mt-1">Supported formats: JPEG, JPG, PNG, WebP (max 10MB)</p>
             </div>
             
             <div class="flex justify-end space-x-3">

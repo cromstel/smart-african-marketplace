@@ -11,7 +11,7 @@
             <div class="px-4 py-3 flex items-center justify-between">
                 <div>
                     <div class="text-gray-300">{{ $payout->vendor->business_name ?? 'Vendor' }} - ${{ number_format($payout->amount, 2) }}</div>
-                    <div class="text-xs text-gray-500">{{ strtoupper($payout->method) }} · {{ $payout->created_at->format('M d, Y') }}</div>
+                    <div class="text-xs text-gray-400">{{ strtoupper($payout->method) }} · {{ $payout->created_at->format('M d, Y') }}</div>
                 </div>
                 <div class="text-sm text-gray-400">{{ ucfirst($payout->status) }}</div>
                 <a href="{{ route('admin.payouts.show', $payout) }}" class="text-blue-400 hover:text-blue-300">View</a>

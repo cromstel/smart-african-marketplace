@@ -49,7 +49,7 @@
                                     @endif
                                 </div>
                             @else
-                                <span class="text-sm text-gray-500">—</span>
+                                <span class="text-sm text-gray-400">—</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">

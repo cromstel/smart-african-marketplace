@@ -9,8 +9,8 @@
         <div class="space-y-1">
             <div class="text-sm text-gray-400">Ticket #{{ $supportTicket->id }}</div>
             <div class="text-sm text-gray-400">User: {{ $supportTicket->user?->name ?? 'Guest' }}</div>
-            <div class="text-sm text-gray-500">Chatbot Session: {{ $supportTicket->chatbotSession?->session_key ?? 'n/a' }}</div>
-            <div class="text-sm text-gray-500">Last active: {{ $supportTicket->last_message_at?->diffForHumans() ?? $supportTicket->created_at->diffForHumans() }}</div>
+            <div class="text-sm text-gray-400">Chatbot Session: {{ $supportTicket->chatbotSession?->session_key ?? 'n/a' }}</div>
+            <div class="text-sm text-gray-400">Last active: {{ $supportTicket->last_message_at?->diffForHumans() ?? $supportTicket->created_at->diffForHumans() }}</div>
         </div>
         <div class="flex flex-col gap-3">
             <div class="flex items-center gap-3">
@@ -36,7 +36,7 @@
         @forelse($supportTicket->messages as $message)
             <div class="flex {{ $message->author_role === 'user' ? 'justify-end' : 'justify-start' }}">
                 <div class="max-w-[75%] px-3 py-2 rounded text-sm {{ $message->author_role === 'user' ? 'bg-gray-800 text-white' : 'bg-emerald-900 text-emerald-100' }}">
-                    <div class="text-[10px] uppercase tracking-wide mb-1 {{ $message->author_role === 'user' ? 'text-gray-400' : 'text-gray-500' }}">
+                    <div class="text-[10px] uppercase tracking-wide mb-1 {{ $message->author_role === 'user' ? 'text-gray-400' : 'text-gray-400' }}">
                         {{ ucfirst($message->author_role) }}
                     </div>
                     <div class="whitespace-pre-line">{{ $message->content }}</div>

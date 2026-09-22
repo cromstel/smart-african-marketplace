@@ -14,7 +14,7 @@
             <div class="px-4 py-3 flex items-center justify-between">
                 <div>
                     <div class="text-gray-300">Order #{{ $refund->order->order_number }}</div>
-                    <div class="text-xs text-gray-500">{{ $refund->user->email }}</div>
+                    <div class="text-xs text-gray-400">{{ $refund->user->email }}</div>
                 </div>
                 <div class="text-sm text-gray-400">{{ ucfirst($refund->status) }}</div>
                 <a href="{{ route('vendor.refunds.show', $refund) }}" class="text-blue-400 hover:text-blue-300">View</a>

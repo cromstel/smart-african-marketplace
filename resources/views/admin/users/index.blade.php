@@ -148,7 +148,7 @@
                                         }
                                     @endphp
                                     <div>{{ implode(', ', $roleNames) }}</div>
-                                    <div class="text-xs text-gray-500">Primary: {{ str_replace('_', ' ', ucfirst($user->role)) }}</div>
+                                    <div class="text-xs text-gray-400">Primary: {{ str_replace('_', ' ', ucfirst($user->role)) }}</div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="px-2 py-1 text-xs rounded-full {{ $user->is_active ? 'bg-green-800 text-green-100' : 'bg-red-800 text-red-100' }}">

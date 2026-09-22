@@ -22,7 +22,7 @@
             <div class="px-4 py-3 flex items-center justify-between">
                 <div>
                     <div class="text-gray-300">{{ strtoupper($payout->method) }} - ${{ number_format($payout->amount, 2) }}</div>
-                    <div class="text-xs text-gray-500">{{ $payout->created_at->format('M d, Y') }}</div>
+                    <div class="text-xs text-gray-400">{{ $payout->created_at->format('M d, Y') }}</div>
                 </div>
                 <div class="text-sm text-gray-400">{{ ucfirst($payout->status) }}</div>
             </div>

@@ -137,7 +137,7 @@
                             </form>
                         </div>
                     @empty
-                        <p class="text-sm text-gray-500">No revisions yet.</p>
+                        <p class="text-sm text-gray-400">No revisions yet.</p>
                     @endforelse
                 </div>
             </div>

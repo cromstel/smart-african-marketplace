@@ -28,7 +28,7 @@
                                        class="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent">
                                 <input type="text" name="attributes[{{ $index }}][value]" value="{{ is_array($attr) ? ($attr['value'] ?? $attr) : $attr }}" placeholder="Value" required
                                        class="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent">
-                                <button type="button" onclick="removeAttribute(this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+                                <button type="button" onclick="removeAttribute(this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition" aria-label="Remove attribute">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>
@@ -160,7 +160,7 @@ function addAttribute() {
                class="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent">
         <input type="text" name="attributes[${attributeIndex}][value]" placeholder="Value (e.g., Large, Red)" required
                class="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-orange-500 focus:border-transparent">
-        <button type="button" onclick="removeAttribute(this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+        <button type="button" onclick="removeAttribute(this)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition" aria-label="Remove attribute">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>

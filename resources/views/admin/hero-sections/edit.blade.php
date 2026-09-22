@@ -73,7 +73,7 @@
                     <option value="gradient" {{ $heroSection->background_type == 'gradient' ? 'selected' : '' }}>Brand Gradient (Orange to Red)</option>
                     <option value="image" {{ $heroSection->background_type == 'image' ? 'selected' : '' }}>Image with Brand Gradient Overlay</option>
                 </select>
-                <p class="text-xs text-gray-500 mt-1">Images will blend with the brand gradient using overlay mode</p>
+                <p class="text-xs text-gray-400 mt-1">Images will blend with the brand gradient using overlay mode</p>
             </div>
 
             <input type="hidden" name="gradient_from" value="#ea580c">
@@ -88,7 +88,7 @@
                 @endif
                 <label class="block text-sm font-medium text-gray-300 mb-2">Background Image {{ $heroSection->background_image ? '(Upload new to replace)' : '' }}</label>
                 <input type="file" name="background_image" accept="image/*" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                <p class="text-xs text-gray-500 mt-1">Max 2MB. Recommended: 1920x600px. Image will overlay with brand gradient.</p>
+                <p class="text-xs text-gray-400 mt-1">Max 2MB. Recommended: 1920x600px. Image will overlay with brand gradient.</p>
                 @error('background_image') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
 
                 <div class="mt-4">
@@ -101,7 +101,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">If both are provided, uploaded file is used.</p>
+                    <p class="text-xs text-gray-400 mt-1">If both are provided, uploaded file is used.</p>
                     @error('background_media_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>

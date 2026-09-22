@@ -67,7 +67,7 @@
             <div>
                 <p class="text-sm text-gray-400 mb-1">Products</p>
                 <p class="text-2xl font-bold text-white">{{ auth()->user()->vendor->products()->count() }}</p>
-                <p class="text-xs text-gray-500 mt-1">of {{ $subscription->plan?->max_products === -1 ? 'Unlimited' : ($subscription->plan?->max_products ?? 'N/A') }} allowed</p>
+                <p class="text-xs text-gray-400 mt-1">of {{ $subscription->plan?->max_products === -1 ? 'Unlimited' : ($subscription->plan?->max_products ?? 'N/A') }} allowed</p>
             </div>
             <div>
                 <p class="text-sm text-gray-400 mb-1">Orders This Month</p>

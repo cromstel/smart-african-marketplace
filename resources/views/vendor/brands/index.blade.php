@@ -52,7 +52,7 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <span class="text-gray-500 text-xs">Create-only</span>
+                            <span class="text-gray-400 text-xs">Create-only</span>
                         </td>
                     </tr>
                 @empty

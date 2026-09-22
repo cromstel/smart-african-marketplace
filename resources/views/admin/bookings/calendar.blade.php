@@ -51,7 +51,7 @@
         @endphp
         <div class="min-h-[140px] rounded-lg border border-gray-700 p-2 {{ $isCurrentMonth ? 'bg-gray-800' : 'bg-gray-900/60' }}">
             <div class="flex items-center justify-between mb-2">
-                <span class="text-xs {{ $isCurrentMonth ? 'text-white' : 'text-gray-500' }}">{{ $day->format('j') }}</span>
+                <span class="text-xs {{ $isCurrentMonth ? 'text-white' : 'text-gray-400' }}">{{ $day->format('j') }}</span>
                 @if($bookings->count())
                     <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white">
                         {{ $bookings->count() }}
@@ -68,7 +68,7 @@
                     </div>
                 @endforeach
                 @if($bookings->count() > 3)
-                    <p class="text-[10px] text-gray-500">+{{ $bookings->count() - 3 }} more</p>
+                    <p class="text-[10px] text-gray-400">+{{ $bookings->count() - 3 }} more</p>
                 @endif
             </div>
         </div>

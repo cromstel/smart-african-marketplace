@@ -60,7 +60,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Trial Days *</label>
                     <input type="number" name="trial_days" value="{{ old('trial_days', $plan->trial_days) }}" min="0" required
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">Number of free trial days (0 = no trial)</p>
+                    <p class="text-xs text-gray-400 mt-1">Number of free trial days (0 = no trial)</p>
                     @error('trial_days') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -74,7 +74,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Max Products *</label>
                     <input type="number" name="max_products" value="{{ old('max_products', $plan->max_products) }}" min="-1" required
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">-1 for unlimited products</p>
+                    <p class="text-xs text-gray-400 mt-1">-1 for unlimited products</p>
                     @error('max_products') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -82,7 +82,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Max Orders per Month *</label>
                     <input type="number" name="max_orders" value="{{ old('max_orders', $plan->max_orders) }}" min="-1" required
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">-1 for unlimited orders</p>
+                    <p class="text-xs text-gray-400 mt-1">-1 for unlimited orders</p>
                     @error('max_orders') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -90,7 +90,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Commission Rate (%) *</label>
                     <input type="number" name="commission_rate" value="{{ old('commission_rate', $plan->commission_rate) }}" step="0.01" min="0" max="100" required
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">Platform commission on sales</p>
+                    <p class="text-xs text-gray-400 mt-1">Platform commission on sales</p>
                     @error('commission_rate') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -98,7 +98,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">Sort Order</label>
                     <input type="number" name="sort_order" value="{{ old('sort_order', $plan->sort_order) }}" min="0"
                            class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                    <p class="text-xs text-gray-500 mt-1">Display order (lower numbers first)</p>
+                    <p class="text-xs text-gray-400 mt-1">Display order (lower numbers first)</p>
                     @error('sort_order') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -114,7 +114,7 @@
                         <div class="feature-item flex gap-2">
                             <input type="text" name="features[]" value="{{ old('features.'.$index, $feature) }}" 
                                    class="flex-1 bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
-                            <button type="button" onclick="removeFeature(this)" class="text-red-400 hover:text-red-300 px-3">
+                            <button type="button" onclick="removeFeature(this)" class="text-red-400 hover:text-red-300 px-3" aria-label="Remove feature">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -126,7 +126,7 @@
                         <input type="text" name="features[]" 
                                class="flex-1 bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                                placeholder="e.g., Priority Support">
-                        <button type="button" onclick="removeFeature(this)" class="text-red-400 hover:text-red-300 px-3">
+                        <button type="button" onclick="removeFeature(this)" class="text-red-400 hover:text-red-300 px-3" aria-label="Remove feature">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -149,7 +149,7 @@
                         <input type="checkbox" name="feature_keys[]" value="{{ $module['key'] }}"
                                {{ in_array($module['key'], old('feature_keys', $plan->feature_keys ?? []), true) ? 'checked' : '' }}
                                class="w-4 h-4 bg-gray-700 border-gray-600 rounded text-indigo-600">
-                        <span>{{ $module['name'] }} <span class="text-gray-500">({{ $module['key'] }})</span></span>
+                        <span>{{ $module['name'] }} <span class="text-gray-400">({{ $module['key'] }})</span></span>
                     </label>
                 @endforeach
             </div>
@@ -207,7 +207,7 @@ function addFeature() {
         <input type="text" name="features[]" 
                class="flex-1 bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2"
                placeholder="e.g., Advanced Analytics">
-        <button type="button" onclick="removeFeature(this)" class="text-red-400 hover:text-red-300 px-3">
+        <button type="button" onclick="removeFeature(this)" class="text-red-400 hover:text-red-300 px-3" aria-label="Remove feature">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>

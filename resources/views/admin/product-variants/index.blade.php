@@ -58,7 +58,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <span class="text-gray-500 text-sm">No attributes</span>
+                            <span class="text-gray-400 text-sm">No attributes</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">

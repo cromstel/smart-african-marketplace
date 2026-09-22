@@ -58,7 +58,7 @@
                                 <img src="{{ '/storage/' . ltrim($resource->image, '/') }}" alt="{{ $resource->name }}" class="w-10 h-10 object-cover rounded">
                             @else
                                 <div class="w-10 h-10 bg-gray-700 rounded flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                                     </svg>
                                 </div>
@@ -66,7 +66,7 @@
                             <div>
                                 <span class="text-gray-200 text-sm font-medium">{{ Str::limit($resource->name, 30) }}</span>
                                 @if($resource->sku)
-                                    <p class="text-gray-500 text-xs">SKU: {{ $resource->sku }}</p>
+                                    <p class="text-gray-400 text-xs">SKU: {{ $resource->sku }}</p>
                                 @endif
                             </div>
                         </div>
