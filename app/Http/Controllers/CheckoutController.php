@@ -194,6 +194,14 @@ class CheckoutController extends Controller
                 }
             }
 
+            // Record the redemption once per checkout (not once per vendor
+            // child order) so usage_limit/per_user_limit are actually
+            // enforceable -- previously nothing ever called this and a
+            // coupon's usage_limit could never be reached.
+            if ($coupon) {
+                $coupon->incrementUsage();
+            }
+
             // Lock each product row for the duration of the transaction and
             // re-check stock immediately before decrementing it. Without this,
             // two concurrent checkouts (or stock that changed after the item
