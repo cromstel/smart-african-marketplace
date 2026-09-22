@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\VendorVerification;
+use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class VendorVerificationController extends Controller
 {
+    public function __construct(private SubscriptionService $subscriptionService) {}
+
     public function index(Request $request)
     {
         $query = VendorVerification::with(['vendor.user', 'reviewer']);
@@ -73,6 +76,7 @@ class VendorVerificationController extends Controller
 
             if ($vendor->user) {
                 $vendor->user->update(['role' => 'vendor']);
+                $this->subscriptionService->assignFreePlan($vendor->user);
             }
         }
 
