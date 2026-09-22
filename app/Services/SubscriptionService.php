@@ -151,38 +151,6 @@ class SubscriptionService
         }
     }
 
-    public function upgradePlan(UserSubscription $subscription, SubscriptionPlan $newPlan): bool
-    {
-        return $this->changePlan($subscription, $newPlan, 'upgraded');
-    }
-
-    public function downgradePlan(UserSubscription $subscription, SubscriptionPlan $newPlan): bool
-    {
-        return $this->changePlan($subscription, $newPlan, 'downgraded');
-    }
-
-    private function changePlan(UserSubscription $subscription, SubscriptionPlan $newPlan, string $action): bool
-    {
-        DB::beginTransaction();
-
-        try {
-            $subscription->update([
-                'subscription_plan_id' => $newPlan->id,
-            ]);
-
-            DB::commit();
-
-            Log::info("Subscription {$subscription->id} {$action} to plan {$newPlan->name}");
-
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error("Failed to {$action} subscription: {$e->getMessage()}");
-
-            return false;
-        }
-    }
-
     public function cancelSubscription(UserSubscription $subscription, bool $immediately = false): bool
     {
         if ($immediately) {
