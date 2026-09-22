@@ -15,6 +15,7 @@ use App\Observers\VendorObserver;
 use App\Services\QrCodeService;
 use App\Services\SeoService;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
@@ -57,6 +58,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureRateLimiting();
+
+        Model::preventLazyLoading(! $this->app->isProduction());
 
         // Controllers configure per-page SEO via SeoService::setTitle() /
         // setDescription() / etc., but layouts.shop's <x-seo> component only
