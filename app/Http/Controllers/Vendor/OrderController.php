@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
@@ -184,7 +185,7 @@ class OrderController extends Controller
                     ->findOrFail($productData['id']);
 
                 if ($product->stock_quantity < $productData['quantity']) {
-                    throw new \Exception("Insufficient stock for product: {$product->name}");
+                    throw new \InvalidArgumentException("Insufficient stock for product: {$product->name}");
                 }
 
                 $itemTotal = $product->price * $productData['quantity'];
@@ -225,8 +226,13 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $item['product']->id,
                     'vendor_id' => $vendorId,
+                    'product_name' => $item['product']->name,
+                    'product_sku' => $item['product']->sku,
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
+                    'subtotal' => $item['total'],
+                    'tax' => 0,
+                    'total' => $item['total'],
                 ]);
 
                 $item['product']->decrement('stock_quantity', $item['quantity']);
@@ -245,12 +251,24 @@ class OrderController extends Controller
             return redirect()->route('vendor.orders.show', $order->id)
                 ->with('success', 'Order created successfully.');
 
-        } catch (\Exception $e) {
+        } catch (\InvalidArgumentException $e) {
             DB::rollBack();
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to create order: '.$e->getMessage());
+                ->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Failed to create manual vendor order', [
+                'vendor_id' => $vendorId,
+                'user_id' => auth()->id(),
+                'exception' => $e,
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Something went wrong creating this order. Please try again.');
         }
     }
 }
