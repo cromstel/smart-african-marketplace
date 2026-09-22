@@ -14,7 +14,7 @@ class BookingTypeController extends Controller
      */
     public function index()
     {
-        $bookingTypes = BookingType::orderBy('sort_order')->get();
+        $bookingTypes = BookingType::withCount('bookings')->orderBy('sort_order')->get();
 
         return view('admin.booking-types.index', compact('bookingTypes'));
     }
@@ -124,5 +124,34 @@ class BookingTypeController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Booking type status updated.');
+    }
+
+    /**
+     * Move a booking type up or down in display order by swapping
+     * sort_order with its immediate neighbour in that direction.
+     */
+    public function reorder(Request $request, BookingType $bookingType)
+    {
+        $validated = $request->validate([
+            'direction' => 'required|in:up,down',
+        ]);
+
+        $neighbour = $validated['direction'] === 'up'
+            ? BookingType::where('sort_order', '<', $bookingType->sort_order)
+                ->orderByDesc('sort_order')
+                ->first()
+            : BookingType::where('sort_order', '>', $bookingType->sort_order)
+                ->orderBy('sort_order')
+                ->first();
+
+        if (! $neighbour) {
+            return redirect()->back();
+        }
+
+        [$a, $b] = [$bookingType->sort_order, $neighbour->sort_order];
+        $bookingType->update(['sort_order' => $b]);
+        $neighbour->update(['sort_order' => $a]);
+
+        return redirect()->back()->with('success', 'Booking type order updated.');
     }
 }

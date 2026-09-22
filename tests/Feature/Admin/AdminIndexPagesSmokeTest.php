@@ -48,15 +48,7 @@ class AdminIndexPagesSmokeTest extends TestCase
             'admin.blog.categories.index',
             'admin.blog.index',
             'admin.blog.tags.index',
-            // admin.booking-types.index is deliberately excluded: this
-            // route renders view('admin.booking-types.index', ...), and
-            // that view (plus create/edit/show) doesn't exist anywhere in
-            // resources/views/admin/ -- BookingTypeController is a complete,
-            // real backend (model, full resource controller, pricing
-            // tiers), but its admin UI was never built. It's unreachable
-            // from any nav link too. Building four CRUD views plus a
-            // pricing-tier UI is feature work, not a bug fix -- tracked as
-            // a known gap rather than fixed here; see PROGRESS.md.
+            'admin.booking-types.index',
             'admin.bookings.index',
             'admin.campaigns.index',
             'admin.categories.index',

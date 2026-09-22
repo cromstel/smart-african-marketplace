@@ -148,7 +148,9 @@
                 $adminSubmenuActive = [
                     'media' => request()->routeIs('admin.media.*'),
                     'products' => request()->routeIs('admin.products.*', 'admin.categories.*', 'admin.products.brands.*', 'admin.products.tags.*', 'admin.products.attributes.*', 'admin.products.variations.*', 'admin.reviews.*'),
+                    'salon' => request()->routeIs('admin.salon.*', 'admin.salon-services.*', 'admin.salon-categories.*', 'admin.salon-stylists.*', 'admin.bookings.*', 'admin.booking-types.*'),
                     'marketplace' => request()->routeIs('admin.vendors.*', 'admin.vendor-verifications.*', 'admin.payouts.*', 'admin.withdrawals.*', 'admin.refunds.*'),
+                    'auctions' => request()->routeIs('admin.auctions.*'),
                     'blog' => request()->routeIs('admin.blog.*'),
                     'pages' => request()->routeIs('admin.hero-sections.*', 'admin.about.*', 'admin.announcements.*', 'admin.pages.*'),
                     'growth' => request()->routeIs('admin.loyalty.*', 'admin.referrals.*', 'admin.campaigns.*', 'admin.coupons.*', 'admin.announcements.*'),
@@ -236,6 +238,57 @@
                     </svg>
                     <span class="sidebar-label">Orders</span>
                 </a>
+                <div class="relative group space-y-1">
+                    <button type="button" data-flyout-target="salon-submenu" aria-expanded="false" class="w-full flex items-center px-4 py-2 rounded {{ $adminSubmenuActive['salon'] ? 'bg-brand-gradient text-white' : 'text-gray-300 hover:bg-gray-700' }}">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="sidebar-label">Salon &amp; Bookings</span>
+                        </div>
+                        <span aria-hidden="true" class="submenu-indicator ml-auto w-2.5 h-2.5 border-t border-r border-gray-500 rotate-45 opacity-60 group-hover:opacity-90"></span>
+                    </button>
+                    <div id="salon-submenu" data-active="{{ $adminSubmenuActive['salon'] ? '1' : '0' }}" class="hidden ml-4 lg:ml-0 space-y-1 bg-gray-800 border border-gray-700 rounded-lg shadow-2xl p-2 lg:fixed lg:w-80 lg:z-[9999] lg:max-h-[70vh] lg:overflow-y-auto no-scrollbar">
+                        <a href="{{ route('admin.bookings.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.bookings.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Bookings</span>
+                        </a>
+                        <a href="{{ route('admin.booking-types.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.booking-types.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Booking Types</span>
+                        </a>
+                        <hr class="my-2 border-gray-700">
+                        <a href="{{ route('admin.salon.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.salon.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Salons</span>
+                        </a>
+                        <a href="{{ route('admin.salon-services.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.salon-services.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Services</span>
+                        </a>
+                        <a href="{{ route('admin.salon-categories.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.salon-categories.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Service Categories</span>
+                        </a>
+                        <a href="{{ route('admin.salon-stylists.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.salon-stylists.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Stylists</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="relative group space-y-1">
+                    <button type="button" data-flyout-target="auctions-submenu" aria-expanded="false" class="w-full flex items-center px-4 py-2 rounded {{ $adminSubmenuActive['auctions'] ? 'bg-brand-gradient text-white' : 'text-gray-300 hover:bg-gray-700' }}">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M9 8h1m4 0h1M5 8h14l-1.5 9h-11L5 8zM12 3v5"/>
+                            </svg>
+                            <span class="sidebar-label">Auctions</span>
+                        </div>
+                        <span aria-hidden="true" class="submenu-indicator ml-auto w-2.5 h-2.5 border-t border-r border-gray-500 rotate-45 opacity-60 group-hover:opacity-90"></span>
+                    </button>
+                    <div id="auctions-submenu" data-active="{{ $adminSubmenuActive['auctions'] ? '1' : '0' }}" class="hidden ml-4 lg:ml-0 space-y-1 bg-gray-800 border border-gray-700 rounded-lg shadow-2xl p-2 lg:fixed lg:w-80 lg:z-[9999] lg:max-h-[70vh] lg:overflow-y-auto no-scrollbar">
+                        <a href="{{ route('admin.auctions.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.auctions.index', 'admin.auctions.create', 'admin.auctions.show', 'admin.auctions.edit') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>All Auctions</span>
+                        </a>
+                        <a href="{{ route('admin.auctions.reports') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.auctions.reports') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Reports</span>
+                        </a>
+                    </div>
+                </div>
                 <div class="relative group space-y-1">
                     <button type="button" data-flyout-target="marketplace-submenu" aria-expanded="false" class="w-full flex items-center px-4 py-2 rounded {{ $adminSubmenuActive['marketplace'] ? 'bg-brand-gradient text-white' : 'text-gray-300 hover:bg-gray-700' }}">
                         <div class="flex items-center space-x-2">

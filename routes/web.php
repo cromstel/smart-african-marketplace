@@ -322,14 +322,21 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'verified']
     });
 
     // Booking Types (Multi-type booking system) - Admin only
+    //
+    // The pricing-tiers routes that used to live here (pricing-tiers,
+    // pricing-tiers.store/.update/.destroy) referenced BookingTypeController
+    // methods that were never implemented, and no data model would have
+    // backed them even if they had been: ServicePricingTier belongs to a
+    // SalonService (salon_service_id), and salon_services has no
+    // booking_type_id column at all -- BookingType::services() was equally
+    // broken, referencing a column that doesn't exist. A pricing tier is
+    // inherently a per-service day/time price rule, not something that
+    // belongs to a booking-type category (Appointment/Rental/...), so
+    // removed rather than built on a relationship this app has never had.
     Route::middleware('can:manageTypes,App\Models\Booking')->group(function () {
         Route::resource('booking-types', BookingTypeController::class)->except(['show']);
         Route::post('/booking-types/{bookingType}/toggle', [BookingTypeController::class, 'toggle'])->name('booking-types.toggle');
         Route::post('/booking-types/{bookingType}/reorder', [BookingTypeController::class, 'reorder'])->name('booking-types.reorder');
-        Route::get('/booking-types/{bookingType}/pricing-tiers', [BookingTypeController::class, 'pricingTiers'])->name('booking-types.pricing-tiers');
-        Route::post('/booking-types/{bookingType}/pricing-tiers', [BookingTypeController::class, 'storePricingTier'])->name('booking-types.pricing-tiers.store');
-        Route::put('/booking-types/{bookingType}/pricing-tiers/{pricingTier}', [BookingTypeController::class, 'updatePricingTier'])->name('booking-types.pricing-tiers.update');
-        Route::delete('/booking-types/{bookingType}/pricing-tiers/{pricingTier}', [BookingTypeController::class, 'destroyPricingTier'])->name('booking-types.pricing-tiers.destroy');
     });
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

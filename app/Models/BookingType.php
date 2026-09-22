@@ -57,10 +57,24 @@ class BookingType extends Model
 
     /**
      * Get the bookings for this booking type.
+     *
+     * `bookings.booking_type_id`, which this used to reference, was never
+     * migrated -- it doesn't exist. (BookingService::createBooking()/
+     * updateBooking() and BookingPricingService also reference it and are
+     * equally broken, but dead: nothing calls them. The live booking flow,
+     * BookingController::store(), never sets a type at all; it relies on
+     * `bookings.booking_type`'s DB default of 'appointment'.) That column
+     * -- a plain enum, not a foreign key -- is the one actually populated
+     * on every real booking, and its values (appointment/reservation/
+     * rental/consultation/class/event) are exactly this model's expected
+     * `name` values (see supportsFeature() and getIconHtmlAttribute()
+     * below, both keyed the same way). Matching on it by name is the
+     * correct fix, using data that already exists, rather than inventing
+     * a booking_type_id column nothing would ever populate.
      */
     public function bookings(): HasMany
     {
-        return $this->hasMany(Booking::class, 'booking_type_id');
+        return $this->hasMany(Booking::class, 'booking_type', 'name');
     }
 
     /**
