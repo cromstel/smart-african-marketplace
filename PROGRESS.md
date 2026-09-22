@@ -26,7 +26,9 @@ Roadmap Phases 0–3 (integrity gaps, provable payment path, real test
 foundation, structural debt) are **all shipped and verified** — see
 [docs/product/roadmap.md](docs/product/roadmap.md). Only Phase 4 (ongoing
 platform enhancement: performance, accessibility, frontend consistency, API
-maturity, observability) remains open there.
+maturity, observability) remains open there — this session made real
+progress on 4.1 (performance) and 4.2 (accessibility), both still open for
+more.
 
 `docs/product/todo.md` is a **historical** backlog (superseded by the
 roadmap) — don't pull tasks from it.
@@ -35,149 +37,115 @@ roadmap) — don't pull tasks from it.
 
 ## Current session
 
-**Working through the "next candidates" list end to end, testing and
-committing after each.** Committed so far: `13a0f3b` (rename), `dd9bbd0`
-(SEO), `f0256a9` (subscription scheduling). Item 5 below (vendor upgrade
-payment bypass) is fixed, 319 tests pass, Pint clean, **not yet committed**.
+**Idle — nothing in progress, tree clean, all work committed and tested.**
+Worked through the full "next candidates" list from the prior session end to
+end (SEO → subscriptions → vendor upgrade payment gate → N+1 audit →
+maintenance mode → accessibility), testing and committing after each item.
+Test suite grew from 258 → 369 over the two sessions combined.
 
-4. **Subscription lifecycle was never running** — continuing the
-   browse-testing sweep into subscriptions surfaced the highest-value bug
-   found this session. Three commands existed but were **never scheduled**,
-   not in `routes/console.php` and not in the pre-3.3 `Kernel.php` it
-   replaced (confirmed via `git show` on the pre-migration commit — this
-   predates that migration, not a regression from it):
-   `subscriptions:check-trial-expiry`, `subscriptions:process-renewals`,
-   `subscriptions:send-trial-reminders`. Since
-   `UserSubscription::isActive()` only checks `status`, never
-   `current_period_end`, the gap was silent: trials never converted to
-   billed subscriptions or expired, active subscriptions never renewed
-   (`current_period_end` just sat in the past forever with no new
-   `SubscriptionPayment` rows), and grace-period cancellations never
-   actually canceled anything. Added all three to the schedule.
-   **Scheduling `process-renewals` for the first time immediately surfaced
-   a real, previously-untested bug in it**: its renewal query didn't
-   exclude `cancel_at_period_end = true`, so a customer who explicitly
-   canceled "at period end" would get silently auto-renewed (and re-billed)
-   instead of canceled, because the renewal loop ran before the
-   grace-period-cancellation loop and unconditionally pushed
-   `current_period_end` back into the future. Fixed by excluding
-   `cancel_at_period_end` from the renewal query. New coverage:
-   `tests/Feature/SubscriptionLifecycleTest.php` (7 tests) — schedule
-   registration itself, trial→paid conversion, trial→expired on a free
-   plan, renewal advancing the period + recording a payment, the
-   grace-period-cancellation-vs-renewal race, and the reminder email.
-5. **Vendor self-service plan upgrade had no payment gate at all** —
-   investigating the legacy `VendorSubscription` bridge (a "next candidate"
-   from last session) led to `UserSubscription::isActive()` not checking
-   `current_period_end` (unlike the legacy model, which already does).
-   Fixed defensively — `isActive()` now checks both, closing even the
-   ~1-hour drift window the hourly `process-renewals` leaves. That led into
-   `Vendor\SubscriptionController::processUpgrade()`: the "Choose {plan}"
-   button on `/vendor/subscription/upgrade` called **no payment gateway at
-   all** — it just wrote `subscription_plan_id` and a new
-   `current_period_end` straight to the DB. Any vendor could self-upgrade to
-   the $199 Enterprise plan for free with one POST request, despite
-   `StripePaymentService::changePlan()` (real Stripe API call, proration
-   handled by Stripe) already existing and simply never being called. Fixed:
-   a paid-plan switch now calls `changePlan()` when the subscription has a
-   Stripe `payment_provider_subscription_id` on file, or redirects to the
-   real checkout flow (which collects payment) otherwise; a Stripe failure
-   (including "not configured", which `changePlan()` throws outside its own
-   try/catch) degrades to an error message instead of granting the plan or
-   500ing. Paystack has no equivalent swap method in this codebase, so
-   Paystack-billed vendors also go through checkout for now. New coverage:
-   `tests/Feature/Vendor/SubscriptionUpgradeTest.php` (4 tests, including
-   the real — not mocked — "Stripe unconfigured" failure path) and one new
-   case in `SubscriptionLifecycleTest.php` for the `isActive()` fix.
-   `SubscriptionService::upgradePlan()/downgradePlan()/changePlan()` remain
-   unused dead code — not wired into this fix, noted below as a follow-up.
-
-Earlier this session (committed):
-
-1. **Rename**: "Smart African Marketplace" → "Smart African Market" across
-   67 tracked files (docs, config, Blade, lang/*, mobile app strings) —
-   display text only. Deliberately left untouched: Android package id
-   `com.africanmarket.app`, composer package name `african-market/ecommerce`,
-   npm package name, `admin@africanmarket.com`-style domains/emails — those
-   are code/infra identifiers, not branding, and renaming them is a separate,
-   much riskier decision (Play Store listing continuity for the Android
-   `applicationId` in particular) nobody asked for.
-2. **SEO audit** (this was the "untouched area" of the browse-testing
-   sweep — SEO/sitemap infra had never been touched by the prior sessions'
-   bug-fix run). Found and fixed, in order of severity:
-   - `public/robots.txt` was a **static file** containing the literal,
-     unprocessed text `{{ url('/sitemap.xml') }}` — Blade syntax served
-     verbatim to every crawler, forever, since static files in `public/`
-     never reach Laravel's router. The sitemap has never been discoverable
-     via robots.txt. Fixed by making `/robots.txt` a real route
-     (`SitemapController::robots()`) and deleting the static file.
-   - A legacy `sitemap:generate` Artisan command was scheduled **daily** and
-     wrote a static `public/sitemap.xml` covering only 3 URL types. Because
-     Apache serves an existing static file before it reaches Laravel's
-     router, that file — once written once, in any real deployment —
-     **permanently shadowed** the actually-comprehensive dynamic
-     `SitemapController@index` (a proper sitemap index: static pages,
-     products, categories, salon, blog, auctions, vendors). Deleted the dead
-     command and its schedule entry; the dynamic route is now the only path.
-   - `resources/views/shop/show.blade.php` hand-rolled Product JSON-LD by
-     interpolating `{{ }}` directly into a JSON string literal — Blade only
-     HTML-escapes, it doesn't escape JSON control characters, so a
-     description with a newline (routine for a textarea field) produced
-     invalid JSON-LD that Google silently rejected.
-   - **The whole `SeoService::addStructuredData()` /
-     `getStructuredData()` mechanism was dead code** — six controllers
-     (Shop, Blog, Salon, Auction, Page, VendorStore) built Product/Article/
-     Breadcrumb/Organization schema and threw it away because (a)
-     `SeoService` wasn't bound as a singleton, so a fresh empty instance
-     resolved wherever it was next read, and (b) nothing ever rendered
-     `getStructuredData()` in the first place.
-   - **Deeper version of the same bug on titles/descriptions**:
-     `layouts/shop.blade.php`'s `<x-seo>` reads `$seoTitle`/`$seoDescription`/
-     etc. as plain Blade variables, but no controller (Shop, Blog, Salon,
-     Auction, Page) ever passed them — every page on that layout silently
-     fell back to generic site-wide meta regardless of what
-     `SeoService::setTitle()` etc. had built. Fixed with a `View::composer`
-     on `layouts.shop` in `AppServiceProvider::boot()` that feeds the
-     singleton's state in — one fix, covers shop/blog/salon/auctions and any
-     future page on that layout.
-   - `vendor-store/show.blade.php` (per-vendor storefronts) had the same
-     bug plus a duplicate empty `<title>` from an unconfigured `<x-seo />`
-     sitting next to a hardcoded one. Fixed directly (this view has its own
-     bespoke `<head>`, not `layouts.shop`).
-   - `generateProductSchema()` checked `$product->stock` (column doesn't
-     exist — real column is `stock_quantity`), so it would always have
-     reported every product `OutOfStock`; also added `brand` and switched
-     `image` to a fully-qualified URL. Never shipped before this session, so
-     not a live regression, just fixed before wiring it up.
-   - Google Analytics / Facebook Pixel IDs were read via raw `env()` in a
-     Blade view — same "breaks under `config:cache`" bug class Roadmap 0.3
-     fixed, but that fix only audited `app/`, not `resources/views/`. Added
-     `config('services.google_analytics.id')` / `.facebook_pixel.id`.
-   - New coverage: `tests/Feature/SeoTest.php` (4 tests) — robots.txt,
-     sitemap index, product-page JSON-LD with an adversarial description
-     (newline/quote/backslash/`</script>`), vendor storefront title +
-     Organization schema.
-3. **Phase 4 (performance) spot-check**: audited `ShopController::index`
-   and `SalonController::index` for N+1 — both already select specific
-   columns and eager-load what their views touch; no issue found. Didn't
-   extend further (49 admin + 32 vendor controllers is out of scope for one
-   pass) — a full N+1 audit is still open on the roadmap.
-
-Next candidates, not yet chosen:
-- Continue the browse-testing sweep into the remaining auction/checkout
-  edge cases, or the legacy `VendorSubscription` system (the older, parallel
-  subscription table `EffectiveSubscriptionResolver` bridges from — not
-  audited this session beyond confirming the bridge exists).
-- Broader Phase 4 N+1 audit across admin/vendor controllers.
-- Accessibility (WCAG) pass — see
-  [roadmap.md §4.2](docs/product/roadmap.md#42-accessibility-and-responsive-quality).
-- `SubscriptionService::changePlan()` (upgrade/downgrade) doesn't recalculate
-  `current_period_end` or charge/credit proration — worth a deliberate look
-  at whether that's intended (bill-at-next-renewal) or a gap.
+Candidates for next time, not yet started:
+- Build the missing `admin/booking-types/*` CRUD views (index/create/edit/
+  show + pricing tiers) — `BookingTypeController` is a complete, real
+  backend with no admin UI at all. See item 8 below.
+- Broader Phase 4 N+1 audit beyond what the test suite exercises —
+  `Model::preventLazyLoading()` is on now (item 3), but only catches N+1 on
+  code paths something actually calls; large parts of the 49 admin + 32
+  vendor controllers still have no test at all.
+- `SubscriptionService::changePlan()` (upgrade/downgrade) doesn't
+  recalculate `current_period_end` or charge/credit proration — worth a
+  deliberate look at whether that's intended (bill-at-next-renewal) or a
+  gap. Not touched this session.
+- The legacy `VendorSubscription` system `EffectiveSubscriptionResolver`
+  bridges from — confirmed it exists and how the bridge works (item 5), but
+  not independently audited for bugs of its own.
+- Continue the browse-testing sweep into auction/checkout edge cases not
+  yet covered.
+- Accessibility: only the focus-visible class of bug was audited this pass
+  (item 1). Alt text, ARIA labels on icon-only controls, color contrast,
+  and `prefers-reduced-motion` are still unaudited — a live browser session
+  would let this go further than the code-level grep this session used.
+- **Housekeeping**: don't run ad-hoc `php artisan tinker --execute=...`
+  writes directly against `smart_africanmarket_test` outside a test
+  transaction — did this once this session (checking `MaintenanceService`
+  behavior) and it left a stray `Setting` row that made an unrelated test
+  fail nondeterministically until traced back and cleaned up. Use a real
+  test, or a throwaway DB session, instead.
 
 ---
 
-## Recently completed (last 30 commits, most recent first)
+## Recently completed (this session, most recent first)
+
+1. **WCAG 2.4.7 (Focus Visible)** (`8336f35`) — `focus:outline-none` with
+   no replacement focus style, found across every shared layout: the
+   account/admin/vendor dropdown trigger in all three layouts (every page
+   in the app), the password show/hide toggle (identical across all 6 auth
+   views), the "Forgot password?" trigger, and the notifications search
+   input. Fixed with this app's own existing `focus:ring-2` conventions.
+2. **Maintenance mode** (`dabb4aa`) — `admin.maintenance.index` crashed
+   outright (`config/maintenance.php` had no `title` key, though the
+   controller/view both already read/wrote one — found by item 3's smoke
+   test). Deeper bug: every maintenance setting was written through the
+   `Config` facade (process-local) or a 5-minute `Cache::put()` with no
+   durable fallback — a site placed into maintenance mode came back online
+   on its own 5 minutes later, and a custom title/message set via the
+   admin form or CLI was never actually shown to a visitor, because the
+   enforcing middleware read `config('maintenance.*')` directly too. Fixed
+   by making `Setting` (the app's existing DB-backed store) the single
+   source of truth end to end. Also fixed `preview()`, which called the
+   (now-durable) `enable()` with no restore path — a "preview" that
+   permanently took the live site down for every visitor — and gave it a
+   route (it had none).
+3. **N+1 prevention + admin smoke test** (`12379ae`) — enabled
+   `Model::preventLazyLoading(!isProduction())` (Roadmap 4.1). Running the
+   existing suite under it found one real violation (`CheckoutTest`, fixed).
+   Added `tests/Feature/Admin/AdminIndexPagesSmokeTest.php` hitting all 44
+   admin index routes to extend that coverage to controllers with no
+   dedicated test — found items 1 and 2 above, plus item 8.
+4. **Vendor plan-upgrade payment bypass** (`a86c9cb`) — the
+   "Choose {plan}" button on `/vendor/subscription/upgrade` called no
+   payment gateway at all; any vendor could self-upgrade to the $199
+   Enterprise plan for free with one POST, despite
+   `StripePaymentService::changePlan()` already existing and simply never
+   being called. Fixed: a paid-plan switch now calls `changePlan()` when
+   Stripe billing is on file, or redirects to real checkout otherwise.
+   Also: `UserSubscription::isActive()` didn't check `current_period_end`
+   (only `status`) — fixed to match the legacy model's own behavior.
+5. **Subscription lifecycle was never running** (`f0256a9`) — three
+   commands existed but were never scheduled, not in `routes/console.php`
+   and not in the pre-3.3 `Kernel.php` it replaced (confirmed via `git
+   show`, so a long-standing gap, not a migration regression):
+   `subscriptions:check-trial-expiry`, `subscriptions:process-renewals`,
+   `subscriptions:send-trial-reminders`. Trials never converted to billed
+   subscriptions or expired; active subscriptions never renewed; grace-
+   period cancellations never actually canceled anything. Scheduling
+   `process-renewals` immediately surfaced a real bug in it too: its query
+   didn't exclude `cancel_at_period_end`, so an explicit cancellation got
+   silently auto-renewed instead. Fixed both.
+6. **SEO infrastructure** (`dd9bbd0`) — `robots.txt` was a static file
+   serving the literal unprocessed text `{{ url('/sitemap.xml') }}` to
+   every crawler; a legacy `sitemap:generate` command permanently shadowed
+   the real dynamic sitemap once it ran once; `SeoService`'s entire
+   structured-data and per-page-title mechanism was dead code across six
+   controllers (not bound as a singleton, nothing ever rendered it);
+   product JSON-LD was hand-built via unescaped `{{ }}` interpolation
+   (broke on any multi-line description). Full detail in the commit body.
+7. **Rename** (`13a0f3b`) — "Smart African Marketplace" → "Smart African
+   Market" across 67 tracked files, display text only. Deliberately left
+   untouched: Android package id `com.africanmarket.app`, composer/npm
+   package names, `africanmarket.com`-style domains/emails.
+8. **Known gap, not fixed**: `admin.booking-types.index` renders a view
+   that doesn't exist anywhere in `resources/views/admin/`.
+   `BookingTypeController` is a complete, real backend (model, full
+   resource controller, pricing tiers) with no admin UI at all and no nav
+   link pointing at it. Building 4 CRUD views + a pricing-tier UI is
+   feature work, not a bug fix — excluded from the smoke test with an
+   explanation rather than built.
+
+Full diffs: `git log --oneline` / `git show <hash>`.
+
+---
+
+## Recently completed (prior session — browse-testing sweep)
 
 A sustained browse-and-fix session across the live app, not tied to a
 specific roadmap item — finding real bugs by using the product rather than
@@ -230,6 +198,10 @@ Full history: `git log --oneline`.
   app code, not the DB. A missing constraint is a cross-tenant data leak (see
   the `Vendor/*IsolationTest` pattern — 19 controllers covered, [roadmap
   §2.3](docs/product/roadmap.md#23-vendor-isolation-as-a-first-class-test-pattern--target-set-complete)).
+- **Persist admin-configurable settings through the `Setting` model**, not
+  `Cache::put()` with a TTL or the `Config` facade — both are process-local
+  or expire silently (see the maintenance-mode fix, item 2 above, for what
+  that cost in practice).
 - Full standards: [CONTRIBUTING.md](CONTRIBUTING.md#code-standards).
 
 ---
@@ -247,10 +219,9 @@ php artisan app:verify-readiness --strict  # pre-deploy gate
 Commit convention: `fix:`, `feat:`, `refactor:`, `test:`, `docs:`, `chore:` —
 imperative subject ("add", not "added"). See [CONTRIBUTING.md](CONTRIBUTING.md#commit-convention).
 
-Test suite baseline: 307 passed, verified 2026-09-22 (up from 258 at the last
-roadmap update — +49 from this session's SEO fixes and their tests, plus
-whatever landed between). Re-verify with `php artisan test` before trusting
-this number — don't cite it without running it.
+Test suite baseline: **369 passed**, verified 2026-09-22 (up from 258 at the
+last roadmap update). Re-verify with `php artisan test` before trusting this
+number — don't cite it without running it.
 
 ---
 
