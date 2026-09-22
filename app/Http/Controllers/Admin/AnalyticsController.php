@@ -402,7 +402,7 @@ class AnalyticsController extends Controller
                 'Order Number' => $order->order_number,
                 'Customer' => $order->user->name,
                 'Email' => $order->user->email,
-                'Total' => $order->total_amount,
+                'Total' => $order->total,
                 'Status' => $order->status,
                 'Payment Status' => $order->payment_status,
                 'Items' => $order->items->count(),
@@ -434,7 +434,7 @@ class AnalyticsController extends Controller
     private function exportRevenue($format)
     {
         $revenue = Order::where('payment_status', 'paid')
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as orders, SUM(total_amount) as revenue')
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as orders, SUM(total) as revenue')
             ->groupBy('date')
             ->orderByDesc('date')
             ->limit(90)
