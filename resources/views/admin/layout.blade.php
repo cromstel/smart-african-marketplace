@@ -127,14 +127,16 @@
     </button>
 
     <div class="min-h-screen flex flex-col lg:flex-row">
-        <aside id="sidebar" class="lg:sticky lg:top-0 lg:h-screen overflow-hidden z-40 w-64 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
+        <aside id="sidebar" class="fixed top-0 left-0 h-screen lg:sticky lg:top-0 overflow-hidden z-40 w-64 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
             <div class="p-6 border-b border-gray-700">
-                <a href="{{ route('home') }}" class="flex items-center space-x-2" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
-                    <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Marketplace') }}" class="h-8 w-8">
-                    <div class="sidebar-brand-text">
-                        <h1 class="text-sm font-bold uppercase">Smart <span class="text-brand-from">African</span></h1>
-                        <p class="text-xs text-gray-300">MARKETPLACE</p>
-                    </div>
+                <div class="flex items-center space-x-2">
+                    <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
+                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Marketplace') }}" class="h-8 w-8">
+                        <div class="sidebar-brand-text">
+                            <h1 class="text-sm font-bold uppercase">Smart <span class="text-brand-from">African</span></h1>
+                            <p class="text-xs text-gray-300">MARKETPLACE</p>
+                        </div>
+                    </a>
                     <button id="sidebar-collapse-toggle" type="button" class="hidden lg:inline-flex ml-auto items-center justify-center w-9 h-9 rounded-lg border border-gray-700 bg-gray-800 text-gray-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600" aria-label="Toggle sidebar" title="Collapse sidebar">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l-7 7 7 7M15 5h2m-2 14h2"/>
