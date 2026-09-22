@@ -115,7 +115,15 @@
                         </form>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {{ $announcement->published_at ? $announcement->published_at->format('M j, Y') : 'Not published' }}
+                        @if($announcement->published_at)
+                            @if($announcement->published_at->isFuture())
+                                Scheduled {{ $announcement->published_at->format('M j, Y') }}
+                            @else
+                                {{ $announcement->published_at->format('M j, Y') }}
+                            @endif
+                        @else
+                            Immediately
+                        @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <form action="{{ route('admin.announcements.togglePin', $announcement) }}" method="POST" class="inline mr-2">
