@@ -276,7 +276,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'verified']
     Route::put('/products/{product}/variants/{variant}', [ProductVariantController::class, 'update'])->name('products.variants.update');
     Route::delete('/products/{product}/variants/{variant}', [ProductVariantController::class, 'destroy'])->name('products.variants.destroy');
     Route::post('/categories/bulk', [CategoryController::class, 'bulkAction'])->name('categories.bulk');
-    Route::resource('categories', CategoryController::class);
+    // CategoryController has no show() and there is no show.blade.php --
+    // categories only get index/edit in this admin, same as the
+    // salon-categories and blog-categories resources below. Without this
+    // except(), GET /admin/categories/{category} resolved to
+    // Route::resource's default show binding and threw "Call to undefined
+    // method CategoryController::show()" for every category.
+    Route::resource('categories', CategoryController::class)->except(['show']);
     Route::resource('orders', AdminOrderController::class);
     Route::put('/orders/{order}/status', [OrderStatusController::class, 'updateStatus'])->name('orders.update-status');
     Route::resource('vendors', VendorController::class);

@@ -63,6 +63,22 @@ class AnnouncementController extends Controller
             ->with('success', 'Announcement created successfully');
     }
 
+    /**
+     * GET admin/announcements/{announcement} was registered as a full
+     * Route::resource but this method never existed, so every click into an
+     * announcement from the index (or the "Read By" admin.announcements.show
+     * link in the show view itself) threw "Call to undefined method
+     * AnnouncementController::show()" despite admin/announcements/show.blade.php
+     * already existing and being maintained.
+     */
+    public function show(Announcement $announcement)
+    {
+        $announcement->load('reads.user');
+        $readCount = $announcement->reads->count();
+
+        return view('admin.announcements.show', compact('announcement', 'readCount'));
+    }
+
     public function edit(Announcement $announcement)
     {
         $vendors = User::where('role', 'vendor')->get();

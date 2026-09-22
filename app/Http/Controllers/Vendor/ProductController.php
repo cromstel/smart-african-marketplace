@@ -169,6 +169,12 @@ class ProductController extends Controller
     {
         $this->authorize('update', $product);
 
+        // vendor.products.edit renders $product->images (existing-images
+        // gallery) and $product->tags (pre-selected tag checkboxes) directly
+        // -- without this, both were unguarded lazy loads that threw outside
+        // production once preventLazyLoading() was enabled.
+        $product->load(['images', 'tags']);
+
         $categories = Category::whereNull('parent_id')
             ->where('is_active', true)
             ->with(['children' => function ($query) {

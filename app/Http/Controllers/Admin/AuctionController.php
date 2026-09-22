@@ -44,7 +44,15 @@ class AuctionController extends Controller
      */
     public function show(Auction $auction): View
     {
-        $auction->load(['vendor', 'bids.user', 'winner.user']);
+        // 'winner' is already a belongsTo(User) (see Auction::winner()), not
+        // a model that itself has a `user` relation -- 'winner.user' asked
+        // Eloquent to eager-load a `user()` relation on the resolved User
+        // model, which doesn't exist. That only surfaces once an auction
+        // actually has a winner_id (nested eager loading of an always-empty
+        // relation is a no-op), so it went unnoticed: it threw
+        // RelationNotFoundException for every settled auction with a
+        // winner.
+        $auction->load(['vendor', 'bids.user', 'winner']);
 
         return view('admin.auctions.show', compact('auction'));
     }

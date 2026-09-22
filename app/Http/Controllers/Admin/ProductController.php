@@ -219,6 +219,12 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        // admin.products.edit renders $product->images directly (the
+        // existing-images gallery) -- without this, that was an unguarded
+        // lazy load that threw outside production once preventLazyLoading()
+        // was enabled, on every product with at least one image.
+        $product->load('images');
+
         $categories = Category::where('is_active', true)->with('parent')->orderBy('name')->get();
         $vendors = Vendor::where('status', 'approved')->get();
         $brands = Brand::with('vendor')->orderBy('name')->get(['id', 'vendor_id', 'name']);

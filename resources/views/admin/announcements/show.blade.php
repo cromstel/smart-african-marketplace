@@ -18,15 +18,21 @@
         <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
             <div class="flex items-start justify-between mb-6">
                 <div class="flex items-start space-x-3">
-                    <span class="text-3xl">{{ $announcement->type_icon }}</span>
+                    <span class="text-3xl">{{ match ($announcement->type) {
+                        'info' => 'ℹ️',
+                        'warning' => '⚠️',
+                        'success' => '✅',
+                        'danger' => '🚫',
+                        default => '📢',
+                    } }}</span>
                     <div>
                         <h2 class="text-2xl font-bold text-white">{{ $announcement->title }}</h2>
                         <div class="flex items-center space-x-3 mt-2">
-                            <span class="px-2 py-1 text-xs rounded-full 
+                            <span class="px-2 py-1 text-xs rounded-full
                                 {{ $announcement->type === 'info' ? 'bg-blue-900 text-blue-300' : '' }}
                                 {{ $announcement->type === 'warning' ? 'bg-yellow-900 text-yellow-300' : '' }}
                                 {{ $announcement->type === 'success' ? 'bg-green-900 text-green-300' : '' }}
-                                {{ $announcement->type === 'urgent' ? 'bg-red-900 text-red-300' : '' }}">
+                                {{ $announcement->type === 'danger' ? 'bg-red-900 text-red-300' : '' }}">
                                 {{ ucfirst($announcement->type) }}
                             </span>
                             <span class="px-2 py-1 text-xs rounded-full {{ $announcement->is_active ? 'bg-green-900 text-green-300' : 'bg-gray-700 text-gray-400' }}">
@@ -54,11 +60,7 @@
             <div class="space-y-3">
                 <div>
                     <p class="text-sm text-gray-400">Target Audience</p>
-                    <p class="text-white font-medium">{{ ucfirst($announcement->target_audience) }}</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-400">Created By</p>
-                    <p class="text-white font-medium">{{ $announcement->creator->name }}</p>
+                    <p class="text-white font-medium">{{ ucfirst(str_replace('_', ' ', $announcement->target)) }}</p>
                 </div>
                 <div>
                     <p class="text-sm text-gray-400">Created</p>
