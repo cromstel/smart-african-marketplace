@@ -85,8 +85,13 @@ class Coupon extends Model
         }
 
         if ($this->per_user_limit) {
+            // Only count parent orders: a single checkout creates one parent
+            // Order plus one child Order per vendor in the cart, all carrying
+            // the same coupon_code, so counting every row would inflate a
+            // user's usage by however many vendors their order spanned.
             $userUsageCount = Order::where('user_id', $userId)
                 ->where('coupon_code', $this->code)
+                ->where('is_parent', true)
                 ->count();
 
             if ($userUsageCount >= $this->per_user_limit) {
