@@ -237,4 +237,49 @@ class CheckoutTest extends TestCase
             'payment_method' => 'cash_on_delivery',
         ])->assertRedirect(route('login'));
     }
+
+    /**
+     * checkout.store requires billing_address_id, but most customers only
+     * ever save a "shipping"-type address (the address form defaults to
+     * that type, and nothing prompts them to also create a separate
+     * billing one). The checkout page used to only offer 'billing'/'both'
+     * addresses as billing options and showed "No billing address found"
+     * with no way to select anything otherwise -- silently blocking
+     * checkout for the majority of customers. It now falls back to
+     * shipping/both addresses as billing candidates.
+     */
+    public function test_checkout_page_offers_a_shipping_address_as_a_billing_option_when_no_billing_address_exists(): void
+    {
+        $user = User::factory()->create();
+        $product = $this->makeVendorProduct(stock: 10);
+        $this->cartWithProduct($user, $product);
+        $shipping = $this->makeAddress($user, 'shipping');
+
+        $response = $this->actingAs($user)->get(route('checkout.index'));
+
+        $response->assertOk();
+        $response->assertDontSee('No billing address found');
+        $response->assertSee('name="billing_address_id" value="'.$shipping->id.'"', false);
+    }
+
+    public function test_checkout_can_be_completed_using_a_shipping_address_as_billing_when_no_billing_address_exists(): void
+    {
+        $user = User::factory()->create();
+        $product = $this->makeVendorProduct(stock: 10);
+        $this->cartWithProduct($user, $product);
+        $shipping = $this->makeAddress($user, 'shipping');
+
+        $response = $this->actingAs($user)->post(route('checkout.store'), [
+            'billing_address_id' => $shipping->id,
+            'shipping_address_id' => $shipping->id,
+            'payment_method' => 'cash_on_delivery',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('orders', [
+            'user_id' => $user->id,
+            'is_parent' => true,
+            'billing_address_id' => $shipping->id,
+        ]);
+    }
 }
