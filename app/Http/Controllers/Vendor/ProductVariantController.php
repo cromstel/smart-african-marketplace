@@ -32,7 +32,7 @@ class ProductVariantController extends Controller
     {
         $this->authorize('update', $product);
 
-        $variants = $product->variations()->paginate(20);
+        $variants = $product->variants()->paginate(20);
 
         return view('vendor.products.variants.index', compact('product', 'variants'));
     }
@@ -70,7 +70,7 @@ class ProductVariantController extends Controller
 
         try {
             $attributes = [];
-            foreach ($request->attributes as $attr) {
+            foreach ($request->input('attributes', []) as $attr) {
                 if (! empty($attr['name']) && ! empty($attr['value'])) {
                     $attributes[$attr['name']] = $attr['value'];
                 }
@@ -86,7 +86,7 @@ class ProductVariantController extends Controller
                 ];
             }
 
-            $variant = $product->variations()->create([
+            $variant = $product->variants()->create([
                 'sku' => $request->sku ?? $this->generateSku($product, $attributes),
                 'attributes' => $attributes,
                 'price' => $request->price,
@@ -155,7 +155,7 @@ class ProductVariantController extends Controller
 
         try {
             $attributes = [];
-            foreach ($request->attributes as $attr) {
+            foreach ($request->input('attributes', []) as $attr) {
                 if (! empty($attr['name']) && ! empty($attr['value'])) {
                     $attributes[$attr['name']] = $attr['value'];
                 }

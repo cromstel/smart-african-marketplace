@@ -82,6 +82,26 @@ class ProductVariantIsolationTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Regression guard for a `Call to undefined method
+     * App\Models\Product::variations()` fatal that broke this route for
+     * every vendor: ProductVariantController::index() called the
+     * relation by the wrong name (`variations()` instead of the model's
+     * actual `variants()` HasMany), so `/vendor/products/{id}/variants`
+     * 500'd unconditionally.
+     */
+    public function test_a_vendor_can_view_their_product_variants_index(): void
+    {
+        [$mine, , $myProduct] = $this->makeVendorWithVariant();
+
+        $response = $this->actingAs($mine)
+            ->get(route('vendor.products.variants.index', $myProduct));
+
+        $response->assertOk();
+        $response->assertDontSee('BadMethodCallException');
+        $response->assertDontSee('Call to undefined method');
+    }
+
     // --------------------------------------------------------------- Helpers
 
     /**
