@@ -92,6 +92,13 @@ class Announcement extends Model
 
     public function isPublished()
     {
-        return $this->published_at && $this->published_at->isPast();
+        // A null published_at means "publish immediately" -- this must
+        // match scopeActive()'s semantics (whereNull(...)->orWhere(...)),
+        // which is what actually gates whether the announcement appears
+        // in a vendor's list. Treating null as "not published" here let a
+        // vendor see an announcement in their list but get a 404 when
+        // they clicked into it, for every announcement created without an
+        // explicit future publish date -- the common case.
+        return $this->published_at === null || $this->published_at->isPast();
     }
 }
