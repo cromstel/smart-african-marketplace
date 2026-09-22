@@ -155,6 +155,45 @@ class SubscriptionLifecycleTest extends TestCase
         ]);
     }
 
+    public function test_is_active_returns_false_once_the_period_has_lapsed_even_if_status_is_still_active(): void
+    {
+        $user = User::factory()->create();
+        $plan = $this->makePlan();
+
+        $lapsed = UserSubscription::create([
+            'user_id' => $user->id,
+            'subscription_plan_id' => $plan->id,
+            'status' => 'active',
+            'current_period_end' => now()->subHour(),
+        ]);
+
+        $this->assertFalse(
+            $lapsed->isActive(),
+            'A subscription whose current_period_end has passed must not read as active, even before the '
+            .'hourly subscriptions:process-renewals run catches up and flips its status.'
+        );
+
+        $current = UserSubscription::create([
+            'user_id' => User::factory()->create()->id,
+            'subscription_plan_id' => $plan->id,
+            'status' => 'active',
+            'current_period_end' => now()->addHour(),
+        ]);
+
+        $this->assertTrue($current->isActive());
+
+        $noPeriodSet = UserSubscription::create([
+            'user_id' => User::factory()->create()->id,
+            'subscription_plan_id' => $plan->id,
+            'status' => 'trialing',
+        ]);
+
+        $this->assertTrue(
+            $noPeriodSet->isActive(),
+            'A null current_period_end must not be treated as already expired.'
+        );
+    }
+
     public function test_send_trial_reminders_emails_a_user_whose_trial_ends_soon(): void
     {
         Mail::fake();
