@@ -438,7 +438,7 @@
                                 ? (str_starts_with($vendorAvatarValue, 'http') ? $vendorAvatarValue : asset('storage/' . ltrim($vendorAvatarValue, '/')))
                                 : null;
                         @endphp
-                        <button id="vendor-profile-trigger" type="button" class="flex items-center bg-gray-700 border border-gray-600 rounded-full px-2 py-1 text-sm text-white hover:border-gray-500 focus:outline-none" aria-expanded="false" aria-haspopup="menu">
+                        <button id="vendor-profile-trigger" type="button" class="flex items-center bg-gray-700 border border-gray-600 rounded-full px-2 py-1 text-sm text-white hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400" aria-expanded="false" aria-haspopup="menu">
                             <span class="sr-only">Open profile menu</span>
                             <span class="w-6 h-6 rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">
                                 @if ($vendorAvatarUrl)

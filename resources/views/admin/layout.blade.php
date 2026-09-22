@@ -443,7 +443,7 @@
                                 ? (str_starts_with($adminAvatarValue, 'http') ? $adminAvatarValue : asset('storage/' . ltrim($adminAvatarValue, '/')))
                                 : null;
                         @endphp
-                        <button id="admin-profile-trigger" type="button" class="flex items-center bg-gray-700 border border-gray-600 rounded-full px-2 py-1 text-sm text-white hover:border-gray-500 focus:outline-none" aria-expanded="false" aria-haspopup="menu">
+                        <button id="admin-profile-trigger" type="button" class="flex items-center bg-gray-700 border border-gray-600 rounded-full px-2 py-1 text-sm text-white hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400" aria-expanded="false" aria-haspopup="menu">
                             <span class="sr-only">Open profile menu</span>
                             <span class="w-6 h-6 rounded-full bg-gray-800 overflow-hidden flex items-center justify-center">
                                 @if ($adminAvatarUrl)
