@@ -70,8 +70,20 @@ class ProcessAuctions extends Command
      */
     protected function settleEndedAuctions(): void
     {
+        // Regression: this checked `created_at` -- when the auction
+        // *listing* was made -- not when it ended. auctions has no
+        // dedicated ended_at column, but AuctionService::end() only ever
+        // does $auction->update(['status' => 'ended']), which bumps
+        // updated_at to exactly that moment; that's the real "how long has
+        // this been ended" signal. Checking created_at instead meant the
+        // 5-minute grace period was a no-op for any realistic auction
+        // (created well over 5 minutes before it ends) -- settlement fired
+        // on the very first run after ending, no wait at all -- while a
+        // short-duration auction created and ended within the same
+        // 5-minute window would have settlement delayed for an unrelated
+        // reason (time since creation, not time since ending).
         $auctions = Auction::ended()
-            ->where('created_at', '<', now()->subMinutes(5)) // Wait 5 minutes before settling
+            ->where('updated_at', '<', now()->subMinutes(5))
             ->get();
 
         foreach ($auctions as $auction) {
