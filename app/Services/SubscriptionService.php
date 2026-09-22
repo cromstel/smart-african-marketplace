@@ -46,6 +46,54 @@ class SubscriptionService
         }
     }
 
+    /**
+     * Give a vendor a working subscription for free as soon as they're
+     * approved, instead of leaving them with none. Without this, an
+     * approved vendor had no UserSubscription at all: every module-gated
+     * vendor route (order management, product categories, announcements,
+     * ...) redirected to "Upgrade Subscription", and that page itself
+     * dead-ended -- Vendor\SubscriptionController::processUpgrade() only
+     * updates an *existing* subscription, it can't create the first one.
+     *
+     * Deliberately assigned as 'active' rather than 'trialing': a trialing
+     * subscription on a $0 plan gets auto-expired by
+     * subscriptions:check-trial-expiry after its trial period, which would
+     * silently lock the vendor back out. 'active' has no such cliff here,
+     * so the free plan holds until the vendor actually upgrades via
+     * Vendor\SubscriptionController::processUpgrade().
+     */
+    public function assignFreePlan(User $user): ?UserSubscription
+    {
+        $existing = $user->subscription;
+
+        if ($existing && $existing->isActive()) {
+            return $existing;
+        }
+
+        $freePlan = SubscriptionPlan::active()
+            ->where('price', 0)
+            ->orderBy('sort_order')
+            ->first();
+
+        if (! $freePlan) {
+            Log::warning("No free subscription plan configured; approved vendor (user #{$user->id}) left without a subscription.");
+
+            return null;
+        }
+
+        $subscription = UserSubscription::create([
+            'user_id' => $user->id,
+            'subscription_plan_id' => $freePlan->id,
+            'status' => 'active',
+            'current_period_start' => now(),
+            'current_period_end' => now()->addMonth(),
+        ]);
+
+        Log::info("Assigned free plan '{$freePlan->name}' to user {$user->id} on vendor approval");
+
+        return $subscription;
+    }
+
     public function activateSubscription(UserSubscription $subscription): bool
     {
         if ($subscription->status !== 'trialing') {

@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\SubscriptionPlan;
 use App\Models\User;
+use App\Models\UserSubscription;
 use App\Models\Vendor;
 use App\Models\VendorVerification;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -35,6 +37,63 @@ class VendorVerificationApprovalTest extends TestCase
         $this->assertSame('approved', $verification->fresh()->status);
         $this->assertSame('approved', $vendor->fresh()->status);
         $this->assertTrue((bool) $vendor->fresh()->is_active);
+    }
+
+    public function test_approving_a_vendor_auto_assigns_a_free_subscription_plan(): void
+    {
+        $freePlan = SubscriptionPlan::create([
+            'name' => 'Free Trial',
+            'slug' => 'free-trial-'.uniqid(),
+            'price' => 0,
+            'is_active' => true,
+        ]);
+
+        $admin = User::factory()->admin()->create();
+        [$user, $vendor, $verification] = $this->makePendingVendor();
+
+        $this->actingAs($admin)
+            ->post(route('admin.vendor-verifications.approve', $verification))
+            ->assertRedirect(route('admin.vendor-verifications.show', $verification));
+
+        $subscription = UserSubscription::where('user_id', $user->id)->first();
+
+        $this->assertNotNull($subscription);
+        $this->assertSame($freePlan->id, $subscription->subscription_plan_id);
+        $this->assertSame('active', $subscription->status);
+        $this->assertTrue($subscription->isActive());
+    }
+
+    public function test_approving_a_vendor_does_not_touch_an_existing_active_subscription(): void
+    {
+        SubscriptionPlan::create([
+            'name' => 'Free Trial',
+            'slug' => 'free-trial-'.uniqid(),
+            'price' => 0,
+            'is_active' => true,
+        ]);
+
+        $paidPlan = SubscriptionPlan::create([
+            'name' => 'Professional',
+            'slug' => 'professional-'.uniqid(),
+            'price' => 79,
+            'is_active' => true,
+        ]);
+
+        $admin = User::factory()->admin()->create();
+        [$user, $vendor, $verification] = $this->makePendingVendor();
+
+        $existing = UserSubscription::create([
+            'user_id' => $user->id,
+            'subscription_plan_id' => $paidPlan->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.vendor-verifications.approve', $verification))
+            ->assertRedirect(route('admin.vendor-verifications.show', $verification));
+
+        $this->assertSame(1, UserSubscription::where('user_id', $user->id)->count());
+        $this->assertSame($paidPlan->id, $existing->fresh()->subscription_plan_id);
     }
 
     public function test_admin_can_reject_a_pending_verification(): void
