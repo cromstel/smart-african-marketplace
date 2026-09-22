@@ -2,7 +2,7 @@
 
 return [
     'brand' => [
-        'name' => 'Smart African Marketplace',
+        'name' => 'Smart African Market',
         'tagline' => 'Connecting cultures through authentic African products and services.',
     ],
     'nav' => [
@@ -76,9 +76,9 @@ return [
         'updated' => 'Updated',
     ],
     'home' => [
-        'hero_title' => 'Welcome to<br>Smart African Marketplace',
+        'hero_title' => 'Welcome to<br>Smart African Market',
         'hero_subtitle' => 'Your one-stop platform for authentic African food products, traditional clothing, and professional salon services.',
-        'why_choose' => 'Why Choose Smart African Marketplace?',
+        'why_choose' => 'Why Choose Smart African Market?',
         'feature_food_title' => 'Authentic Food',
         'feature_food_body' => 'Fresh African ingredients, spices, and ready-to-eat meals from across the continent.',
         'feature_clothing_title' => 'Traditional Clothing',
@@ -218,9 +218,9 @@ return [
         'title' => 'Terms of Service',
         'last_updated' => 'Last updated: :date',
         'section_1_title' => '1. Agreement to Terms',
-        'section_1_body' => 'By accessing and using Smart African Marketplace, you agree to these Terms of Service and applicable laws. If you do not agree, you must stop using the platform.',
+        'section_1_body' => 'By accessing and using Smart African Market, you agree to these Terms of Service and applicable laws. If you do not agree, you must stop using the platform.',
         'section_2_title' => '2. Use License',
-        'section_2_body' => 'We grant a limited, revocable, non-exclusive license to use Smart African Marketplace for lawful marketplace activity. This license does not transfer ownership of platform content.',
+        'section_2_body' => 'We grant a limited, revocable, non-exclusive license to use Smart African Market for lawful marketplace activity. This license does not transfer ownership of platform content.',
         'section_3_title' => '3. Product Information',
         'section_3_body' => 'Vendors are responsible for their listings. We work to keep product details and prices accurate, but we do not guarantee all listing content is complete or error-free at all times.',
         'section_4_title' => '4. Orders and Payment',
@@ -232,7 +232,7 @@ return [
         'section_7_title' => '7. User Accounts',
         'section_7_body' => 'You are responsible for account security, accurate profile data, and activity performed through your credentials. Notify support immediately of unauthorized access.',
         'section_8_title' => '8. Limitation of Liability',
-        'section_8_body' => 'To the maximum extent allowed by law, Smart African Marketplace is not liable for indirect, incidental, special, or consequential damages resulting from use of the platform.',
+        'section_8_body' => 'To the maximum extent allowed by law, Smart African Market is not liable for indirect, incidental, special, or consequential damages resulting from use of the platform.',
         'section_9_title' => '9. Changes to Terms',
         'section_9_body' => 'We may update these terms periodically. Material changes are published on this page, and continued use after publication constitutes acceptance.',
         'section_10_title' => '10. Contact Information',
@@ -281,8 +281,8 @@ return [
     'vendor' => [
         'hero_title' => 'Become a Vendor',
         'hero_subtitle' => 'Join our marketplace and grow your African business',
-        'why_title' => 'Why Sell on Smart African Marketplace?',
-        'why_body' => 'Smart African Marketplace is a thriving multi-vendor marketplace dedicated to authentic African products and services. Whether you sell traditional foods, handcrafted items, fashion, or offer salon services, our platform connects you with customers across the globe who value African culture and quality.',
+        'why_title' => 'Why Sell on Smart African Market?',
+        'why_body' => 'Smart African Market is a thriving multi-vendor marketplace dedicated to authentic African products and services. Whether you sell traditional foods, handcrafted items, fashion, or offer salon services, our platform connects you with customers across the globe who value African culture and quality.',
         'benefits' => [
             'global_title' => 'Global Reach',
             'global_body' => 'Connect with customers worldwide interested in authentic African products',
@@ -391,7 +391,7 @@ return [
         'commission_title' => 'Commission & Payments',
         'commission' => [
             'how_title' => 'How Commissions Work',
-            'how_body' => 'Smart African Marketplace charges a commission on each sale to maintain the platform and provide support. The commission rate varies by subscription plan and is clearly displayed in your dashboard.',
+            'how_body' => 'Smart African Market charges a commission on each sale to maintain the platform and provide support. The commission rate varies by subscription plan and is clearly displayed in your dashboard.',
             'how_list' => [
                 'Commission is automatically calculated on each sale',
                 'You receive net earnings (sale price minus commission)',
@@ -409,7 +409,7 @@ return [
             ],
         ],
         'cta_title' => 'Ready to Get Started?',
-        'cta_body' => 'Join hundreds of vendors already selling on Smart African Marketplace',
+        'cta_body' => 'Join hundreds of vendors already selling on Smart African Market',
         'cta_primary' => 'Register as Vendor',
         'cta_secondary' => 'Contact Support',
         'help_title' => 'Need Help?',

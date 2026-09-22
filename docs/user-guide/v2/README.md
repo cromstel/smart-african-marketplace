@@ -1,4 +1,4 @@
-# Smart African Marketplace Documentation v2
+# Smart African Market Documentation v2
 
 [Documentation Hub](../../README.md) › [User Documentation](../README.md) › v2
 

@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------
-# Smart African Marketplace — release shrink/r8 rules
+# Smart African Market — release shrink/r8 rules
 # R8 already applies the AGP default (proguard-android-optimize.txt)
 # plus each library's consumer rules. The rules below cover the
 # reflection-based libraries (Retrofit / Gson / OkHttp) and keep our

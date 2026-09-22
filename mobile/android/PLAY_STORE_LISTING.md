@@ -1,11 +1,11 @@
-# Google Play Store Listing — Smart African Marketplace
+# Google Play Store Listing — Smart African Market
 
 > Fill in the `<PLACEHOLDER>` values (URLs, email, policy) before publishing.
 > App package name: `com.africanmarket.app`
 
 ## Store listing
 
-**App name:** Smart African Marketplace
+**App name:** Smart African Market
 
 **Short description** (≤ 80 chars):
 ```
@@ -14,7 +14,7 @@ Shop across Africa — phones, fashion, electronics & more, delivered to your do
 
 **Full description:**
 ```
-Smart African Marketplace is your one-stop shop for authentic products from
+Smart African Market is your one-stop shop for authentic products from
 trusted vendors across Africa. Browse thousands of items across phones,
 electronics, fashion, home & living, and more — all in one fast, native app.
 
@@ -30,7 +30,7 @@ Features:
 Built natively with Jetpack Compose for a smooth, battery-friendly experience.
 Your session is kept secure and your data stays on your device where possible.
 
-Download Smart African Marketplace today and shop smarter across Africa.
+Download Smart African Market today and shop smarter across Africa.
 ```
 
 **Category:** Shopping

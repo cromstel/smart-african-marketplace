@@ -14,7 +14,7 @@
 >    [Getting Started](getting-started.md) instead. This guide remains
 >    useful for the deeper environment and Apache notes.
 
-# Smart African Marketplace - Setup Guide
+# Smart African Market - Setup Guide
 
 **Status**: Project structure initialized ✅  
 **Next**: Install Laravel core via Composer
@@ -125,7 +125,7 @@ copy .env.example .env
 
 ```env
 # App
-APP_NAME="Smart African Marketplace"
+APP_NAME="Smart African Market"
 APP_URL=http://localhost:8000
 
 # Database (use your MySQL credentials)
@@ -467,13 +467,13 @@ Create `resources/views/welcome.blade.php`:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart African Marketplace</title>
+    <title>Smart African Market</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50">
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-4xl font-bold text-center mb-8">
-            Welcome to Smart African Marketplace
+            Welcome to Smart African Market
         </h1>
         <div class="card">
             <p class="text-gray-600">
@@ -565,7 +565,7 @@ This creates:
 
 ## ✅ You're Ready!
 
-Your Smart African Marketplace platform is initialized and ready for development. Start building by running:
+Your Smart African Market platform is initialized and ready for development. Start building by running:
 
 ```bash
 php artisan serve

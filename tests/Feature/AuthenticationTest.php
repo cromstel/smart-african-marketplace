@@ -35,7 +35,7 @@ class AuthenticationTest extends TestCase
         $response = $this->get(route('login'));
 
         $response->assertStatus(200);
-        $response->assertSee('Smart African Marketplace');
+        $response->assertSee('Smart African Market');
     }
 
     public function test_guests_can_authenticate(): void
@@ -75,7 +75,7 @@ class AuthenticationTest extends TestCase
         $response = $this->get(route('register'));
 
         $response->assertStatus(200);
-        $response->assertSee('Smart African Marketplace');
+        $response->assertSee('Smart African Market');
     }
 
     public function test_admin_login_page_renders(): void
@@ -83,7 +83,7 @@ class AuthenticationTest extends TestCase
         $response = $this->get(route('admin.login'));
 
         $response->assertStatus(200);
-        $response->assertSee('Smart African Marketplace');
+        $response->assertSee('Smart African Market');
     }
 
     public function test_password_reset_link_can_be_requested(): void

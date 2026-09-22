@@ -1,6 +1,6 @@
 # Monitoring and Alerting Dashboards
 
-Minimum production monitoring baseline for Smart African Marketplace.
+Minimum production monitoring baseline for Smart African Market.
 
 ## Dashboard Panels
 

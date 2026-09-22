@@ -56,7 +56,7 @@ Config files: `app`, `auction`, `auth`, `branding`, `broadcasting`, `cache`,
 
 | Variable | Default | Notes |
 |---|---|---|
-| `APP_NAME` | Smart African Marketplace | Display name |
+| `APP_NAME` | Smart African Market | Display name |
 | `APP_ENV` | `local` | `production` in production |
 | `APP_KEY` | — | **Required.** `php artisan key:generate` |
 | `APP_DEBUG` | `true` | **Must be `false` in production** — leaks stack traces |

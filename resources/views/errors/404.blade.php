@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <x-seo
-        :title="'404 - Page Not Found | ' . config('app.name', 'Smart African Marketplace')"
+        :title="'404 - Page Not Found | ' . config('app.name', 'Smart African Market')"
         :index="false"
         :follow="false"
     />

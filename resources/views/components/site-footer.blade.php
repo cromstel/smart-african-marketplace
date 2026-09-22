@@ -8,7 +8,7 @@
         <div class="grid md:grid-cols-5 gap-8">
             <div class="md:col-span-2">
                 <h4 class="text-xl font-bold mb-4 flex items-center space-x-2">
-                    <a href="{{ route('home') }}" aria-label="{{ config('app.name', 'Smart African Marketplace') }} - Go to homepage">
+                    <a href="{{ route('home') }}" aria-label="{{ config('app.name', 'Smart African Market') }} - Go to homepage">
                         <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8">
                     </a>
                     <span class="uppercase tracking-wide">{{ config('app.name') }}</span>
