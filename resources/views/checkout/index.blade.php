@@ -57,9 +57,27 @@
                 <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
                     <h2 class="text-xl font-bold text-white mb-4">Billing Address</h2>
 
-                    @if($addresses->where('type', 'billing')->count() > 0 || $addresses->where('type', 'both')->count() > 0)
+                    @php
+                        // CheckoutController::store() requires billing_address_id, but
+                        // most customers only ever save a "shipping"-type address --
+                        // the address form defaults to that type, and nothing prompts
+                        // them to also create a separate billing one. Without this
+                        // fallback, those customers saw "No billing address found"
+                        // with no way to select anything, and checkout 422'd on a
+                        // required field the UI never let them fill in. Falling back
+                        // to shipping/both addresses here lets a shipping address
+                        // double as billing, same as it already can for a "both"
+                        // address, so the vast majority of customers can check out
+                        // without having to create a second, identical address first.
+                        $billingCandidates = $addresses->whereIn('type', ['billing', 'both']);
+                        if ($billingCandidates->isEmpty()) {
+                            $billingCandidates = $addresses->whereIn('type', ['shipping', 'both']);
+                        }
+                    @endphp
+
+                    @if($billingCandidates->isNotEmpty())
                         <div class="space-y-3">
-                            @foreach($addresses->whereIn('type', ['billing', 'both']) as $address)
+                            @foreach($billingCandidates as $address)
                                 <label class="flex items-start p-4 border-2 rounded-lg cursor-pointer {{ $address->is_default ? 'border-indigo-500 bg-indigo-900/20' : 'border-gray-600 hover:border-gray-500' }}">
                                     <input type="radio" name="billing_address_id" value="{{ $address->id }}" 
                                            {{ (string) old('billing_address_id') === (string) $address->id ? 'checked' : ($address->is_default ? 'checked' : '') }} required
