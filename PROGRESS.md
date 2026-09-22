@@ -4,7 +4,7 @@ Working memory for this repo. Keep this file current and lean — link out to
 `docs/` for anything that isn't state or the active task. Rewrite sections in
 place; don't append a history log here.
 
-Last updated: 2026-09-22.
+Last updated: 2026-09-22 (accessibility pass session).
 
 ---
 
@@ -26,9 +26,9 @@ Roadmap Phases 0–3 (integrity gaps, provable payment path, real test
 foundation, structural debt) are **all shipped and verified** — see
 [docs/product/roadmap.md](docs/product/roadmap.md). Only Phase 4 (ongoing
 platform enhancement: performance, accessibility, frontend consistency, API
-maturity, observability) remains open there — this session made real
-progress on 4.1 (performance) and 4.2 (accessibility), both still open for
-more.
+maturity, observability) remains open there — two sessions running now have
+made real progress on 4.1 (performance) and 4.2 (accessibility), both still
+open for more.
 
 `docs/product/todo.md` is a **historical** backlog (superseded by the
 roadmap) — don't pull tasks from it.
@@ -38,42 +38,118 @@ roadmap) — don't pull tasks from it.
 ## Current session
 
 **Idle — nothing in progress, tree clean, all work committed and tested.**
-Worked through the full "next candidates" list from the prior session end to
-end (SEO → subscriptions → vendor upgrade payment gate → N+1 audit →
-maintenance mode → accessibility), testing and committing after each item.
-Test suite grew from 258 → 369 over the two sessions combined.
+Worked through every candidate left open at the end of the prior session
+(booking-types admin UI → N+1 audit extension → changePlan() proration
+investigation → legacy VendorSubscription audit → browse-testing sweep →
+accessibility pass), testing and committing after each item. Test suite
+grew from 369 → 415 over the session.
 
 Candidates for next time, not yet started:
-- Build the missing `admin/booking-types/*` CRUD views (index/create/edit/
-  show + pricing tiers) — `BookingTypeController` is a complete, real
-  backend with no admin UI at all. See item 8 below.
-- Broader Phase 4 N+1 audit beyond what the test suite exercises —
-  `Model::preventLazyLoading()` is on now (item 3), but only catches N+1 on
-  code paths something actually calls; large parts of the 49 admin + 32
-  vendor controllers still have no test at all.
-- `SubscriptionService::changePlan()` (upgrade/downgrade) doesn't
-  recalculate `current_period_end` or charge/credit proration — worth a
-  deliberate look at whether that's intended (bill-at-next-renewal) or a
-  gap. Not touched this session.
-- The legacy `VendorSubscription` system `EffectiveSubscriptionResolver`
-  bridges from — confirmed it exists and how the bridge works (item 5), but
-  not independently audited for bugs of its own.
-- Continue the browse-testing sweep into auction/checkout edge cases not
-  yet covered.
-- Accessibility: only the focus-visible class of bug was audited this pass
-  (item 1). Alt text, ARIA labels on icon-only controls, color contrast,
-  and `prefers-reduced-motion` are still unaudited — a live browser session
-  would let this go further than the code-level grep this session used.
+- `BookingType::services()` is still broken (`salon_services` has no
+  `booking_type_id`, same root cause the `bookings()` relation had before
+  this session's fix) — left broken and undocumented in code on purpose,
+  since fixing it means designing how services get assigned to booking
+  types in their own forms, beyond this session's UI-completion scope. See
+  the `9a65b82` commit body.
+- N+1 smoke testing (`AdminIndexPagesSmokeTest` +
+  `VendorIndexPagesSmokeTest`) only covers *index* routes — 44 admin + 31
+  vendor. Show/create/edit pages across those same 75 controllers are
+  still untested for N+1, and `Model::preventLazyLoading()` only catches
+  violations on paths something actually exercises.
+- Accessibility code-level audit is now complete for this pass (alt text,
+  ARIA labels on icon-only controls, `text-gray-*` contrast on the
+  dark admin/vendor theme, `prefers-reduced-motion`) — see item 1 below.
+  Not done: actual assistive-tech testing (a real screen reader, not
+  static analysis), keyboard-trap testing in modals/dropdowns, and
+  contrast on non-gray combinations (colored badges, borders, focus
+  rings) — the regex-based audit this pass used only targeted the
+  `text-gray-500` pattern because it was the one confirmed at scale.
 - **Housekeeping**: don't run ad-hoc `php artisan tinker --execute=...`
   writes directly against `smart_africanmarket_test` outside a test
-  transaction — did this once this session (checking `MaintenanceService`
-  behavior) and it left a stray `Setting` row that made an unrelated test
-  fail nondeterministically until traced back and cleaned up. Use a real
-  test, or a throwaway DB session, instead.
+  transaction — did this once in a prior session (checking
+  `MaintenanceService` behavior) and it left a stray `Setting` row that
+  made an unrelated test fail nondeterministically until traced back and
+  cleaned up. Use a real test, or a throwaway DB session, instead.
+- **Environment note**: this session hit repeated `php artisan test`
+  failures from Windows `VirtualAlloc`/paging-file exhaustion (PHPUnit
+  crashing before or during a run, unrelated to the code) — not a code
+  issue, but worth knowing the local dev box can run low on committed
+  memory under sustained work. Check `Get-CimInstance
+  Win32_OperatingSystem | select FreePhysicalMemory` if `php artisan
+  test` dies with a `VirtualAlloc` / out-of-memory error with no test
+  output.
 
 ---
 
 ## Recently completed (this session, most recent first)
+
+1. **Accessibility pass: ARIA labels, reduced motion, contrast** (`293f989`)
+   — Added contextual `aria-label`s to icon-only buttons/links across
+   admin and vendor views (edit/delete/close/remove/dismiss/copy actions);
+   a regex-based audit script (matches `<button>`/`<a>` pairs, strips
+   `<svg>` blocks and Blade comments, checks for `aria-label`/`sr-only`/
+   `title`) went from 36 genuine findings to 1 confirmed false positive
+   (an Alpine `x-text` search suggestion that renders visible text only at
+   runtime). Added a global `prefers-reduced-motion` media query to
+   `app.css` (WCAG 2.3.3). Fixed a widespread WCAG AA contrast failure:
+   `text-gray-500` on the dark admin/vendor theme's `bg-gray-800`/`900`
+   computes to ~3.5:1, below the 4.5:1 minimum — bulk-swapped to
+   `text-gray-400` (~4.6:1) across ~90 views, after confirming via a
+   `bg-white` sweep that none of them mix in a light-background section.
+   The one file that genuinely does mix backgrounds
+   (`admin/chatbot/sessions/show.blade.php`'s three-role chat bubbles) got
+   per-background colors instead of the blind swap; the two light-themed
+   `vendor/announcements/*` views were left untouched (their existing
+   `text-gray-500` already passes on white). Full suite: 415 passed
+   (unchanged — style/attribute-only change, no new tests needed).
+2. **Auction settlement grace period checking the wrong timestamp**
+   (`0e2efc9`) — `ProcessAuctions::settleEndedAuctions()` compared
+   `created_at` (when the auction was *listed*) against a 5-minute window,
+   not when it *ended*. `auctions` has no `ended_at` column, but
+   `AuctionService::end()`'s `update(['status' => 'ended'])` bumps
+   `updated_at` to exactly that moment — that's the real signal. Fixed to
+   check `updated_at`. The bug cut both ways: normal auctions settled
+   immediately on the first run after ending (the grace period was a
+   no-op), while short-lived auctions created and ended within the same
+   5-minute window had settlement delayed for an unrelated reason.
+3. **Duplicate expiring-subscription notifications for upgraded vendors**
+   (`947ec91`) — any vendor who ever upgraded has both a native
+   `UserSubscription` and a synced legacy `VendorSubscription` row (kept in
+   sync so `EffectiveSubscriptionResolver`'s bridge stays populated).
+   `subscriptions:check-expiring` queried both tables with no
+   de-duplication, so those vendors got the same
+   `SubscriptionExpiringNotification` twice. Fixed by skipping the legacy
+   loop for any vendor whose user already has a native subscription.
+4. **Removed dead `SubscriptionService::upgradePlan`/`downgradePlan`/
+   `changePlan`** (`c3cf562`) — zero callers anywhere in the app, and no
+   proration logic. The proration gap this was meant to close doesn't
+   exist on any reachable path: the real, live upgrade flow already calls
+   `StripePaymentService::changePlan()`, which does real Stripe proration.
+   Removed the trap rather than "completing" logic nothing uses.
+5. **N+1 smoke testing extended to vendor controllers; missing followers
+   view fixed** (`a9a867c`) — `VendorIndexPagesSmokeTest` added, covering
+   all 31 vendor index routes (mirroring the admin coverage from the prior
+   session). Found `vendor.followers.index` had a correct nav link and
+   controller but no view at all anywhere in
+   `resources/views/vendor/followers/` — added it, matching the
+   `vendor/reviews/index.blade.php` pattern.
+6. **Built the `admin/booking-types/*` admin UI; fixed its broken
+   `bookings()` relation** (`9a65b82`) — `BookingTypeController` was a
+   complete real backend with zero admin views and no nav link. Built
+   index/create/edit views plus a `reorder()` action; discovered along the
+   way that the entire Salon Services + Bookings + Auctions admin area had
+   no sidebar navigation at all, not just booking types — added a "Salon &
+   Bookings" submenu and a standalone Auctions submenu. Fixed
+   `BookingType::bookings()`, which matched on a `booking_type_id` column
+   that was never migrated onto `bookings`; the live booking flow actually
+   populates a `booking_type` enum column matching `BookingType::name` by
+   string, which the relation now uses instead.
+
+Full diffs: `git log --oneline` / `git show <hash>`.
+
+---
+
+## Recently completed (prior session — Phase 4 audit)
 
 1. **WCAG 2.4.7 (Focus Visible)** (`8336f35`) — `focus:outline-none` with
    no replacement focus style, found across every shared layout: the
@@ -133,13 +209,12 @@ Candidates for next time, not yet started:
    Market" across 67 tracked files, display text only. Deliberately left
    untouched: Android package id `com.africanmarket.app`, composer/npm
    package names, `africanmarket.com`-style domains/emails.
-8. **Known gap, not fixed**: `admin.booking-types.index` renders a view
-   that doesn't exist anywhere in `resources/views/admin/`.
-   `BookingTypeController` is a complete, real backend (model, full
-   resource controller, pricing tiers) with no admin UI at all and no nav
-   link pointing at it. Building 4 CRUD views + a pricing-tier UI is
-   feature work, not a bug fix — excluded from the smoke test with an
-   explanation rather than built.
+8. **Known gap at the time, fixed next session**: `admin.booking-types.index`
+   rendered a view that didn't exist anywhere in `resources/views/admin/` —
+   excluded from the smoke test with an explanation rather than built,
+   since it was feature work, not a bug fix. Built in the following
+   session, see item 6 in "Recently completed (this session)" above
+   (`9a65b82`).
 
 Full diffs: `git log --oneline` / `git show <hash>`.
 
@@ -219,9 +294,9 @@ php artisan app:verify-readiness --strict  # pre-deploy gate
 Commit convention: `fix:`, `feat:`, `refactor:`, `test:`, `docs:`, `chore:` —
 imperative subject ("add", not "added"). See [CONTRIBUTING.md](CONTRIBUTING.md#commit-convention).
 
-Test suite baseline: **369 passed**, verified 2026-09-22 (up from 258 at the
-last roadmap update). Re-verify with `php artisan test` before trusting this
-number — don't cite it without running it.
+Test suite baseline: **415 passed** (1044 assertions), verified 2026-09-22
+(up from 369 earlier the same day). Re-verify with `php artisan test`
+before trusting this number — don't cite it without running it.
 
 ---
 
