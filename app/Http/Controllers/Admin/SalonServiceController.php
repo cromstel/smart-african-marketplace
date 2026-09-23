@@ -8,16 +8,18 @@ use App\Models\Salon;
 use App\Models\SalonService;
 use App\Models\SalonServiceCategory;
 use App\Models\SalonStylist;
+use App\Models\Vendor;
 use App\Services\ImageOptimizationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class SalonServiceController extends Controller
 {
     public function index()
     {
-        $services = SalonService::with(['category', 'user'])
+        $services = SalonService::with(['category', 'salonCategory', 'user'])
             ->latest()
             ->paginate(20);
 
@@ -30,8 +32,9 @@ class SalonServiceController extends Controller
         $salonCategories = SalonServiceCategory::active()->orderBy('sort_order')->orderBy('name')->get();
         $salons = Salon::orderBy('name')->get();
         $stylists = SalonStylist::orderBy('name')->get();
+        $vendors = Vendor::where('status', 'approved')->orderBy('business_name')->get();
 
-        return view('admin.salon-services.create', compact('categories', 'salonCategories', 'salons', 'stylists'));
+        return view('admin.salon-services.create', compact('categories', 'salonCategories', 'salons', 'stylists', 'vendors'));
     }
 
     public function store(Request $request)
@@ -39,6 +42,14 @@ class SalonServiceController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            // The owning vendor's user_id, not the admin's -- salon_services.user_id
+            // is read as the vendor owner everywhere else in the app (the vendor's
+            // own controller sets it from $request->user()->id, and this admin
+            // panel's own index view renders $service->user->name as "Vendor").
+            'user_id' => [
+                'required',
+                Rule::exists('vendors', 'user_id')->where('status', 'approved'),
+            ],
             'salon_id' => 'nullable|exists:salons,id',
             'stylist_id' => 'nullable|exists:salon_stylists,id',
             'category_id' => 'required|exists:categories,id',
@@ -49,7 +60,6 @@ class SalonServiceController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $validated['user_id'] = auth()->id();
         $validated['slug'] = Str::slug($validated['name']);
         $validated['is_active'] = $request->has('is_active');
 
@@ -67,6 +77,7 @@ class SalonServiceController extends Controller
 
     public function edit(SalonService $salonService)
     {
+        $salonService->load('user.vendor');
         $categories = Category::all();
         $salonCategories = SalonServiceCategory::active()->orderBy('sort_order')->orderBy('name')->get();
         $salons = Salon::orderBy('name')->get();
@@ -112,6 +123,10 @@ class SalonServiceController extends Controller
 
     public function destroy(SalonService $salonService)
     {
+        if ($salonService->bookings()->count() > 0) {
+            return redirect()->back()->with('error', 'Cannot delete a service with existing bookings.');
+        }
+
         if ($salonService->image) {
             Storage::disk('public')->delete($salonService->image);
         }

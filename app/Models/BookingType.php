@@ -77,13 +77,21 @@ class BookingType extends Model
         return $this->hasMany(Booking::class, 'booking_type', 'name');
     }
 
-    /**
-     * Get the services that use this booking type.
-     */
-    public function services(): HasMany
-    {
-        return $this->hasMany(SalonService::class);
-    }
+    // A services() relation used to live here (hasMany(SalonService::class)),
+    // but salon_services has no booking_type_id column and never has -- the
+    // hasMany's implicit FK guess doesn't correspond to anything real.
+    // Unlike bookings() above, there's no existing column to match on
+    // instead: this app's live, reachable booking flow
+    // (BookingController::create()/store()) is service-first and never
+    // asks for a booking type at all. A separate multi-type booking system
+    // does exist (BookingService, BookingPricingService,
+    // BookingResourceService, the /api/bookings/* endpoints, the
+    // <x-booking.booking-form> component) but its only caller,
+    // resources/views/bookings/vendor-booking.blade.php, isn't wired to
+    // any route -- the whole subsystem is built but orphaned. Wiring
+    // SalonService to BookingType meaningfully means reviving that
+    // subsystem (a product decision, not a bug fix), so the relation was
+    // removed rather than pointed at a column that doesn't exist.
 
     /**
      * Scope to get only active booking types.

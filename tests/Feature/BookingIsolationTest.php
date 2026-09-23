@@ -149,6 +149,29 @@ class BookingIsolationTest extends TestCase
         $this->assertNull($booking->customer_notes);
     }
 
+    public function test_a_customer_cannot_book_a_service_the_vendor_deactivated(): void
+    {
+        // BookingController::store() used to have no is_active check at all,
+        // unlike CartController's equivalent guard on the commit-to-purchase
+        // step for products. A customer with a stale page open (or a direct
+        // POST) could still create a real booking against a service the
+        // vendor had turned off.
+        $customer = $this->makeCustomer();
+        $service = $this->makeSalonService(isActive: false);
+        $date = now()->addDay()->format('Y-m-d');
+
+        $response = $this->actingAs($customer)->post(route('bookings.store', $service), [
+            'booking_date' => $date,
+            'booking_time' => '10:00',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseMissing('bookings', [
+            'salon_service_id' => $service->id,
+            'user_id' => $customer->id,
+        ]);
+    }
+
     public function test_a_vendor_cannot_create_a_booking_as_a_customer(): void
     {
         // BookingPolicy::create() only grants admins and customers -- a
@@ -172,7 +195,7 @@ class BookingIsolationTest extends TestCase
         return User::factory()->create(['role' => 'customer']);
     }
 
-    private function makeSalonService(): SalonService
+    private function makeSalonService(bool $isActive = true): SalonService
     {
         $owner = User::factory()->create();
         $category = Category::create(['name' => 'Cat '.uniqid(), 'slug' => 'cat-'.uniqid()]);
@@ -185,7 +208,7 @@ class BookingIsolationTest extends TestCase
             'description' => 'Fixture service.',
             'price' => 50,
             'duration_minutes' => 30,
-            'is_active' => true,
+            'is_active' => $isActive,
         ]);
     }
 

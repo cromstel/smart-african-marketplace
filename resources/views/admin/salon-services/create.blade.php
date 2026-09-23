@@ -28,6 +28,20 @@
                     @error('description') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Vendor *</label>
+                    <select name="user_id" required class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-2">
+                        <option value="">Select Vendor</option>
+                        @foreach($vendors as $vendor)
+                            <option value="{{ $vendor->user_id }}" {{ old('user_id') == $vendor->user_id ? 'selected' : '' }}>
+                                {{ $vendor->business_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('user_id') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
+                    <p class="text-xs text-gray-400 mt-1">The vendor this service will belong to</p>
+                </div>
+
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">Category *</label>

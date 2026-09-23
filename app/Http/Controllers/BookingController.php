@@ -306,6 +306,15 @@ class BookingController extends Controller
 
     public function store(Request $request, SalonService $service)
     {
+        // Matches CartController's is_active guard on the equivalent
+        // commit-to-purchase step for products: the show/create pages stay
+        // viewable for a deactivated service (consistent with how product
+        // pages work), but actually creating a booking against one a vendor
+        // has turned off was previously unguarded here.
+        if (! $service->is_active) {
+            return redirect()->back()->with('error', 'This service is no longer available for booking.');
+        }
+
         $validated = $request->validate([
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'required|date_format:H:i',

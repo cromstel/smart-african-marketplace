@@ -99,7 +99,7 @@
         <label class="flex items-center cursor-pointer">
             <input type="checkbox" name="is_active" value="1" {{ old('is_active', $bookingType->is_active ?? true) ? 'checked' : '' }}
                    class="w-4 h-4 text-brand-from bg-gray-700 border-gray-600 rounded focus:ring-2 focus:ring-gray-400">
-            <span class="ml-2 text-gray-300">Active (available for services to use)</span>
+            <span class="ml-2 text-gray-300">Active</span>
         </label>
     </div>
 </div>

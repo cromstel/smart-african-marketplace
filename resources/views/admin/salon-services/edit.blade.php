@@ -35,6 +35,14 @@
                     @error('description') <p class="text-red-400 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Vendor</label>
+                    <p class="text-white bg-gray-700 border border-gray-600 rounded-lg px-4 py-2">
+                        {{ $salonService->user->vendor->business_name ?? $salonService->user->name ?? 'N/A' }}
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">Vendor cannot be changed after creation</p>
+                </div>
+
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">Category *</label>
