@@ -4,7 +4,7 @@ Working memory for this repo. Keep this file current and lean — link out to
 `docs/` for anything that isn't state or the active task. Rewrite sections in
 place; don't append a history log here.
 
-Last updated: 2026-09-22 (accessibility pass session).
+Last updated: 2026-09-23 (salon-services fix session).
 
 ---
 
@@ -26,9 +26,9 @@ Roadmap Phases 0–3 (integrity gaps, provable payment path, real test
 foundation, structural debt) are **all shipped and verified** — see
 [docs/product/roadmap.md](docs/product/roadmap.md). Only Phase 4 (ongoing
 platform enhancement: performance, accessibility, frontend consistency, API
-maturity, observability) remains open there — two sessions running now have
-made real progress on 4.1 (performance) and 4.2 (accessibility), both still
-open for more.
+maturity, observability) remains open there — several sessions running now
+have made real progress on 4.1 (performance) and 4.2 (accessibility), both
+still open for more.
 
 `docs/product/todo.md` is a **historical** backlog (superseded by the
 roadmap) — don't pull tasks from it.
@@ -38,50 +38,104 @@ roadmap) — don't pull tasks from it.
 ## Current session
 
 **Idle — nothing in progress, tree clean, all work committed and tested.**
-Worked through every candidate left open at the end of the prior session
-(booking-types admin UI → N+1 audit extension → changePlan() proration
-investigation → legacy VendorSubscription audit → browse-testing sweep →
-accessibility pass), testing and committing after each item. Test suite
-grew from 369 → 415 over the session.
+Closed out the two candidates left open at the end of the accessibility-pass
+session: extended N+1 smoke testing from index-only to show/edit routes
+(delegated to a subagent — item 1 below), and resolved
+`BookingType::services()` by tracing it all the way down rather than
+guessing (item 2). That trace surfaced real bugs the N+1 smoke tests
+couldn't have caught, since they're not 500-error shaped: wrong-owner
+salon-service creation, a missing delete guard, and a stale-service booking
+gap — all fixed in item 2. Test suite grew from 415 → 486 over the session.
 
 Candidates for next time, not yet started:
-- `BookingType::services()` is still broken (`salon_services` has no
-  `booking_type_id`, same root cause the `bookings()` relation had before
-  this session's fix) — left broken and undocumented in code on purpose,
-  since fixing it means designing how services get assigned to booking
-  types in their own forms, beyond this session's UI-completion scope. See
-  the `9a65b82` commit body.
-- N+1 smoke testing (`AdminIndexPagesSmokeTest` +
-  `VendorIndexPagesSmokeTest`) only covers *index* routes — 44 admin + 31
-  vendor. Show/create/edit pages across those same 75 controllers are
-  still untested for N+1, and `Model::preventLazyLoading()` only catches
-  violations on paths something actually exercises.
-- Accessibility code-level audit is now complete for this pass (alt text,
-  ARIA labels on icon-only controls, `text-gray-*` contrast on the
-  dark admin/vendor theme, `prefers-reduced-motion`) — see item 1 below.
-  Not done: actual assistive-tech testing (a real screen reader, not
-  static analysis), keyboard-trap testing in modals/dropdowns, and
-  contrast on non-gray combinations (colored badges, borders, focus
-  rings) — the regex-based audit this pass used only targeted the
-  `text-gray-500` pattern because it was the one confirmed at scale.
+- N+1 smoke testing now covers index + show/edit across 65 of 67
+  admin+vendor routes (`admin.categories.show` no longer exists — it was
+  dead code, removed; `vendor.settings.payouts.edit` skipped, no `{id}` in
+  its URI). *Create* routes are still uncovered everywhere (low N+1 risk —
+  empty forms — but not zero, e.g. a create form that pre-populates from a
+  related record).
+- Accessibility: unchanged from last session — actual assistive-tech
+  testing (a real screen reader), keyboard-trap testing in modals/
+  dropdowns, and contrast on non-gray combinations (colored badges,
+  borders, focus rings) are still not done.
+- A fully-built, fully-orphaned "multi-type booking" subsystem exists
+  (`BookingService`, `BookingPricingService`, `BookingResourceService`,
+  `BookingSlotService::generateTypeSlots()`, the `/api/bookings/types`
+  `/options` `/slots` `/price` endpoints, the
+  `<x-booking.booking-form>` component) — traced end to end while
+  resolving `BookingType::services()` this session. Its only including
+  view, `resources/views/bookings/vendor-booking.blade.php`, isn't linked
+  from any route. Whether to wire it in (a real feature: pick a booking
+  type first, then see relevant services/resources) or delete it outright
+  is a product decision, not something to guess at — flagged, not touched.
 - **Housekeeping**: don't run ad-hoc `php artisan tinker --execute=...`
   writes directly against `smart_africanmarket_test` outside a test
-  transaction — did this once in a prior session (checking
+  transaction — did this once in an earlier session (checking
   `MaintenanceService` behavior) and it left a stray `Setting` row that
   made an unrelated test fail nondeterministically until traced back and
   cleaned up. Use a real test, or a throwaway DB session, instead.
-- **Environment note**: this session hit repeated `php artisan test`
-  failures from Windows `VirtualAlloc`/paging-file exhaustion (PHPUnit
-  crashing before or during a run, unrelated to the code) — not a code
-  issue, but worth knowing the local dev box can run low on committed
-  memory under sustained work. Check `Get-CimInstance
+- **Environment note**: Windows `VirtualAlloc`/paging-file exhaustion
+  during `php artisan test` (PHPUnit crashing before or during a run, no
+  test output, unrelated to the code) hit again this session, on top of
+  the prior session's occurrences — this is a recurring condition on this
+  dev box under sustained work, not a one-off. Check `Get-CimInstance
   Win32_OperatingSystem | select FreePhysicalMemory` if `php artisan
-  test` dies with a `VirtualAlloc` / out-of-memory error with no test
-  output.
+  test` dies this way; retry once memory is actually free rather than
+  looping blindly.
 
 ---
 
 ## Recently completed (this session, most recent first)
+
+1. **N+1 smoke testing extended from index to show/edit routes**
+   (`3e5a08c`, bug fixes in `1adb19e`) — added 65 tests across 7 new files
+   (5 admin, 2 vendor), covering 42/43 admin and 23/24 vendor show/edit
+   routes (skips explained above). Delegated to a subagent working in the
+   background while this session continued other work; found and fixed 5
+   real bugs along the way: a dead `admin.categories.show` route (no
+   `show()`, no view — excluded from the resource route instead), a
+   missing `AnnouncementController::show()` despite the view already
+   existing and being linked from the index (added it; also fixed the
+   view referencing stale `Announcement` model fields), a missing
+   `admin/auctions/edit.blade.php` view for an otherwise-working route
+   (built one from the vendor equivalent), a
+   `RelationNotFoundException` from eager-loading `'winner.user'` in both
+   `Admin\AuctionController::show()` and
+   `Vendor\AuctionController::show()` (`Auction::winner()` is already
+   `belongsTo(User)` — loading `.user` off of that tried to load
+   `User::user()`, which doesn't exist; only surfaces when an auction has
+   a real winner, so a nested eager-load of an always-null relation had
+   silently no-op'd until then), and N+1 on `admin.products.edit` /
+   `vendor.products.edit` (`$product->images`, and vendor's also
+   `$product->tags`, rendered without being eager-loaded).
+2. **Salon-service vendor ownership, delete guard, and stale bookability**
+   (`2be5c50`) — `Admin\SalonServiceController::store()` forced
+   `user_id = auth()->id()`: every salon service created through the
+   admin panel was silently owned by the admin's own account, not any
+   vendor, despite this controller's own index view rendering
+   `$service->user->name` as the "Vendor" column. Fixed by requiring an
+   explicit vendor selection (validated against approved vendors), matching
+   how `Admin\SalonController` already does the same thing correctly for
+   salons. Two smaller bugs in the same controller: `destroy()` had no
+   guard against deleting a service with existing bookings (the vendor
+   controller's does — an admin delete would throw a raw DB
+   restrict-constraint exception instead of a clean error), and `index()`
+   didn't eager-load `salonCategory` despite the view rendering
+   `$service->salonCategory->name` on every row. Also fixed
+   `BookingController::store()` (the live customer booking-creation
+   endpoint), which had no `is_active` check at all, unlike
+   `CartController`'s equivalent guard for products — a customer could
+   book a service the vendor had deactivated. Removed
+   `BookingType::services()` (zero callers anywhere, confirmed by tracing
+   the entire orphaned multi-type booking subsystem end to end — see the
+   candidate note above) and corrected the admin/booking-types UI copy
+   that implied the feature already worked.
+
+Full diffs: `git log --oneline` / `git show <hash>`.
+
+---
+
+## Recently completed (prior session — accessibility pass)
 
 1. **Accessibility pass: ARIA labels, reduced motion, contrast** (`293f989`)
    — Added contextual `aria-label`s to icon-only buttons/links across
@@ -294,9 +348,9 @@ php artisan app:verify-readiness --strict  # pre-deploy gate
 Commit convention: `fix:`, `feat:`, `refactor:`, `test:`, `docs:`, `chore:` —
 imperative subject ("add", not "added"). See [CONTRIBUTING.md](CONTRIBUTING.md#commit-convention).
 
-Test suite baseline: **415 passed** (1044 assertions), verified 2026-09-22
-(up from 369 earlier the same day). Re-verify with `php artisan test`
-before trusting this number — don't cite it without running it.
+Test suite baseline: **486 passed** (1126 assertions), verified 2026-09-23
+(up from 415 the day before). Re-verify with `php artisan test` before
+trusting this number — don't cite it without running it.
 
 ---
 
