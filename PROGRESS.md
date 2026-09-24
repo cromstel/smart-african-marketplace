@@ -38,15 +38,10 @@ roadmap) — don't pull tasks from it.
 ## Current session
 
 **Idle — nothing in progress, tree clean.** This session built the missing
-booking-types admin UI (item 0 below). Test suite: 381 passing.
+booking-types admin UI and salon-service pricing tiers (items 0a and 0 below),
+and fixed three CI failures that were red on `main`. Test suite: 389 passing.
 
 Candidates for next time, not yet started:
-- **Service pricing tiers have no UI anywhere.** `ServicePricingTier`
-  (keyed on `salon_service_id`) and `BookingPricingService` exist, but no
-  admin or vendor screen creates tiers. The five `admin.booking-types.*`
-  pricing-tier/reorder routes that pointed at never-written controller
-  methods were removed (item 0); a real UI belongs on salon services, not
-  booking types.
 - `BookingService::createBooking()` and `BookingPricingService::calculateRefund()`
   have no callers — the live booking flow in `BookingController` bypasses
   both. Worth deciding whether to wire them in or delete them.
@@ -78,6 +73,16 @@ Candidates for next time, not yet started:
 
 ## Recently completed (this session, most recent first)
 
+0a. **Salon-service pricing tiers** (2026-09-24) — vendors can now add
+   day/time pricing tiers per service (`vendor/salon-services/{id}/pricing-tiers`,
+   owner-checked and `->scoped()`), customers see them on the booking page,
+   and `bookings.store`/reschedule charge the tiered price. Previously there
+   was no UI, `BookingPricingService::getApplicablePricingTier()` queried
+   nine columns the table never had (so `POST /api/bookings/price` threw on
+   every call), and `ServicePricingTier::appliesTo()` compared a booking's
+   datetime against *today* at the tier's times. Most specific tier wins
+   (day+time > day > time); price floors at zero.
+   Tests: `tests/Feature/Vendor/ServicePricingTierTest.php`.
 0. **Booking-types admin UI + phantom `booking_type_id`** (2026-09-24) —
    built `admin/booking-types` index/create/edit (+ shared `_form`),
    linked Bookings and Booking Types from the Marketplace nav (neither
@@ -93,6 +98,8 @@ Candidates for next time, not yet started:
    order failed on a NOT NULL column, and slug collisions reached the DB.
    Removed 5 routes pointing at controller methods that never existed.
    Tests: `tests/Feature/Admin/BookingTypeManagementTest.php`.
+   Same PR fixed CI, red on `main`: docs integrity links, Node 18 → 22
+   (Vite 8), and the CI database name not matching `phpunit.xml`.
 
 1. **WCAG 2.4.7 (Focus Visible)** (`8336f35`) — `focus:outline-none` with
    no replacement focus style, found across every shared layout: the
@@ -230,7 +237,7 @@ php artisan app:verify-readiness --strict  # pre-deploy gate
 Commit convention: `fix:`, `feat:`, `refactor:`, `test:`, `docs:`, `chore:` —
 imperative subject ("add", not "added"). See [CONTRIBUTING.md](CONTRIBUTING.md#commit-convention).
 
-Test suite baseline: **381 passed**, verified 2026-09-24 (up from 258 at the
+Test suite baseline: **389 passed**, verified 2026-09-24 (up from 258 at the
 last roadmap update). Re-verify with `php artisan test` before trusting this
 number — don't cite it without running it.
 

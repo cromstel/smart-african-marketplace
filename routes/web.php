@@ -83,6 +83,7 @@ use App\Http\Controllers\Vendor\BookingResourceController;
 use App\Http\Controllers\Vendor\MediaController;
 use App\Http\Controllers\Vendor\PayoutSettingsController;
 use App\Http\Controllers\Vendor\RmaRequestController;
+use App\Http\Controllers\Vendor\ServicePricingTierController;
 use App\Http\Controllers\Vendor\ShipmentController;
 use App\Http\Controllers\Vendor\StoreDomainController;
 use App\Http\Controllers\Vendor\ThemeController;
@@ -709,6 +710,9 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
     Route::resource('salon', App\Http\Controllers\Vendor\SalonController::class)->except(['show']);
     Route::resource('salon-stylists', App\Http\Controllers\Vendor\SalonStylistController::class)->except(['show']);
     Route::resource('salon-services', App\Http\Controllers\Vendor\SalonServiceController::class)->except(['show']);
+    Route::resource('salon-services.pricing-tiers', ServicePricingTierController::class)
+        ->except(['create', 'show'])
+        ->scoped();
     Route::post('/products/generate-content', [App\Http\Controllers\Vendor\ProductController::class, 'generateContent'])
         ->middleware(['module.access:multiple_product_category', 'module.access:automate_workload_with_ai'])
         ->name('products.generate-content');

@@ -137,6 +137,21 @@
                         </div>
                     </div>
 
+                    @if($service->pricingTiers->isNotEmpty())
+                        <div class="p-4 bg-gray-900 rounded-lg border border-gray-700 text-sm">
+                            <p class="text-xs font-semibold text-gray-300 mb-2">Time-based pricing</p>
+                            <ul class="space-y-1 text-gray-400">
+                                @foreach($service->pricingTiers as $tier)
+                                    <li class="flex items-center justify-between gap-3">
+                                        <span>{{ $tier->label }}</span>
+                                        <span class="text-white whitespace-nowrap">${{ number_format(max(0, $tier->calculatePrice((float) $service->price)), 2) }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <p class="text-xs text-gray-500 mt-2">The price for your slot is confirmed on your booking.</p>
+                        </div>
+                    @endif
+
                     <div class="p-4 bg-gray-900 rounded-lg border border-gray-700">
                         <p class="text-xs font-semibold text-gray-300">Selected Slot</p>
                         <p class="text-white text-sm" x-text="selectedSlot ? selectedSlot.label : 'Choose a slot'">Choose a slot</p>
