@@ -115,7 +115,7 @@
                                 name="business_name" 
                                 value="{{ old('business_name') }}"
                                 :required="checkboxChecked"
-                                class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
+                                class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition" 
                                 placeholder="Your Business Name"
                             >
                         </div>
@@ -137,7 +137,7 @@
                                 id="modal-vendor_category_id" 
                                 name="vendor_category_id"
                                 :required="checkboxChecked"
-                                class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                                class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition"
                             >
                                 <option value="">Select a category</option>
                                 @forelse($vendorCategories ?? [] as $category)
@@ -170,7 +170,7 @@
                                     name="business_email" 
                                     value="{{ old('business_email') }}"
                                     :required="checkboxChecked"
-                                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
+                                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition" 
                                     placeholder="business@domain.com"
                                 >
                             </div>
@@ -193,7 +193,7 @@
                                     name="business_phone" 
                                     value="{{ old('business_phone') }}"
                                     :required="checkboxChecked"
-                                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
+                                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition" 
                                     placeholder="+1234567890"
                                 >
                             </div>
@@ -218,7 +218,7 @@
                                 name="business_address" 
                                 rows="3"
                                 :required="checkboxChecked"
-                                class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition" 
+                                class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent transition" 
                                 placeholder="Full business address"
                             >{{ old('business_address') }}</textarea>
                         </div>
@@ -239,7 +239,7 @@
                             name="vendor_terms" 
                             value="1"
                             :required="checkboxChecked"
-                            class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                            class="w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-600 focus:ring-2"
                         >
                         <label for="vendor_terms" class="ml-2 text-sm text-gray-600">
                             I agree to the <a href="{{ route('terms') }}" target="_blank" class="text-orange-600 hover:text-orange-500">Vendor Terms</a> and <a href="{{ route('privacy') }}" target="_blank" class="text-orange-600 hover:text-orange-500">Privacy Policy</a>
@@ -247,7 +247,7 @@
                     </div>
                     <button 
                         type="button"
-                        class="inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200"
+                        class="inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 transition-all duration-200"
                         @click="$el.closest('form').submit()"
                     >
                         Confirm & Continue

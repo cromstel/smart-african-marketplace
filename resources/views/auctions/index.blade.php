@@ -17,7 +17,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <form action="{{ route('auctions.search') }}" method="GET" class="flex w-full md:w-auto">
-            <input type="text" name="q" class="flex-1 md:w-64 border border-gray-300 rounded-l-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="Search auctions...">
+            <input type="text" name="q" class="flex-1 md:w-64 border border-gray-300 rounded-l-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-orange-500" placeholder="Search auctions...">
             <button type="submit" class="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-r-lg text-sm font-semibold transition-colors duration-200">
                 Search
             </button>

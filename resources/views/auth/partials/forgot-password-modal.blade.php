@@ -48,7 +48,7 @@
                         value="{{ $oldEmail }}"
                         required
                         autocomplete="email"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                        class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                         placeholder="you@example.com"
                     >
                     @if ($modalErrors->has('email'))
@@ -58,7 +58,7 @@
 
                 <button
                     type="submit"
-                    class="w-full rounded-lg bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold py-3 text-sm shadow-sm hover:from-orange-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                    class="w-full rounded-lg bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold py-3 text-sm shadow-sm hover:from-orange-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
                 >
                     Email reset link
                 </button>

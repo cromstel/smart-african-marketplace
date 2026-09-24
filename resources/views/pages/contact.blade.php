@@ -117,7 +117,7 @@
                                     <label for="first_name" class="sr-only">{{ __('ui.contact.first_name') }}</label>
                                     <div class="relative">
                                         <input type="text" id="first_name" name="first_name" value="{{ old('first_name') }}" required placeholder="{{ __('ui.contact.first_name') }}"
-                                            class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-orange-400">
+                                            class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 hover:border-orange-400">
                                         <x-form-hint text="{{ __('ui.contact.first_name_hint') }}" />
                                     </div>
                                     @error('first_name')
@@ -128,7 +128,7 @@
                                     <label for="last_name" class="sr-only">{{ __('ui.contact.last_name') }}</label>
                                     <div class="relative">
                                         <input type="text" id="last_name" name="last_name" value="{{ old('last_name') }}" required placeholder="{{ __('ui.contact.last_name') }}"
-                                            class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-orange-400">
+                                            class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 hover:border-orange-400">
                                         <x-form-hint text="{{ __('ui.contact.last_name_hint') }}" />
                                     </div>
                                     @error('last_name')
@@ -141,7 +141,7 @@
                                 <label for="email" class="sr-only">{{ __('ui.contact.email') }}</label>
                                 <div class="relative">
                                     <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="you@example.com"
-                                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-orange-400">
+                                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 hover:border-orange-400">
                                     <x-form-hint text="{{ __('ui.contact.email_hint') }}" />
                                 </div>
                                 @error('email')
@@ -153,7 +153,7 @@
                                 <label for="subject" class="sr-only">{{ __('ui.contact.subject') }}</label>
                                 <div class="relative">
                                     <input type="text" id="subject" name="subject" value="{{ old('subject') }}" required placeholder="{{ __('ui.contact.subject_placeholder') }}"
-                                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-orange-400">
+                                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 hover:border-orange-400">
                                     <x-form-hint text="{{ __('ui.contact.subject_hint') }}" />
                                 </div>
                                 @error('subject')
@@ -165,7 +165,7 @@
                                 <label for="message" class="sr-only">{{ __('ui.contact.message') }}</label>
                                 <div class="relative">
                                     <textarea id="message" name="message" rows="5" required placeholder="{{ __('ui.contact.message_placeholder') }}"
-                                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-orange-400">{{ old('message') }}</textarea>
+                                        class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-600 focus:border-transparent transition-all duration-200 hover:border-orange-400">{{ old('message') }}</textarea>
                                     <x-form-hint class="top-3 !inset-y-auto items-start" text="{{ __('ui.contact.message_hint') }}" />
                                 </div>
                                 @error('message')

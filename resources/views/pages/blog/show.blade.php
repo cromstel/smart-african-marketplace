@@ -87,7 +87,7 @@
                         id="body"
                         name="body"
                         rows="4"
-                        class="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                        class="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-600 sm:text-sm"
                         placeholder="{{ __('ui.blog.share_thoughts') }}"
                     >{{ old('body') }}</textarea>
                     @error('body')
@@ -96,7 +96,7 @@
                 </div>
                 <button
                     type="submit"
-                    class="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg font-semibold shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                    class="inline-flex items-center px-4 py-2 bg-orange-600 text-white rounded-lg font-semibold shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
                 >
                     {{ __('ui.blog.submit_comment') }}
                 </button>

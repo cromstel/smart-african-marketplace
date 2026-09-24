@@ -4,7 +4,7 @@
     <div class="relative group">
         <button
             type="button"
-            class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-orange-300 bg-white/90 text-xs font-semibold text-orange-600 shadow-sm transition hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-orange-300 bg-white/90 text-xs font-semibold text-orange-600 shadow-sm transition hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-600"
             aria-label="Field help"
         >
             ?
