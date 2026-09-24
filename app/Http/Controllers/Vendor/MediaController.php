@@ -131,6 +131,31 @@ class MediaController extends Controller
     }
 
     /**
+     * Show the upload form. The route has existed since this controller was
+     * first built (vendor/media/create, named vendor.media.create) but this
+     * method was never implemented -- nothing links to it either, since
+     * index() already offers the same upload via a modal, but hitting the
+     * URL directly threw a fatal BadMethodCallException instead of a page.
+     * Mirrors Admin\MediaLibraryController::create(), scoped to the
+     * vendor's own folders.
+     */
+    public function create(): View|RedirectResponse
+    {
+        $vendor = $this->getVendor();
+
+        if (! $vendor) {
+            return redirect()->route('dashboard')
+                ->with('error', 'You need to set up a vendor store first.');
+        }
+
+        $folders = MediaFolder::where('vendor_id', $vendor->id)
+            ->orderBy('name')
+            ->get();
+
+        return view('vendor.media.create', compact('folders'));
+    }
+
+    /**
      * Show single media item.
      */
     public function show(MediaLibrary $media): View

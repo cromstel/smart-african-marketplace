@@ -40,6 +40,33 @@ class AuctionController extends Controller
     }
 
     /**
+     * `Route::resource('auctions', ...)` auto-registers create/store, but
+     * this controller never implemented either -- unlike admin.orders.create
+     * (which redirects with an explanation, since orders are deliberately
+     * customer/vendor-only), hitting this route directly threw a fatal
+     * BadMethodCallException instead of a graceful response. Auctions are
+     * created by vendors from their own dashboard
+     * (Vendor\AuctionController::create()/store()); admin's role here is
+     * moderating and settling existing ones, not creating new ones on a
+     * vendor's behalf, so this mirrors admin.orders.create's pattern rather
+     * than building a duplicate create form.
+     */
+    public function create(): RedirectResponse
+    {
+        return redirect()->route('admin.auctions.index')
+            ->with('error', 'Auctions are created by vendors from their own dashboard.');
+    }
+
+    /**
+     * @see create()
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        return redirect()->route('admin.auctions.index')
+            ->with('error', 'Auctions are created by vendors from their own dashboard.');
+    }
+
+    /**
      * Display the specified auction.
      */
     public function show(Auction $auction): View
