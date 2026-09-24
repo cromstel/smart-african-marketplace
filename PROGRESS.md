@@ -4,7 +4,7 @@ Working memory for this repo. Keep this file current and lean — link out to
 `docs/` for anything that isn't state or the active task. Rewrite sections in
 place; don't append a history log here.
 
-Last updated: 2026-09-24 (contrast + keyboard-trap session).
+Last updated: 2026-09-24 (create-route coverage session).
 
 ---
 
@@ -38,19 +38,17 @@ roadmap) — don't pull tasks from it.
 ## Current session
 
 **Idle — nothing in progress, tree clean, all work committed and tested.**
-Picked up two of the three candidates left open at the end of the
-salon-services session: contrast on non-gray combinations, and keyboard-trap
-testing in modals/dropdowns (both under the broader accessibility pass
-spanning several sessions now). Both are done — see items 1-2 below. Test
-suite unchanged at 486 (both fixes are CSS/JS-only, no PHP logic touched).
+Closed out the last remaining piece of the Phase 4 N+1 route-shape audit:
+create pages, the one shape not yet covered after index (an earlier
+session) and show/edit (the session before this one). See item 1 below —
+found two more real bugs, same as every other route shape this pattern's
+been pointed at. Test suite grew from 486 → 529.
 
 Candidates for next time, not yet started:
-- N+1 smoke testing covers index + show/edit across 65 of 67 admin+vendor
-  routes (`admin.categories.show` no longer exists — it was dead code,
-  removed; `vendor.settings.payouts.edit` skipped, no `{id}` in its URI).
-  *Create* routes are still uncovered everywhere (low N+1 risk — empty
-  forms — but not zero, e.g. a create form that pre-populates from a
-  related record).
+- N+1 smoke testing now covers index + show/edit + create across every
+  admin and vendor route shape (`admin.categories.show` doesn't exist — it
+  was dead code, removed; `vendor.settings.payouts.edit` skipped, no
+  `{id}` in its URI). Nothing left to extend this pattern to.
 - Accessibility: contrast (gray text, colored badges, focus rings — all
   now checked, gray text and focus rings had real fixes, badges didn't
   need one) and keyboard-trap testing are done. Still not done: actual
@@ -85,6 +83,31 @@ Candidates for next time, not yet started:
 ---
 
 ## Recently completed (this session, most recent first)
+
+1. **N+1 smoke testing extended to create routes; two broken routes fixed**
+   (`7b809ba`) — completed the route-shape coverage begun in earlier
+   sessions (index, then show/edit) with the last shape: create pages.
+   Added `AdminCreatePagesSmokeTest` (28 routes) and
+   `VendorCreatePagesSmokeTest` (15 routes) — the same pattern that's now
+   found a real bug in every shape it's been pointed at. `Admin\
+   AuctionController` never implemented `create()`/`store()`, despite
+   `Route::resource('auctions', ...)` auto-registering both — hitting
+   `admin.auctions.create` threw a fatal `BadMethodCallException`. Fixed
+   with a redirect-and-explain, matching `admin.orders.create`'s existing
+   pattern for the same shape of situation (auctions are vendor-created,
+   not an admin action — not a missing feature, a missing "that's not how
+   you do that" response). `vendor.media.create` was different: a real
+   route with no controller method, no view, and nothing in the vendor UI
+   even linking to it (vendor media management is entirely modal-based).
+   Unlike the auctions case there's no reason vendors shouldn't have this,
+   so built the missing `create()` and view, mirroring the working admin
+   equivalent. Full suite: 529 passed, up from 486.
+
+Full diffs: `git log --oneline` / `git show <hash>`.
+
+---
+
+## Recently completed (prior session — contrast + keyboard-trap)
 
 1. **Keyboard-close and real focus-trapping for modals/dropdowns**
    (`169fef0`) — audited every Alpine `x-show="open"` and plain-JS modal/
@@ -391,9 +414,9 @@ php artisan app:verify-readiness --strict  # pre-deploy gate
 Commit convention: `fix:`, `feat:`, `refactor:`, `test:`, `docs:`, `chore:` —
 imperative subject ("add", not "added"). See [CONTRIBUTING.md](CONTRIBUTING.md#commit-convention).
 
-Test suite baseline: **486 passed** (1126 assertions), re-verified
-2026-09-24 (unchanged since 2026-09-23 — this session's fixes were CSS/JS
-only, no new tests needed). Re-verify with `php artisan test` before
+Test suite baseline: **529 passed** (1169 assertions), verified
+2026-09-24 (up from 486 earlier the same day — 43 new create-route smoke
+tests). Re-verify with `php artisan test` before
 trusting this number — don't cite it without running it.
 
 ---
