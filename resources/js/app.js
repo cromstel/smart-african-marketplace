@@ -1,8 +1,15 @@
 import './bootstrap';
+import focus from '@alpinejs/focus';
 
-// Alpine.js is provided by Livewire v3
-// No need to import and start Alpine separately
-// Livewire will handle Alpine initialization
+// Alpine.js is provided by Livewire v3 -- it starts its own Alpine
+// instance, so plugins register through the livewire:init event rather
+// than importing/starting Alpine directly here (that would start it
+// twice). `focus` adds x-trap, used on the real modal dialogs (not
+// lightweight dropdown/disclosure menus) so Tab can't leak keyboard
+// focus into the page behind an open modal.
+document.addEventListener('livewire:init', () => {
+  Alpine.plugin(focus);
+});
 
 const normalizeImageMetadata = () => {
   const appName = document.title?.split(' - ').pop()?.trim() || 'Smart African Market';

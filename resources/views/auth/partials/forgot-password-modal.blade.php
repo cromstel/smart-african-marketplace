@@ -19,6 +19,7 @@
 
     <div
         x-show="open"
+        x-trap="open"
         x-transition
         class="fixed inset-0 flex items-center justify-center z-50 px-4 py-8"
         role="dialog"

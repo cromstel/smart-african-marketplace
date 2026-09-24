@@ -14,6 +14,7 @@
         }
     "
     @click.away="open = false"
+    @keydown.escape.window="open = false"
 >
     <div class="relative">
         <label for="global-search-{{ $this->getId() }}" class="sr-only">Global search</label>

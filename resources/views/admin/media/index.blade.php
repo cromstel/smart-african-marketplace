@@ -334,6 +334,16 @@ function closeModal(modalId) {
     modal.classList.add('hidden');
 }
 
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    ['uploadModal', 'folderModal'].forEach((modalId) => {
+        const modal = document.getElementById(modalId);
+        if (modal && !modal.classList.contains('hidden')) {
+            closeModal(modalId);
+        }
+    });
+});
+
 function updateBulkActions() {
     const checkboxes = document.querySelectorAll('.media-checkbox:checked');
     const bulkActions = document.getElementById('bulkActions');
