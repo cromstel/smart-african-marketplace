@@ -4,7 +4,7 @@ Working memory for this repo. Keep this file current and lean — link out to
 `docs/` for anything that isn't state or the active task. Rewrite sections in
 place; don't append a history log here.
 
-Last updated: 2026-09-24 (create-route coverage session).
+Last updated: 2026-09-25 (booking-type wiring session).
 
 ---
 
@@ -38,33 +38,22 @@ roadmap) — don't pull tasks from it.
 ## Current session
 
 **Idle — nothing in progress, tree clean, all work committed and tested.**
-Closed out the last remaining piece of the Phase 4 N+1 route-shape audit:
-create pages, the one shape not yet covered after index (an earlier
-session) and show/edit (the session before this one). See item 1 below —
-found two more real bugs, same as every other route shape this pattern's
-been pointed at. Test suite grew from 486 → 529.
+Resolved the one remaining candidate that needed the user's call rather
+than a guess: the orphaned multi-type booking subsystem. Asked directly;
+they chose to wire it into the live flow rather than delete it or leave it
+flagged. See item 1 below — this was a real feature build, not a bug fix,
+and surfaced a genuine DB-level blocker (two NOT NULL columns that made
+resource bookings impossible to create at all) plus three more
+phantom-column bugs on top of the one already fixed in an earlier session.
+Test suite grew from 529 → 540.
 
 Candidates for next time, not yet started:
-- N+1 smoke testing now covers index + show/edit + create across every
-  admin and vendor route shape (`admin.categories.show` doesn't exist — it
-  was dead code, removed; `vendor.settings.payouts.edit` skipped, no
-  `{id}` in its URI). Nothing left to extend this pattern to.
-- Accessibility: contrast (gray text, colored badges, focus rings — all
-  now checked, gray text and focus rings had real fixes, badges didn't
-  need one) and keyboard-trap testing are done. Still not done: actual
-  assistive-tech testing with a real screen reader — everything this
-  multi-session pass has covered has been static analysis and computed
-  contrast ratios, not a live AT session.
-- A fully-built, fully-orphaned "multi-type booking" subsystem exists
-  (`BookingService`, `BookingPricingService`, `BookingResourceService`,
-  `BookingSlotService::generateTypeSlots()`, the `/api/bookings/types`
-  `/options` `/slots` `/price` endpoints, the
-  `<x-booking.booking-form>` component) — traced end to end while
-  resolving `BookingType::services()` this session. Its only including
-  view, `resources/views/bookings/vendor-booking.blade.php`, isn't linked
-  from any route. Whether to wire it in (a real feature: pick a booking
-  type first, then see relevant services/resources) or delete it outright
-  is a product decision, not something to guess at — flagged, not touched.
+- Accessibility: actual assistive-tech testing with a real screen reader.
+  Everything this multi-session pass has covered (alt text, ARIA labels,
+  contrast, keyboard-trap/focus-trap) has been static analysis and
+  computed contrast ratios, not a live AT session — this is the one
+  remaining gap, and it needs a human with a screen reader, not more
+  automated passes.
 - **Housekeeping**: don't run ad-hoc `php artisan tinker --execute=...`
   writes directly against `smart_africanmarket_test` outside a test
   transaction — did this once in an earlier session (checking
@@ -73,9 +62,10 @@ Candidates for next time, not yet started:
   cleaned up. Use a real test, or a throwaway DB session, instead.
 - **Environment note**: Windows `VirtualAlloc`/paging-file exhaustion
   during `php artisan test` (PHPUnit crashing before or during a run, no
-  test output, unrelated to the code) hit again this session, on top of
-  the prior session's occurrences — this is a recurring condition on this
-  dev box under sustained work, not a one-off. Check `Get-CimInstance
+  test output, unrelated to the code) has hit multiple sessions running
+  now — a recurring condition on this dev box under sustained work, not a
+  one-off. Didn't recur this session (test runs were just slow under
+  system load, not fatal), but check `Get-CimInstance
   Win32_OperatingSystem | select FreePhysicalMemory` if `php artisan
   test` dies this way; retry once memory is actually free rather than
   looping blindly.
@@ -83,6 +73,51 @@ Candidates for next time, not yet started:
 ---
 
 ## Recently completed (this session, most recent first)
+
+1. **Wired the orphaned multi-type booking subsystem into the live flow**
+   (`3c23de9`) — `BookingType` had a full admin CRUD UI and zero
+   customer-facing entry point; investigating turned up a fully-built,
+   fully-orphaned parallel booking system (`BookingService`,
+   `BookingPricingService`, `BookingResourceService`, `/api/bookings/*`
+   endpoints, an Alpine `<x-booking.booking-form>` component) with no
+   live route reaching it. Asked the user directly rather than guess —
+   they chose to wire it in. Fixed three more phantom-column bugs as
+   prerequisites (`Booking::$fillable` claimed 7 columns —
+   `booking_type_id`, `guest_count`, `recurring_interval`,
+   `recurring_count`, `subtotal`, `tax_amount`, `discount_amount` — that
+   don't exist anywhere in the real schema, confirmed via
+   `Schema::getColumnListing()`; `Booking::bookingType()`'s relation and
+   `BookingPricingService::calculateRefund()` had the same
+   `booking_type_id` bug). Found a genuine DB-level blocker along the
+   way: `salon_service_id` and `booking_end_date` were both `NOT NULL`,
+   making a resource-type booking impossible to insert regardless of
+   application code — added a migration relaxing both (applied to dev
+   and test DBs, no backfill needed, every existing row already has real
+   data). Built `BookingTypeController` (the new "start a booking"
+   entry point — pick a type, see what's bookable) and
+   `ResourceBookingController` (the actual rental-booking creation flow,
+   the first thing to ever call `BookingResourceService`'s
+   already-solid availability/pricing logic to write a booking rather
+   than just query one). Only appointment/consultation (→ `SalonService`)
+   and rental (→ `BookingResource`) have a real backing model;
+   reservation/class/event describe entities that don't exist anywhere
+   in this schema, so they get an honest "not available yet" page
+   instead of a fake listing. Made the existing "My Bookings" pages and
+   `BookingController::edit`/`update` resource-aware (a booking has
+   either a `salonService` or a `resource`, never both; reschedule is
+   guarded to salon-service bookings only, since it's a time-slot
+   concept a date-range rental doesn't have). Removed the old scaffold
+   outright once confirmed unsalvageable, not just unused — its `<form>`
+   posted to a hardcoded, always-404 service id, so it could never have
+   worked even with a link pointing at it. New coverage:
+   `BookingTypesAndResourceBookingTest` (12 tests). Full suite: 540
+   passed, up from 529.
+
+Full diffs: `git log --oneline` / `git show <hash>`.
+
+---
+
+## Recently completed (prior session — create-route coverage)
 
 1. **N+1 smoke testing extended to create routes; two broken routes fixed**
    (`7b809ba`) — completed the route-shape coverage begun in earlier
@@ -414,9 +449,9 @@ php artisan app:verify-readiness --strict  # pre-deploy gate
 Commit convention: `fix:`, `feat:`, `refactor:`, `test:`, `docs:`, `chore:` —
 imperative subject ("add", not "added"). See [CONTRIBUTING.md](CONTRIBUTING.md#commit-convention).
 
-Test suite baseline: **529 passed** (1169 assertions), verified
-2026-09-24 (up from 486 earlier the same day — 43 new create-route smoke
-tests). Re-verify with `php artisan test` before
+Test suite baseline: **540 passed** (1203 assertions), verified
+2026-09-25 (up from 529 the day before — 12 new tests for the
+booking-type/resource-booking feature). Re-verify with `php artisan test` before
 trusting this number — don't cite it without running it.
 
 ---
