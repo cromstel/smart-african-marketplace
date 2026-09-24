@@ -295,9 +295,10 @@ Recorded here so they are visible rather than rediscovered. Scheduled in the
    [3.3](../product/roadmap.md#33-decide-on-the-bootstrap-structure)) —
    `bootstrap/app.php` migrated to the Laravel 11/12 slim skeleton
    (`Application::configure()->withRouting()->withMiddleware()
-   ->withExceptions()`). `app/Http/Kernel.php`, `app/Console/Kernel.php`,
-   `app/Exceptions/Handler.php` and `app/Providers/RouteServiceProvider.php`
-   are gone; app providers now live in `bootstrap/providers.php` and
+   ->withExceptions()`). The HTTP and console kernels, the exception
+   handler and the route service provider (the old `app/Http/`,
+   `app/Console/`, `app/Exceptions/` and `app/Providers/` bootstrap
+   classes) are gone; app providers now live in `bootstrap/providers.php` and
    scheduled tasks in `routes/console.php`.
 
 2. **Duplicate authorization middleware.** `AdminMiddleware` and

@@ -100,7 +100,7 @@ Two terminals. For a production-style build use `npm run build`.
 > setups, Laravel's file-watch environment filtering in `ServeCommand`
 > silently breaks the spawned server's ability to read `.env`; `--no-reload`
 > skips that filtering (you just won't get auto-restart on `.env` changes —
-> re-run the command instead). `scripts/serve-local.ps1` wraps this for you.
+> re-run the command instead).
 
 ---
 
