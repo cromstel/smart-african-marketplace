@@ -4,12 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\BookingStatusChanged;
 use App\Models\Booking;
-use App\Models\BookingResource;
 use App\Models\SalonService;
-use App\Models\Vendor;
-use App\Services\BookingPricingService;
-use App\Services\BookingResourceService;
-use App\Services\BookingService;
 use App\Services\BookingSlotService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,151 +14,18 @@ use Illuminate\Support\Str;
 class BookingController extends Controller
 {
     public function __construct(
-        protected BookingSlotService $slotService,
-        protected BookingService $bookingService,
-        protected BookingPricingService $pricingService,
-        protected BookingResourceService $resourceService
+        protected BookingSlotService $slotService
     ) {}
-
-    /**
-     * Get available booking types
-     */
-    public function getBookingTypes()
-    {
-        $types = $this->bookingService->getAvailableBookingTypes();
-
-        return response()->json([
-            'booking_types' => $types->map(fn ($type) => [
-                'id' => $type->id,
-                'name' => $type->name,
-                'slug' => $type->slug,
-                'description' => $type->description,
-                'icon' => $type->icon,
-                'default_duration_minutes' => $type->default_duration_minutes,
-            ]),
-        ]);
-    }
-
-    /**
-     * Get services or resources for a booking type
-     */
-    public function getBookingOptions(Request $request)
-    {
-        $type = $request->query('type', 'appointment');
-        $vendorId = $request->query('vendor_id');
-
-        $options = [];
-
-        switch ($type) {
-            case 'rental':
-                $options['resources'] = $this->resourceService
-                    ->getVendorResources($vendorId)
-                    ->map(fn ($r) => [
-                        'id' => $r->id,
-                        'name' => $r->name,
-                        'description' => $r->description,
-                        'hourly_rate' => $r->hourly_rate,
-                        'daily_rate' => $r->daily_rate,
-                        'category' => $r->category,
-                    ]);
-                break;
-
-            case 'appointment':
-            case 'consultation':
-                $options['services'] = SalonService::where('user_id', $vendorId)
-                    ->where('is_active', true)
-                    ->with('category')
-                    ->get()
-                    ->map(fn ($s) => [
-                        'id' => $s->id,
-                        'name' => $s->name,
-                        'description' => $s->description,
-                        'price' => $s->price,
-                        'duration_minutes' => $s->duration_minutes,
-                        'category' => $s->category?->name,
-                    ]);
-                break;
-
-            default:
-                $options['services'] = SalonService::where('user_id', $vendorId)
-                    ->where('is_active', true)
-                    ->with('category')
-                    ->get()
-                    ->map(fn ($s) => [
-                        'id' => $s->id,
-                        'name' => $s->name,
-                        'description' => $s->description,
-                        'price' => $s->price,
-                        'duration_minutes' => $s->duration_minutes,
-                    ]);
-        }
-
-        return response()->json($options);
-    }
-
-    /**
-     * Get available slots for a booking type
-     */
-    public function getAvailableSlots(Request $request)
-    {
-        $type = $request->query('type', 'appointment');
-        $vendorId = $request->query('vendor_id');
-        $serviceId = $request->query('service_id');
-        $resourceId = $request->query('resource_id');
-        $date = $request->query('date', now()->toDateString());
-
-        $slots = $this->slotService->generateTypeSlots(
-            $vendorId,
-            $type,
-            Carbon::parse($date),
-            7,
-            $serviceId,
-            $resourceId
-        );
-
-        $payload = $slots[$date] ?? [
-            'date_label' => Carbon::parse($date)->format('l, M j'),
-            'is_today' => Carbon::parse($date)->isToday(),
-            'slots' => [],
-            'is_available' => true,
-        ];
-
-        return response()->json([
-            'date' => $date,
-            'booking_type' => $type,
-            'date_label' => $payload['date_label'] ?? Carbon::parse($date)->format('l, M j'),
-            'available_slots' => $payload['slots'] ?? [],
-            'is_available' => $payload['is_available'] ?? true,
-            'available_quantity' => $payload['available_quantity'] ?? null,
-            'available_spots' => $payload['available_spots'] ?? null,
-        ]);
-    }
-
-    /**
-     * Calculate booking price
-     */
-    public function calculatePrice(Request $request)
-    {
-        $validated = $request->validate([
-            'booking_type' => 'required|string',
-            'vendor_id' => 'required|integer',
-            'service_id' => 'nullable|integer',
-            'resource_id' => 'nullable|integer',
-            'booking_date' => 'required|date',
-            'start_time' => 'nullable',
-            'duration_minutes' => 'nullable|integer',
-            'quantity' => 'nullable|integer|min:1',
-        ]);
-
-        $pricing = $this->pricingService->calculatePricing($validated);
-
-        return response()->json($pricing);
-    }
 
     public function index()
     {
+        // Eager-loads both salonService and resource -- a booking has
+        // exactly one or the other (see ResourceBookingController), so
+        // loading both unconditionally is harmless (null relation, no
+        // query fired for the side that doesn't apply) and keeps this
+        // query correct regardless of which type a given row is.
         $bookings = Booking::where('user_id', auth()->id())
-            ->with('salonService.user')
+            ->with(['salonService.user', 'resource.vendor'])
             ->latest()
             ->paginate(20);
 
@@ -176,7 +38,7 @@ class BookingController extends Controller
             abort(403);
         }
 
-        $booking->load('salonService.user');
+        $booking->load(['salonService.user', 'resource.vendor']);
 
         return view('bookings.show', compact('booking'));
     }
@@ -204,6 +66,15 @@ class BookingController extends Controller
     {
         if ($booking->user_id !== auth()->id()) {
             abort(403);
+        }
+
+        // Rescheduling is a time-slot concept (generateSlots() below is
+        // typed to a SalonService, and would fatal on a null one) --
+        // rental bookings are date-range based and have no equivalent
+        // page. Cancel-and-rebook is the path for those.
+        if (! $booking->salon_service_id) {
+            return redirect()->route('bookings.show', $booking)
+                ->with('error', 'This booking cannot be rescheduled. Cancel it and submit a new request instead.');
         }
 
         if (in_array($booking->status, ['completed', 'cancelled'], true)) {
@@ -247,6 +118,12 @@ class BookingController extends Controller
     {
         if ($booking->user_id !== auth()->id()) {
             abort(403);
+        }
+
+        // See the matching guard in edit().
+        if (! $booking->salon_service_id) {
+            return redirect()->route('bookings.show', $booking)
+                ->with('error', 'This booking cannot be rescheduled. Cancel it and submit a new request instead.');
         }
 
         if (in_array($booking->status, ['completed', 'cancelled'], true)) {
@@ -443,29 +320,6 @@ class BookingController extends Controller
             'date' => $date,
             'date_label' => $payload['date_label'],
             'available_slots' => $payload['slots'],
-        ]);
-    }
-
-    /**
-     * Show vendor booking page with all booking types
-     */
-    public function vendorBooking(Vendor $vendor)
-    {
-        // Get booking types enabled for this vendor
-        $bookingTypes = $this->bookingService->getAvailableBookingTypes();
-
-        // Check if vendor has any booking-enabled services or resources
-        $hasServices = SalonService::where('user_id', $vendor->user_id)->where('is_active', true)->exists();
-        $hasResources = BookingResource::where('vendor_id', $vendor->user_id)->where('is_active', true)->exists();
-
-        if ($bookingTypes->isEmpty() && ! $hasServices) {
-            return redirect()->route('vendors.show', $vendor)
-                ->with('info', 'This vendor does not accept bookings at the moment.');
-        }
-
-        return view('bookings.vendor-booking', [
-            'vendor' => $vendor,
-            'bookingTypes' => $bookingTypes,
         ]);
     }
 }

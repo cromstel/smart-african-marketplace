@@ -44,7 +44,7 @@
                     </div>
                     @if(in_array($booking->status, ['pending', 'confirmed']))
                         <div class="flex flex-wrap gap-2">
-                            @if($booking->booking_date->isFuture())
+                            @if($booking->salon_service_id && $booking->booking_date->isFuture())
                                 <a href="{{ route('bookings.reschedule', $booking) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
                                     Reschedule
                                 </a>
@@ -60,53 +60,101 @@
                     @endif
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">Service</p>
-                        <div class="flex items-start gap-3">
-                            @if($booking->salonService->image)
-                                <img src="{{ '/storage/' . ltrim($booking->salonService->image ?? '', '/') }}" alt="{{ $booking->salonService->name }}" 
-                                     class="w-20 h-20 object-cover rounded">
-                            @endif
-                            <div>
-                                <p class="text-white font-semibold text-lg">{{ $booking->salonService->name }}</p>
-                                {{-- Prefer the dedicated salon service category over the generic
-                                     product category -- see SalonService::salonCategory(). --}}
-                                <p class="text-gray-400 text-sm">{{ $booking->salonService->salonCategory->name ?? $booking->salonService->category->name ?? 'N/A' }}</p>
+                @if($booking->booking_type === 'rental')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Rental</p>
+                            <div class="flex items-start gap-3">
+                                @if($booking->resource?->image)
+                                    <img src="{{ '/storage/' . ltrim($booking->resource->image ?? '', '/') }}" alt="{{ $booking->resource_name }}"
+                                         class="w-20 h-20 object-cover rounded">
+                                @endif
+                                <div>
+                                    <p class="text-white font-semibold text-lg">{{ $booking->resource_name }}</p>
+                                    <p class="text-gray-400 text-sm">Quantity: {{ $booking->quantity }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Vendor</p>
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                    {{ substr($booking->resource->vendor->business_name ?? 'N', 0, 1) }}
+                                </div>
+                                <div>
+                                    <p class="text-white font-semibold">{{ $booking->resource->vendor->business_name ?? 'N/A' }}</p>
+                                    <p class="text-gray-400 text-sm">Verified Vendor</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">Service Provider</p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                                {{ substr($booking->salonService->user->name ?? 'N', 0, 1) }}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-gray-700">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Start Date</p>
+                            <p class="text-white font-semibold">{{ \Carbon\Carbon::parse($booking->booking_date)->format('l, F d, Y') }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">End Date</p>
+                            <p class="text-white font-semibold">{{ $booking->end_date ? \Carbon\Carbon::parse($booking->end_date)->format('l, F d, Y') : 'N/A' }}</p>
+                        </div>
+
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Quantity</p>
+                            <p class="text-white font-semibold">{{ $booking->quantity }}</p>
+                        </div>
+                    </div>
+                @else
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Service</p>
+                            <div class="flex items-start gap-3">
+                                @if($booking->salonService->image)
+                                    <img src="{{ '/storage/' . ltrim($booking->salonService->image ?? '', '/') }}" alt="{{ $booking->salonService->name }}"
+                                         class="w-20 h-20 object-cover rounded">
+                                @endif
+                                <div>
+                                    <p class="text-white font-semibold text-lg">{{ $booking->salonService->name }}</p>
+                                    {{-- Prefer the dedicated salon service category over the generic
+                                         product category -- see SalonService::salonCategory(). --}}
+                                    <p class="text-gray-400 text-sm">{{ $booking->salonService->salonCategory->name ?? $booking->salonService->category->name ?? 'N/A' }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-white font-semibold">{{ $booking->salonService->user->name ?? 'N/A' }}</p>
-                                <p class="text-gray-400 text-sm">Verified Provider</p>
+                        </div>
+
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Service Provider</p>
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                    {{ substr($booking->salonService->user->name ?? 'N', 0, 1) }}
+                                </div>
+                                <div>
+                                    <p class="text-white font-semibold">{{ $booking->salonService->user->name ?? 'N/A' }}</p>
+                                    <p class="text-gray-400 text-sm">Verified Provider</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-gray-700">
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">Date</p>
-                        <p class="text-white font-semibold">{{ \Carbon\Carbon::parse($booking->booking_date)->format('l, F d, Y') }}</p>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-gray-700">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Date</p>
+                            <p class="text-white font-semibold">{{ \Carbon\Carbon::parse($booking->booking_date)->format('l, F d, Y') }}</p>
+                        </div>
 
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">Time</p>
-                        <p class="text-white font-semibold">{{ \Carbon\Carbon::parse($booking->booking_time)->format('g:i A') }}</p>
-                    </div>
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Time</p>
+                            <p class="text-white font-semibold">{{ \Carbon\Carbon::parse($booking->booking_time)->format('g:i A') }}</p>
+                        </div>
 
-                    <div>
-                        <p class="text-gray-400 text-sm mb-2">Duration</p>
-                        <p class="text-white font-semibold">{{ $booking->duration_minutes }} minutes</p>
+                        <div>
+                            <p class="text-gray-400 text-sm mb-2">Duration</p>
+                            <p class="text-white font-semibold">{{ $booking->duration_minutes }} minutes</p>
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 <div class="pt-6 border-t border-gray-700">
                     <p class="text-gray-400 text-sm mb-2">Price</p>

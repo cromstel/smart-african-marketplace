@@ -81,17 +81,20 @@ class BookingType extends Model
     // but salon_services has no booking_type_id column and never has -- the
     // hasMany's implicit FK guess doesn't correspond to anything real.
     // Unlike bookings() above, there's no existing column to match on
-    // instead: this app's live, reachable booking flow
-    // (BookingController::create()/store()) is service-first and never
-    // asks for a booking type at all. A separate multi-type booking system
-    // does exist (BookingService, BookingPricingService,
-    // BookingResourceService, the /api/bookings/* endpoints, the
-    // <x-booking.booking-form> component) but its only caller,
-    // resources/views/bookings/vendor-booking.blade.php, isn't wired to
-    // any route -- the whole subsystem is built but orphaned. Wiring
-    // SalonService to BookingType meaningfully means reviving that
-    // subsystem (a product decision, not a bug fix), so the relation was
-    // removed rather than pointed at a column that doesn't exist.
+    // instead. What actually connects a customer to a BookingType now is
+    // the browse-by-type flow (BookingTypeController, routes: booking-
+    // types.index/.show) -- appointment/consultation list SalonServices
+    // and hand off into the existing salon-service booking flow, rental
+    // lists BookingResources and hands off into
+    // ResourceBookingController's own create/store. That superseded the
+    // previous AJAX/Alpine scaffold this comment used to describe
+    // (BookingController's api.bookings.* endpoints,
+    // <x-booking.booking-form>, bookings/vendor-booking.blade.php) --
+    // removed rather than kept alongside a second, working
+    // implementation; see BookingTypesAndResourceBookingTest for coverage
+    // and the commit that added it for why the old scaffold couldn't
+    // just be repaired in place (its <form> posted to a hardcoded,
+    // always-404 service id).
 
     /**
      * Scope to get only active booking types.

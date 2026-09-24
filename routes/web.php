@@ -48,6 +48,7 @@ use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\BlogCommentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingTypeController as CustomerBookingTypeController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CampaignTrackingController;
 use App\Http\Controllers\CartController;
@@ -68,6 +69,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RefundRequestController;
+use App\Http\Controllers\ResourceBookingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\SearchController;
@@ -173,7 +175,6 @@ Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
 Route::post('/newsletter/unsubscribe', [NewsletterController::class, 'unsubscribe'])->middleware('throttle:public-forms')->name('newsletter.unsubscribe');
 
 Route::get('/vendors/{vendor:slug}/profile', [VendorProfileController::class, 'show'])->name('vendors.show');
-Route::get('/vendors/{vendor:slug}/book', [BookingController::class, 'vendorBooking'])->name('vendors.book');
 
 Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
@@ -522,6 +523,13 @@ Route::get('/salon/{service:slug}', [SalonController::class, 'show'])->name('sal
 Route::get('/stylists', [StylistController::class, 'index'])->name('stylists.index');
 Route::get('/stylists/{stylist}', [StylistController::class, 'show'])->name('stylists.show');
 
+// Booking types: the customer-facing "start a booking" entry point --
+// pick a type, then see what's actually bookable under it. See
+// BookingTypeController's own docblock for why only appointment/
+// consultation/rental render real listings.
+Route::get('/book', [CustomerBookingTypeController::class, 'index'])->name('booking-types.index');
+Route::get('/book/{bookingType:slug}', [CustomerBookingTypeController::class, 'show'])->name('booking-types.show');
+
 // Auction routes
 Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.index');
 Route::get('/auctions/featured', [AuctionController::class, 'featured'])->name('auctions.featured');
@@ -612,11 +620,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/salon/{service}/book/calendar', [BookingController::class, 'calendarPreview'])->name('bookings.calendar');
             Route::get('/salon/{service}/book', [BookingController::class, 'create'])->name('bookings.create');
             Route::post('/salon/{service}/book', [BookingController::class, 'store'])->name('bookings.store')->middleware('verified');
+            Route::get('/resources/{resource}/book', [ResourceBookingController::class, 'create'])->name('resource-bookings.create');
+            Route::post('/resources/{resource}/book', [ResourceBookingController::class, 'store'])->name('resource-bookings.store')->middleware('verified');
         });
-        Route::get('/api/bookings/types', [BookingController::class, 'getBookingTypes'])->name('api.bookings.types');
-        Route::get('/api/bookings/options', [BookingController::class, 'getBookingOptions'])->name('api.bookings.options');
-        Route::get('/api/bookings/slots', [BookingController::class, 'getAvailableSlots'])->name('api.bookings.slots');
-        Route::post('/api/bookings/price', [BookingController::class, 'calculatePrice'])->name('api.bookings.price')->middleware('verified');
         Route::get('/api/salon/{service}/available-slots', [BookingController::class, 'getServiceSlots'])->name('bookings.available-slots');
     });
 

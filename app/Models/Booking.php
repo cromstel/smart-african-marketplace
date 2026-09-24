@@ -8,6 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * `$fillable` used to include `booking_type_id`, `guest_count`,
+ * `recurring_interval`, and `recurring_count` -- none of which are real
+ * columns on `bookings` (confirmed via Schema::getColumnListing()).
+ * Harmless as long as nothing explicitly passed those keys to create()/
+ * update(), since Eloquent only inserts keys actually present in the
+ * data array, but a landmine for the next call site that does (exactly
+ * what BookingService::createBooking() did -- still broken, still
+ * unreachable; nothing in the new booking-type/resource-booking flow
+ * below calls it). Removed; `recurring_frequency`/`recurring_end_date`
+ * (the columns that actually exist) added in their place.
+ */
 class Booking extends Model
 {
     use HasFactory;
@@ -30,15 +42,11 @@ class Booking extends Model
         'completed_at',
         // New fields from migration
         'booking_type',
-        'booking_type_id',
         'start_time',
         'end_time',
         'end_date',
         'quantity',
         'unit_price',
-        'subtotal',
-        'tax_amount',
-        'discount_amount',
         'total_amount',
         'deposit_amount',
         'deposit_paid',
@@ -46,10 +54,9 @@ class Booking extends Model
         'guest_name',
         'guest_email',
         'guest_phone',
-        'guest_count',
         'is_recurring',
-        'recurring_interval',
-        'recurring_count',
+        'recurring_frequency',
+        'recurring_end_date',
         'parent_booking_id',
         'resource_name',
         'resource_id',
@@ -70,15 +77,11 @@ class Booking extends Model
         'end_date' => 'date',
         'quantity' => 'integer',
         'unit_price' => 'decimal:2',
-        'subtotal' => 'decimal:2',
-        'tax_amount' => 'decimal:2',
-        'discount_amount' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'deposit_amount' => 'decimal:2',
         'deposit_paid' => 'boolean',
-        'guest_count' => 'integer',
         'is_recurring' => 'boolean',
-        'recurring_count' => 'integer',
+        'recurring_end_date' => 'date',
         'custom_fields' => 'array',
         'metadata' => 'array',
     ];
@@ -99,11 +102,15 @@ class Booking extends Model
     }
 
     /**
-     * Relationship to BookingType
+     * Relationship to BookingType. Laravel's default belongsTo() foreign
+     * key would be booking_type_id, which doesn't exist -- matches on the
+     * real `booking_type` enum column against BookingType's `name` by
+     * string instead, same fix as BookingType::bookings() (the inverse
+     * side) uses.
      */
     public function bookingType(): BelongsTo
     {
-        return $this->belongsTo(BookingType::class);
+        return $this->belongsTo(BookingType::class, 'booking_type', 'name');
     }
 
     /**

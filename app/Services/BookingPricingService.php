@@ -256,8 +256,11 @@ class BookingPricingService
             $refundPercentage = 0; // No refund
         }
 
-        // Check booking type for custom cancellation policy
-        $bookingType = BookingType::find($booking->booking_type_id);
+        // Check booking type for custom cancellation policy. bookings has
+        // no booking_type_id column -- match by the real booking_type
+        // enum column against BookingType's name, same as
+        // Booking::bookingType() and BookingType::bookings().
+        $bookingType = BookingType::where('name', $booking->booking_type)->first();
         if ($bookingType && $bookingType->cancellation_policy_hours) {
             $policyHours = $bookingType->cancellation_policy_hours;
 
