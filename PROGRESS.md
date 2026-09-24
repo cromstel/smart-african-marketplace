@@ -4,7 +4,7 @@ Working memory for this repo. Keep this file current and lean — link out to
 `docs/` for anything that isn't state or the active task. Rewrite sections in
 place; don't append a history log here.
 
-Last updated: 2026-09-23 (salon-services fix session).
+Last updated: 2026-09-24 (contrast + keyboard-trap session).
 
 ---
 
@@ -38,26 +38,25 @@ roadmap) — don't pull tasks from it.
 ## Current session
 
 **Idle — nothing in progress, tree clean, all work committed and tested.**
-Closed out the two candidates left open at the end of the accessibility-pass
-session: extended N+1 smoke testing from index-only to show/edit routes
-(delegated to a subagent — item 1 below), and resolved
-`BookingType::services()` by tracing it all the way down rather than
-guessing (item 2). That trace surfaced real bugs the N+1 smoke tests
-couldn't have caught, since they're not 500-error shaped: wrong-owner
-salon-service creation, a missing delete guard, and a stale-service booking
-gap — all fixed in item 2. Test suite grew from 415 → 486 over the session.
+Picked up two of the three candidates left open at the end of the
+salon-services session: contrast on non-gray combinations, and keyboard-trap
+testing in modals/dropdowns (both under the broader accessibility pass
+spanning several sessions now). Both are done — see items 1-2 below. Test
+suite unchanged at 486 (both fixes are CSS/JS-only, no PHP logic touched).
 
 Candidates for next time, not yet started:
-- N+1 smoke testing now covers index + show/edit across 65 of 67
-  admin+vendor routes (`admin.categories.show` no longer exists — it was
-  dead code, removed; `vendor.settings.payouts.edit` skipped, no `{id}` in
-  its URI). *Create* routes are still uncovered everywhere (low N+1 risk —
-  empty forms — but not zero, e.g. a create form that pre-populates from a
+- N+1 smoke testing covers index + show/edit across 65 of 67 admin+vendor
+  routes (`admin.categories.show` no longer exists — it was dead code,
+  removed; `vendor.settings.payouts.edit` skipped, no `{id}` in its URI).
+  *Create* routes are still uncovered everywhere (low N+1 risk — empty
+  forms — but not zero, e.g. a create form that pre-populates from a
   related record).
-- Accessibility: unchanged from last session — actual assistive-tech
-  testing (a real screen reader), keyboard-trap testing in modals/
-  dropdowns, and contrast on non-gray combinations (colored badges,
-  borders, focus rings) are still not done.
+- Accessibility: contrast (gray text, colored badges, focus rings — all
+  now checked, gray text and focus rings had real fixes, badges didn't
+  need one) and keyboard-trap testing are done. Still not done: actual
+  assistive-tech testing with a real screen reader — everything this
+  multi-session pass has covered has been static analysis and computed
+  contrast ratios, not a live AT session.
 - A fully-built, fully-orphaned "multi-type booking" subsystem exists
   (`BookingService`, `BookingPricingService`, `BookingResourceService`,
   `BookingSlotService::generateTypeSlots()`, the `/api/bookings/types`
@@ -86,6 +85,50 @@ Candidates for next time, not yet started:
 ---
 
 ## Recently completed (this session, most recent first)
+
+1. **Keyboard-close and real focus-trapping for modals/dropdowns**
+   (`169fef0`) — audited every Alpine `x-show="open"` and plain-JS modal/
+   dropdown in the app for keyboard operability. Found three with no
+   Escape-to-close path at all: `components/dropdown.blade.php` (the
+   shared account-menu dropdown — had `@click.outside` but nothing for
+   keyboard users), `livewire/live-search.blade.php` (search suggestions),
+   and `admin/media/index.blade.php`'s upload/folder modals (plain
+   `classList` toggling, not Alpine). Fixed all three, matching this app's
+   own already-correct pattern in the auth modals.
+   `vendor/media/index.blade.php`'s equivalent modals needed nothing — real
+   Bootstrap 5 modals, which handle Escape and focus natively. Separately:
+   no modal in the app trapped Tab focus — a keyboard user could Tab out of
+   an open modal into the page behind it, since `x-show` only toggles
+   `display:none` with no focus management of its own. Installed
+   `@alpinejs/focus` (wired through the `livewire:init` event, since
+   Livewire v3 owns Alpine's lifecycle here and starting Alpine twice
+   breaks) and added `x-trap="open"` to the three genuine full-viewport
+   modal dialogs only — not the dropdown/disclosure components above,
+   which don't need Tab-trapping per the ARIA APG. Also added a missing
+   `role="dialog" aria-modal="true"` to `register-modal.blade.php`, which
+   lacked what its two siblings already had. `npm run build` verified
+   clean; full suite unchanged (486 — no PHP touched).
+2. **Focus-ring contrast failing WCAG 1.4.11 on light-theme pages**
+   (`a22fe61`) — `focus:ring-orange-500`, the customer/auth theme's
+   standard focus indicator (103 uses), only reaches 2.80:1 against white
+   — computed via the actual relative-luminance formula, not eyeballed —
+   below the 3:1 minimum for UI-state indicators. This directly undermined
+   an earlier session's WCAG 2.4.7 fix: the ring is there, just too faint
+   to reliably see on a light background. Bulk-swapped to
+   `focus:ring-orange-600` (3.56:1) on the 61 occurrences confirmed to sit
+   on a light/white background across 16 files; left the other 42 (7
+   files, all dark-themed `bg-gray-700`/`800`) alone since orange-500
+   already passes there (3.68-6.33:1) and a darker shade would only narrow
+   that margin. The same script checked every colored badge combination
+   already in use (`bg-X-900`/`text-X-2xx`, `bg-X-100`/`text-X-7xx`
+   patterns) — all comfortably pass WCAG AA, no fix needed. Full suite
+   unchanged (486 — pure CSS-class change).
+
+Full diffs: `git log --oneline` / `git show <hash>`.
+
+---
+
+## Recently completed (prior session — salon-services fixes)
 
 1. **N+1 smoke testing extended from index to show/edit routes**
    (`3e5a08c`, bug fixes in `1adb19e`) — added 65 tests across 7 new files
@@ -348,8 +391,9 @@ php artisan app:verify-readiness --strict  # pre-deploy gate
 Commit convention: `fix:`, `feat:`, `refactor:`, `test:`, `docs:`, `chore:` —
 imperative subject ("add", not "added"). See [CONTRIBUTING.md](CONTRIBUTING.md#commit-convention).
 
-Test suite baseline: **486 passed** (1126 assertions), verified 2026-09-23
-(up from 415 the day before). Re-verify with `php artisan test` before
+Test suite baseline: **486 passed** (1126 assertions), re-verified
+2026-09-24 (unchanged since 2026-09-23 — this session's fixes were CSS/JS
+only, no new tests needed). Re-verify with `php artisan test` before
 trusting this number — don't cite it without running it.
 
 ---
