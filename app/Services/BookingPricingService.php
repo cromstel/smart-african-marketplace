@@ -257,7 +257,7 @@ class BookingPricingService
         }
 
         // Check booking type for custom cancellation policy
-        $bookingType = BookingType::find($booking->booking_type_id);
+        $bookingType = $booking->bookingType;
         if ($bookingType && $bookingType->cancellation_policy_hours) {
             $policyHours = $bookingType->cancellation_policy_hours;
 

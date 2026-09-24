@@ -30,7 +30,6 @@ class Booking extends Model
         'completed_at',
         // New fields from migration
         'booking_type',
-        'booking_type_id',
         'start_time',
         'end_time',
         'end_date',
@@ -99,11 +98,15 @@ class Booking extends Model
     }
 
     /**
-     * Relationship to BookingType
+     * Relationship to BookingType.
+     *
+     * Keyed on the `booking_type` enum column matching `booking_types.slug`:
+     * `bookings` has no `booking_type_id` column (it was never migrated),
+     * so the string is the only link that actually exists.
      */
     public function bookingType(): BelongsTo
     {
-        return $this->belongsTo(BookingType::class);
+        return $this->belongsTo(BookingType::class, 'booking_type', 'slug');
     }
 
     /**

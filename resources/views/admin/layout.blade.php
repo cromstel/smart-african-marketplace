@@ -148,7 +148,7 @@
                 $adminSubmenuActive = [
                     'media' => request()->routeIs('admin.media.*'),
                     'products' => request()->routeIs('admin.products.*', 'admin.categories.*', 'admin.products.brands.*', 'admin.products.tags.*', 'admin.products.attributes.*', 'admin.products.variations.*', 'admin.reviews.*'),
-                    'marketplace' => request()->routeIs('admin.vendors.*', 'admin.vendor-verifications.*', 'admin.payouts.*', 'admin.withdrawals.*', 'admin.refunds.*'),
+                    'marketplace' => request()->routeIs('admin.vendors.*', 'admin.vendor-verifications.*', 'admin.payouts.*', 'admin.withdrawals.*', 'admin.refunds.*', 'admin.bookings.*', 'admin.booking-types.*'),
                     'blog' => request()->routeIs('admin.blog.*'),
                     'pages' => request()->routeIs('admin.hero-sections.*', 'admin.about.*', 'admin.announcements.*', 'admin.pages.*'),
                     'growth' => request()->routeIs('admin.loyalty.*', 'admin.referrals.*', 'admin.campaigns.*', 'admin.coupons.*', 'admin.announcements.*'),
@@ -255,6 +255,12 @@
                         </a>
                         <a href="{{ route('admin.payouts.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.payouts.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
                             <span>Ledger</span>
+                        </a>
+                        <a href="{{ route('admin.bookings.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.bookings.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Bookings</span>
+                        </a>
+                        <a href="{{ route('admin.booking-types.index') }}" class="flex items-center space-x-2 px-4 py-2 rounded text-sm {{ request()->routeIs('admin.booking-types.*') ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700 hover:text-gray-300' }}">
+                            <span>Booking Types</span>
                         </a>
                     </div>
                 </div>
