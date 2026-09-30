@@ -29,8 +29,9 @@
 >
 > That is a judgement call layered on top of someone else's deliberate decision.
 > If the original removal was correct for reasons not captured here, delete
-> `app/Http/Middleware/PreventCrlfInjection.php`, remove it from
-> `app/Http/Kernel.php`, and drop `tests/Feature/CrlfInjectionTest.php` — nothing
+> `app/Http/Middleware/PreventCrlfInjection.php`, remove it from the middleware
+> stack in `bootstrap/app.php` (the HTTP kernel it originally lived in was
+> removed in the slim-skeleton migration), and drop `tests/Feature/CrlfInjectionTest.php` — nothing
 > else depends on them.
 
 # Security Patch & Major Upgrade Log - July 11, 2026
@@ -130,7 +131,7 @@ The following manual security patches were created for Laravel 10.x and removed 
 | `composer.json` | Updated | Laravel 12 + all package upgrades |
 | `composer.lock` | Regenerated | 147 packages resolved |
 | `app/Services/ImageOptimizationService.php` | Rewritten | Intervention Image 3 compatibility |
-| `app/Http/Kernel.php` | Modified | Removed CRLF middleware |
+| HTTP kernel (since removed; see `bootstrap/app.php`) | Modified | Removed CRLF middleware |
 | `config/app.php` | Modified | Removed CRLF provider |
 | `soketi/package.json` | Modified | Added npm overrides for security |
 | `docs/security/patch-log.md` | Created | This documentation |

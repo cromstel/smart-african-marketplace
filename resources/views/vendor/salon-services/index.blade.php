@@ -68,6 +68,7 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="{{ route('vendor.salon-services.pricing-tiers.index', $service) }}" class="text-indigo-400 hover:text-indigo-300 mr-3">Pricing</a>
                         <a href="{{ route('vendor.salon-services.edit', $service) }}" class="text-indigo-400 hover:text-indigo-300 mr-3">Edit</a>
                         <form action="{{ route('vendor.salon-services.destroy', $service) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this service?')">
                             @csrf

@@ -56,13 +56,15 @@ class ServicePricingTier extends Model
             return false;
         }
 
-        // Check time range
+        // Check time range. Compare time of day only: Carbon::parse() on a
+        // bare "09:00:00" yields *today* at 09:00, so comparing it against a
+        // booking's full datetime would be wrong for any other date.
         if ($this->start_time && $this->end_time && $time) {
-            $tierStart = Carbon::parse($this->start_time);
-            $tierEnd = Carbon::parse($this->end_time);
-            $checkTime = Carbon::parse($time);
+            $tierStart = Carbon::parse($this->start_time)->format('H:i:s');
+            $tierEnd = Carbon::parse($this->end_time)->format('H:i:s');
+            $checkTime = $time->format('H:i:s');
 
-            if ($checkTime->lt($tierStart) || $checkTime->gte($tierEnd)) {
+            if ($checkTime < $tierStart || $checkTime >= $tierEnd) {
                 return false;
             }
         }

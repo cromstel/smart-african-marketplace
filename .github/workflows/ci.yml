@@ -27,7 +27,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: african_market_test
+          MYSQL_DATABASE: smart_africanmarket_test  # must match DB_DATABASE in phpunit.xml
         ports:
           - 3306:3306
         options: >-
@@ -70,7 +70,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: npm
 
       - name: Install npm dependencies
@@ -85,6 +85,7 @@ jobs:
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
+          DB_DATABASE: smart_africanmarket_test
           DB_USERNAME: root
           DB_PASSWORD: password
         run: php artisan migrate --force
@@ -99,6 +100,7 @@ jobs:
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
+          DB_DATABASE: smart_africanmarket_test
           DB_USERNAME: root
           DB_PASSWORD: password
         run: php artisan test --coverage-clover=coverage.xml --coverage-text
@@ -108,6 +110,7 @@ jobs:
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
+          DB_DATABASE: smart_africanmarket_test
           DB_USERNAME: root
           DB_PASSWORD: password
         run: php artisan test

@@ -58,9 +58,10 @@ rules and ownership-check pattern (manual `abort_if($address->user_id !==
 auth()->id(), 403)`, the same style already used elsewhere in this codebase,
 e.g. `WishlistController::destroy()`). New views:
 `resources/views/addresses/{index,create,edit}.blade.php` and a shared
-`partials/form.blade.php`, following the existing dark-theme
-`layouts.shop` conventions used by `orders/index.blade.php` and
-`checkout/index.blade.php`. New factory: `database/factories/AddressFactory.php`
+`resources/views/addresses/partials/form.blade.php`, following the existing
+dark-theme `layouts.shop` conventions used by
+`resources/views/orders/index.blade.php` and
+`resources/views/checkout/index.blade.php`. New factory: `database/factories/AddressFactory.php`
 (the model declared `HasFactory` but no factory file existed). New test:
 `tests/Feature/AddressBookTest.php` — create/list/update/delete, validation
 of required fields, default-address unsetting, ownership isolation (403 on
@@ -68,7 +69,7 @@ another user's address for show/edit/update/destroy), guest redirect.
 
 ### 2. `Api\AddressController`'s validation didn't match its own database schema
 
-`database/migrations/..._create_addresses_table.php` defines `state`,
+`database/migrations/2026_02_15_131429_create_addresses_table.php` defines `state`,
 `postal_code` and `phone` as `NOT NULL` with no default. Both
 `Api\AddressController::store()`/`update()` validated these three fields as
 `nullable`. A request that omitted them would pass validation and then fail
@@ -85,7 +86,7 @@ error shape.
 `tests/Feature/AddressBookTest.php` has been written but **not yet
 executed**, blocked by the same MariaDB grant-table outage described in
 `docs/security/rate-limiting-audit.md` and in project memory
-(`claude/engineering-conventions.md`). Treat this fix as **pending first
+(the engineering-conventions notes, not part of this repository). Treat this fix as **pending first
 run**, not complete, until the suite executes green on this machine or in
 CI.
 

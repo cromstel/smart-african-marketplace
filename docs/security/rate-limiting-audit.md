@@ -59,7 +59,8 @@ against the same N+1-requests-then-assert-429 pattern already established in
 yet executed**: this environment's local MariaDB instance is currently
 rejecting all connections (`SQLSTATE[HY000] [1045] Access denied for user
 'user_africanmarket'@'localhost'`), the same recurring grant-table outage
-documented in `claude/engineering-conventions.md` (project memory) that
+documented in project memory (the engineering-conventions notes, not part of
+this repository) that
 requires admin access to this machine to resolve. The fix itself
 (`routes/web.php`) is a one-line-per-route middleware addition with no logic
 change, so the risk of it being wrong is low, but it should be treated as

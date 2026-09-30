@@ -155,6 +155,11 @@ class BookingController extends Controller
             'quantity' => 'nullable|integer|min:1',
         ]);
 
+        // The base price comes from the service itself, never from the client.
+        $service = isset($validated['service_id']) ? SalonService::find($validated['service_id']) : null;
+        $validated['base_price'] = $service ? (float) $service->price : 0;
+        $validated['duration_minutes'] ??= $service?->duration_minutes;
+
         $pricing = $this->pricingService->calculatePricing($validated);
 
         return response()->json($pricing);
@@ -190,6 +195,11 @@ class BookingController extends Controller
 
         $availableSlots = $this->slotService->generateSlots($service);
         [$defaultDate, $defaultSlot] = $this->slotService->getFirstSelectableSlot($availableSlots);
+
+        // Show customers only the tiers that can actually apply to this service.
+        $service->load(['pricingTiers' => fn ($query) => $query->where('is_active', true)
+            ->where(fn ($q) => $q->whereNull('minimum_duration')->orWhere('minimum_duration', '<=', $service->duration_minutes))
+            ->orderBy('id')]);
 
         return view('bookings.create', compact(
             'service',
@@ -280,6 +290,7 @@ class BookingController extends Controller
 
         $start = Carbon::parse($validated['booking_date'].' '.$validated['booking_time']);
         $end = $start->copy()->addMinutes($service->duration_minutes);
+        $price = $this->pricingService->priceForService($service, $start)['price'];
 
         $oldStatus = $booking->status;
 
@@ -288,7 +299,7 @@ class BookingController extends Controller
             'booking_time' => $validated['booking_time'],
             'booking_end_date' => $end,
             'duration_minutes' => $service->duration_minutes,
-            'price' => $service->price,
+            'price' => $price,
             'stylist_id' => $service->stylist_id,
             'status' => 'pending',
             'customer_notes' => $validated['customer_notes'] ?? $booking->customer_notes,
@@ -333,6 +344,7 @@ class BookingController extends Controller
         try {
             $start = Carbon::parse($validated['booking_date'].' '.$validated['booking_time']);
             $end = $start->copy()->addMinutes($service->duration_minutes);
+            $price = $this->pricingService->priceForService($service, $start)['price'];
 
             $booking = Booking::create([
                 'booking_number' => 'BK-'.strtoupper(Str::random(10)),
@@ -344,7 +356,7 @@ class BookingController extends Controller
                 'booking_time' => $validated['booking_time'],
                 'booking_end_date' => $end,
                 'duration_minutes' => $service->duration_minutes,
-                'price' => $service->price,
+                'price' => $price,
                 'status' => 'pending',
                 // customer_notes is nullable -- $request->validate() omits the
                 // key entirely from $validated when the field wasn't submitted

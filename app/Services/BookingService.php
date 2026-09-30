@@ -27,7 +27,6 @@ class BookingService
         $bookingData = array_merge($defaults, [
             'booking_number' => $bookingNumber,
             'booking_type' => $bookingType,
-            'booking_type_id' => $data['booking_type_id'] ?? null,
             'status' => $data['status'] ?? 'pending',
             'user_id' => $data['user_id'] ?? null,
             'salon_service_id' => $data['salon_service_id'] ?? null,
@@ -85,7 +84,7 @@ class BookingService
             'discount_amount', 'total_amount', 'deposit_amount', 'deposit_paid',
             'payment_status', 'guest_name', 'guest_email', 'guest_phone', 'guest_count',
             'resource_id', 'resource_name', 'customer_notes', 'staff_notes',
-            'custom_fields', 'metadata', 'stylist_id', 'booking_type_id',
+            'custom_fields', 'metadata', 'stylist_id',
         ];
 
         $updateData = array_intersect_key($data, array_flip($updateableFields));
@@ -172,7 +171,6 @@ class BookingService
         }
 
         return [
-            'booking_type_id' => $bookingType->id,
             'duration_minutes' => $bookingType->default_duration_minutes,
         ];
     }
@@ -209,7 +207,6 @@ class BookingService
             Booking::create([
                 'booking_number' => $this->generateBookingNumber($data['booking_type']),
                 'booking_type' => $data['booking_type'],
-                'booking_type_id' => $data['booking_type_id'],
                 'status' => 'pending',
                 'user_id' => $data['user_id'],
                 'salon_service_id' => $data['salon_service_id'],

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Booking;
 use App\Models\BookingType;
+use App\Models\SalonService;
 use App\Models\ServicePricingTier;
 use Carbon\Carbon;
 
@@ -20,12 +21,12 @@ class BookingPricingService
         $basePrice = $data['base_price'] ?? 0;
 
         // Get applicable pricing tier
-        $pricingTier = $this->getApplicablePricingTier(
-            $data['vendor_id'] ?? null,
-            $data['service_id'] ?? null,
+        $pricingTier = isset($data['service_id']) ? $this->getApplicablePricingTier(
+            (int) $data['service_id'],
             Carbon::parse($data['booking_date'] ?? now()),
-            Carbon::parse($data['start_time'] ?? now())
-        );
+            Carbon::parse($data['start_time'] ?? now()),
+            $duration
+        ) : null;
 
         // Calculate base subtotal
         $subtotal = $this->calculateSubtotal($bookingType, $basePrice, $quantity, $duration);
@@ -63,7 +64,7 @@ class BookingPricingService
             'total_amount' => round($total, 2),
             'deposit_amount' => round($depositAmount, 2),
             'pricing_tier_id' => $pricingTier?->id,
-            'pricing_tier_name' => $pricingTier?->name,
+            'pricing_tier_name' => $pricingTier?->label,
         ];
     }
 
@@ -134,60 +135,50 @@ class BookingPricingService
     }
 
     /**
-     * Get applicable pricing tier for the given time
+     * The active pricing tier of a salon service that applies to a booking
+     * starting at the given date and time, or null for the base price.
+     *
+     * When several tiers match, the most specific wins: a tier limited to a
+     * day and a time window beats one limited to only one of those, which
+     * beats an every-day, all-day tier. Ties go to the oldest tier.
      */
-    public function getApplicablePricingTier(?int $vendorId, ?int $serviceId, Carbon $date, Carbon $time): ?ServicePricingTier
+    public function getApplicablePricingTier(int $serviceId, Carbon $date, Carbon $time, ?int $durationMinutes = null): ?ServicePricingTier
     {
-        $dayOfWeek = $date->dayOfWeek;
-        $hour = (int) $time->format('H');
-
-        $query = ServicePricingTier::where('is_active', true)
-            ->where(function ($q) use ($vendorId, $serviceId) {
-                $q->where('vendor_id', $vendorId)
-                    ->orWhere('service_id', $serviceId)
-                    ->orWhereNull('vendor_id');
-            })
-            ->where(function ($q) use ($dayOfWeek) {
-                $q->whereJsonContains('days_of_week', (string) $dayOfWeek)
-                    ->orWhereJsonContains('days_of_week', '0'); // All days
-            })
-            ->where(function ($q) use ($hour) {
-                $q->where(function ($q2) use ($hour) {
-                    $q2->where('start_hour', '<=', $hour)
-                        ->where('end_hour', '>=', $hour);
-                })->orWhereNull('start_hour');
-            })
-            ->where(function ($q) use ($date) {
-                $q->whereNull('start_date')
-                    ->orWhere('start_date', '<=', $date);
-            })
-            ->where(function ($q) use ($date) {
-                $q->whereNull('end_date')
-                    ->orWhere('end_date', '>=', $date);
-            })
-            ->orderBy('priority', 'desc')
-            ->orderBy('discount_percentage', 'desc')
+        return ServicePricingTier::where('salon_service_id', $serviceId)
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->get()
+            ->filter(fn (ServicePricingTier $tier) => $tier->appliesTo($date, $time)
+                && ($tier->minimum_duration === null || ($durationMinutes ?? 0) >= $tier->minimum_duration))
+            ->sortByDesc(fn (ServicePricingTier $tier) => ($tier->day_of_week !== null ? 2 : 0)
+                + ($tier->start_time && $tier->end_time ? 1 : 0))
             ->first();
-
-        return $query;
     }
 
     /**
-     * Apply pricing tier discount/premium
+     * What a customer pays for one booking of a salon service starting at
+     * $start: the service price with any applicable pricing tier applied.
+     *
+     * @return array{price: float, tier: ?ServicePricingTier}
+     */
+    public function priceForService(SalonService $service, Carbon $start): array
+    {
+        $tier = $this->getApplicablePricingTier($service->id, $start, $start, $service->duration_minutes);
+        $base = (float) $service->price;
+
+        return [
+            'price' => $tier ? $this->applyPricingTier($base, $tier) : $base,
+            'tier' => $tier,
+        ];
+    }
+
+    /**
+     * Apply a pricing tier's percentage or fixed modifier, never going below
+     * zero.
      */
     protected function applyPricingTier(float $price, ServicePricingTier $tier): float
     {
-        if ($tier->discount_percentage > 0) {
-            // Apply discount
-            return $price * (1 - ($tier->discount_percentage / 100));
-        }
-
-        if ($tier->premium_percentage > 0) {
-            // Apply premium
-            return $price * (1 + ($tier->premium_percentage / 100));
-        }
-
-        return $price;
+        return round(max(0, $tier->calculatePrice($price)), 2);
     }
 
     /**
@@ -257,7 +248,7 @@ class BookingPricingService
         }
 
         // Check booking type for custom cancellation policy
-        $bookingType = BookingType::find($booking->booking_type_id);
+        $bookingType = $booking->bookingType;
         if ($bookingType && $bookingType->cancellation_policy_hours) {
             $policyHours = $bookingType->cancellation_policy_hours;
 

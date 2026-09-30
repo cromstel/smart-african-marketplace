@@ -4,7 +4,7 @@ Working memory for this repo. Keep this file current and lean — link out to
 `docs/` for anything that isn't state or the active task. Rewrite sections in
 place; don't append a history log here.
 
-Last updated: 2026-09-22.
+Last updated: 2026-09-24.
 
 ---
 
@@ -37,16 +37,14 @@ roadmap) — don't pull tasks from it.
 
 ## Current session
 
-**Idle — nothing in progress, tree clean, all work committed and tested.**
-Worked through the full "next candidates" list from the prior session end to
-end (SEO → subscriptions → vendor upgrade payment gate → N+1 audit →
-maintenance mode → accessibility), testing and committing after each item.
-Test suite grew from 258 → 369 over the two sessions combined.
+**Idle — nothing in progress, tree clean.** This session built the missing
+booking-types admin UI and salon-service pricing tiers (items 0a and 0 below),
+and fixed three CI failures that were red on `main`. Test suite: 389 passing.
 
 Candidates for next time, not yet started:
-- Build the missing `admin/booking-types/*` CRUD views (index/create/edit/
-  show + pricing tiers) — `BookingTypeController` is a complete, real
-  backend with no admin UI at all. See item 8 below.
+- `BookingService::createBooking()` and `BookingPricingService::calculateRefund()`
+  have no callers — the live booking flow in `BookingController` bypasses
+  both. Worth deciding whether to wire them in or delete them.
 - Broader Phase 4 N+1 audit beyond what the test suite exercises —
   `Model::preventLazyLoading()` is on now (item 3), but only catches N+1 on
   code paths something actually calls; large parts of the 49 admin + 32
@@ -75,6 +73,34 @@ Candidates for next time, not yet started:
 
 ## Recently completed (this session, most recent first)
 
+0a. **Salon-service pricing tiers** (2026-09-24) — vendors can now add
+   day/time pricing tiers per service (`vendor/salon-services/{id}/pricing-tiers`,
+   owner-checked and `->scoped()`), customers see them on the booking page,
+   and `bookings.store`/reschedule charge the tiered price. Previously there
+   was no UI, `BookingPricingService::getApplicablePricingTier()` queried
+   nine columns the table never had (so `POST /api/bookings/price` threw on
+   every call), and `ServicePricingTier::appliesTo()` compared a booking's
+   datetime against *today* at the tier's times. Most specific tier wins
+   (day+time > day > time); price floors at zero.
+   Tests: `tests/Feature/Vendor/ServicePricingTierTest.php`.
+0. **Booking-types admin UI + phantom `booking_type_id`** (2026-09-24) —
+   built `admin/booking-types` index/create/edit (+ shared `_form`),
+   linked Bookings and Booking Types from the Marketplace nav (neither
+   was reachable before), and re-added the route to the admin smoke test.
+   Building it found that `bookings.booking_type_id` was never migrated:
+   `BookingType::bookings()` threw on every delete, and
+   `BookingPricingService::calculateRefund()` looked up the type by that
+   null column, so the admin-set cancellation notice was never applied.
+   Relations now key on `bookings.booking_type` = `booking_types.slug`
+   (the link that actually exists), and the slug is fixed after creation,
+   since renaming would orphan bookings. Also fixed: edit form couldn't
+   deactivate a type (no hidden fallback for the checkbox), blank sort
+   order failed on a NOT NULL column, and slug collisions reached the DB.
+   Removed 5 routes pointing at controller methods that never existed.
+   Tests: `tests/Feature/Admin/BookingTypeManagementTest.php`.
+   Same PR fixed CI, red on `main`: docs integrity links, Node 18 → 22
+   (Vite 8), and the CI database name not matching `phpunit.xml`.
+
 1. **WCAG 2.4.7 (Focus Visible)** (`8336f35`) — `focus:outline-none` with
    no replacement focus style, found across every shared layout: the
    account/admin/vendor dropdown trigger in all three layouts (every page
@@ -100,7 +126,7 @@ Candidates for next time, not yet started:
    existing suite under it found one real violation (`CheckoutTest`, fixed).
    Added `tests/Feature/Admin/AdminIndexPagesSmokeTest.php` hitting all 44
    admin index routes to extend that coverage to controllers with no
-   dedicated test — found items 1 and 2 above, plus item 8.
+   dedicated test — found items 1 and 2 above, plus the missing booking-types views (item 0).
 4. **Vendor plan-upgrade payment bypass** (`a86c9cb`) — the
    "Choose {plan}" button on `/vendor/subscription/upgrade` called no
    payment gateway at all; any vendor could self-upgrade to the $199
@@ -133,14 +159,6 @@ Candidates for next time, not yet started:
    Market" across 67 tracked files, display text only. Deliberately left
    untouched: Android package id `com.africanmarket.app`, composer/npm
    package names, `africanmarket.com`-style domains/emails.
-8. **Known gap, not fixed**: `admin.booking-types.index` renders a view
-   that doesn't exist anywhere in `resources/views/admin/`.
-   `BookingTypeController` is a complete, real backend (model, full
-   resource controller, pricing tiers) with no admin UI at all and no nav
-   link pointing at it. Building 4 CRUD views + a pricing-tier UI is
-   feature work, not a bug fix — excluded from the smoke test with an
-   explanation rather than built.
-
 Full diffs: `git log --oneline` / `git show <hash>`.
 
 ---
@@ -219,7 +237,7 @@ php artisan app:verify-readiness --strict  # pre-deploy gate
 Commit convention: `fix:`, `feat:`, `refactor:`, `test:`, `docs:`, `chore:` —
 imperative subject ("add", not "added"). See [CONTRIBUTING.md](CONTRIBUTING.md#commit-convention).
 
-Test suite baseline: **369 passed**, verified 2026-09-22 (up from 258 at the
+Test suite baseline: **389 passed**, verified 2026-09-24 (up from 258 at the
 last roadmap update). Re-verify with `php artisan test` before trusting this
 number — don't cite it without running it.
 

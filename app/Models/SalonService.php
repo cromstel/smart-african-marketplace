@@ -57,6 +57,11 @@ class SalonService extends Model
         return $this->belongsTo(SalonServiceCategory::class, 'salon_category_id');
     }
 
+    public function pricingTiers(): HasMany
+    {
+        return $this->hasMany(ServicePricingTier::class);
+    }
+
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);

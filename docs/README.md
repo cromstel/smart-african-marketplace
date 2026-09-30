@@ -242,11 +242,10 @@ Written for customers, vendors, admins and support staff rather than developers.
 
 ## Archive
 
-Superseded documents, kept so no context is lost. Do not update them.
-
-| Document | Superseded by |
-|---|---|
-| [TODO snapshot, 2026-02-22](archive/todo-2026-02-22.md) | [TODO.md](product/todo.md) and [ROADMAP.md](product/roadmap.md) |
+Superseded documents go in `docs/archive/`. It is currently empty: the
+2026-02-22 TODO snapshot, superseded by [TODO.md](product/todo.md) and
+[ROADMAP.md](product/roadmap.md), was deleted in `b73665f` (roadmap 3.4) and
+remains in git history.
 
 ---
 

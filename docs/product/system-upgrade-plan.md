@@ -69,7 +69,7 @@
 | `composer.json` | Updated | Laravel 12 + all package upgrades |
 | `composer.lock` | Regenerated | 147 packages resolved |
 | `app/Services/ImageOptimizationService.php` | Rewritten | Intervention Image 3 compatibility |
-| `app/Http/Kernel.php` | Modified | Removed CRLF middleware |
+| HTTP kernel (since removed; see `bootstrap/app.php`) | Modified | Removed CRLF middleware |
 | `config/app.php` | Modified | Removed CRLF provider |
 | `soketi/package.json` | Modified | Added npm overrides for security |
 | `docs/security/patch-log.md` | Created | Security patch documentation |
