@@ -154,5 +154,9 @@ docs/composer-install-prompt.md
 /composer.phar
 
 _serve.pid
+_php.pid
+_vite.pid
+dependabot-alerts.json
+dependabot-alerts-utf8.json
 _check_json2.php
 _check_json_directive.php
