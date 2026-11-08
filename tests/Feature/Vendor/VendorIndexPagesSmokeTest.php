@@ -8,6 +8,7 @@ use App\Models\UserSubscription;
 use App\Models\Vendor;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Phase 4 (roadmap): "Audit N+1 queries across the 49 admin and 32 vendor
@@ -19,9 +20,7 @@ class VendorIndexPagesSmokeTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /**
-     * @dataProvider indexRoutes
-     */
+    #[DataProvider('indexRoutes')]
     public function test_vendor_index_page_loads_without_a_server_error(string $routeName): void
     {
         [$user] = $this->makeVendorWithFullAccess();

@@ -50,7 +50,7 @@
     fallback-title="Choose Your Perfect Plan"
     fallback-subtitle="Compare paid vendor plans and upgrade anytime to unlock more capacity and growth features."
     heading-tag="h2"
-    fallback-image="/images/hero-banners/pricing-banner.avif"
+    background-image-url="/images/hero-banners/pricing-banner.avif"
 />
 
 <div class="relative z-20 container mx-auto px-4 -mt-6 md:-mt-12 pb-16">

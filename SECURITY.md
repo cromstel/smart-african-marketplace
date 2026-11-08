@@ -25,8 +25,7 @@ This keeps the report confidential until a fix is ready and does not require a
 separate email address.
 
 ### Alternative method — direct email
-Email the maintainers at **security@example.com** (replace this with the
-project's real security contact address) using the subject line
+Email the maintainers at <security-contact-not-configured> (configure this before release — replace with the project's real security contact address or rely solely on GitHub Private Vulnerability Reporting) using the subject line
 `Security Vulnerability Report`.
 
 ### What to include

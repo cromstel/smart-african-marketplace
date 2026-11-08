@@ -15,6 +15,7 @@ use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\PreventSpamSubmissions;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\TraceMiddleware;
 use App\Http\Middleware\TrackUserBehavior;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
@@ -33,6 +34,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -71,7 +73,18 @@ return Application::configure(basePath: dirname(__DIR__))
         // middleware (EncryptCookies, VerifyCsrfToken, ...) and
         // Middleware::group() overwrites a default group entirely when given
         // the same key. Identical list and order to the old Kernel.
+        $middleware->group('api', [
+            // Trace first so even throttled requests get a requestId.
+            TraceMiddleware::class,
+            // Sanctum's stateful-frontend middleware was commented out in
+            // the old Kernel too -- this app's API is token-only.
+            ThrottleRequests::class.':api',
+            SubstituteBindings::class,
+            CompressResponse::class,
+        ]);
+
         $middleware->group('web', [
+            TraceMiddleware::class,
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
@@ -83,14 +96,6 @@ return Application::configure(basePath: dirname(__DIR__))
             TrackUserBehavior::class,
             CompressResponse::class,
             MaintenanceMode::class,
-        ]);
-
-        $middleware->group('api', [
-            // Sanctum's stateful-frontend middleware was commented out in
-            // the old Kernel too -- this app's API is token-only.
-            ThrottleRequests::class.':api',
-            SubstituteBindings::class,
-            CompressResponse::class,
         ]);
 
         // Aliases that differ from Laravel's defaults (custom subclasses) or
@@ -157,6 +162,26 @@ return Application::configure(basePath: dirname(__DIR__))
             $isApiJsonError = $request->is('api/*')
                 && $response instanceof JsonResponse
                 && $response->getStatusCode() >= 400;
+
+            if ($isApiJsonError) {
+                // Fields go in the context, not the message: Laravel's
+                // Logger::formatMessage() var_exports array messages into
+                // a plain string, which would destroy the structure.
+                // Never let log I/O failure break the error response itself.
+                try {
+                    Log::channel('json')->error($e->getMessage(), [
+                        'requestId' => $request->attributes->get('requestId') ?? bin2hex(random_bytes(8)),
+                        'env' => app()->environment(),
+                        'logger' => 'exception.handler',
+                        'method' => $request->method(),
+                        'url' => $request->fullUrl(),
+                        'status' => $response->getStatusCode(),
+                        'exceptionClass' => get_class($e),
+                    ]);
+                } catch (\Throwable) {
+                    // logging must never be able to break an error response
+                }
+            }
 
             if (! $isApiJsonError) {
                 return $response;

@@ -32,7 +32,13 @@ class PageController extends Controller
             ->take(4)
             ->get();
 
-        return view('pages.home', compact('shopCategories'));
+        $heroStats = [
+            ['value' => \App\Models\Product::where('is_active', true)->count().'+' , 'label' => 'Products'],
+            ['value' => \App\Models\Vendor::where('status', 'approved')->count().'+' , 'label' => 'Vendors'],
+            ['value' => Category::active()->count().'+' , 'label' => 'Categories'],
+        ];
+
+        return view('pages.home', compact('shopCategories', 'heroStats'));
     }
 
     public function about()

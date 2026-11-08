@@ -16,6 +16,7 @@ use App\Models\Vendor;
 use App\Models\Withdrawal;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Extends the Phase 4 N+1 audit (see AdminIndexPagesSmokeTest) from admin
@@ -30,9 +31,7 @@ class AdminOrdersFinanceShowEditPagesSmokeTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /**
-     * @dataProvider showEditRoutes
-     */
+    #[DataProvider('showEditRoutes')]
     public function test_admin_show_edit_page_loads_without_a_server_error(string $routeName, string $fixtureMethod): void
     {
         $admin = User::factory()->admin()->create();

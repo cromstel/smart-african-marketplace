@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             MediaFolderSeeder::class,
             SalonServiceCategorySeeder::class,
-            VendorSampleSeeder::class,
+
             VendorSeeder::class,
             ProductSeeder::class,
             SalonServiceSeeder::class,

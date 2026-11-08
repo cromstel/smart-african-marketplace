@@ -24,6 +24,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Str;
 use Tests\Feature\Vendor\Concerns\MakesIsolatedVendors;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Extends the Phase 4 N+1 audit (see VendorIndexPagesSmokeTest) from vendor
@@ -42,9 +43,7 @@ class VendorOperationsShowEditPagesSmokeTest extends TestCase
     use DatabaseTransactions;
     use MakesIsolatedVendors;
 
-    /**
-     * @dataProvider showEditRoutes
-     */
+    #[DataProvider('showEditRoutes')]
     public function test_vendor_show_edit_page_loads_without_a_server_error(string $routeName, string $fixtureMethod): void
     {
         [$user, $routeParams] = $this->$fixtureMethod();

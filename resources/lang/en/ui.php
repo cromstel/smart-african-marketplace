@@ -6,6 +6,7 @@ return [
         'tagline' => 'Connecting cultures through authentic African products and services.',
     ],
     'nav' => [
+        'home' => 'Home',
         'shop' => 'Shop',
         'pricing' => 'Pricing',
         'salons' => 'Salons',

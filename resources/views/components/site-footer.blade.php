@@ -4,7 +4,7 @@
 
 <!-- Main Footer Content -->
 <footer class="relative bg-gray-900 text-white mt-auto">
-    <div class="mx-auto px-4 py-12" style="max-width: {{ $containerWidth }}px;">
+    <div class="w-full px-4 py-12">
         <div class="grid md:grid-cols-5 gap-8">
             <div class="md:col-span-2">
                 <h4 class="text-xl font-bold mb-4 flex items-center space-x-2">
@@ -96,10 +96,10 @@
 
 <!-- Sticky Bottom Bar -->
 <div class="bg-gray-900 text-white border-t border-gray-800 sticky bottom-0 z-40">
-    <div class="mx-auto px-4 py-3 flex flex-col gap-1 text-left sm:flex-row sm:items-center sm:justify-between" style="max-width: {{ $containerWidth }}px;">
+    <div class="w-full px-4 py-3 flex flex-col gap-1 text-center sm:flex-row sm:items-center sm:justify-center">
         <p class="text-gray-400 text-xs sm:text-sm md:text-base">&copy; 2025-{{ date('Y') }} {{ config('app.name') }}. {{ __('ui.footer.rights') }}</p>
         <div class="flex items-center justify-between sm:justify-end gap-4">
-            <p class="text-gray-400 text-xs sm:text-sm md:text-base sm:text-right">
+            <p class="text-gray-400 text-xs sm:text-sm md:text-base text-center">
                 {{ __('ui.footer.powered_by') }}
                 <a href="https://cromstelit.com" target="_blank" rel="noopener" class="underline hover:text-white">CromStel IT Solutions</a>
             </p>

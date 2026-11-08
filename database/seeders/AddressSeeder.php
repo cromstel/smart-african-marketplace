@@ -43,22 +43,5 @@ class AddressSeeder extends Seeder
             ]);
         }
 
-        $customer2 = User::where('email', 'customer2@africanmarket.com')->first();
-
-        if ($customer2) {
-            Address::firstOrCreate(['user_id' => $customer2->id, 'type' => 'both'], [
-                'user_id' => $customer2->id,
-                'type' => 'both',
-                'first_name' => 'Another',
-                'last_name' => 'Customer',
-                'address_line1' => '555 Market Street',
-                'city' => 'Cairo',
-                'state' => 'Cairo Governorate',
-                'postal_code' => '11511',
-                'country' => 'Egypt',
-                'phone' => '+1234567894',
-                'is_default' => true,
-            ]);
-        }
     }
 }

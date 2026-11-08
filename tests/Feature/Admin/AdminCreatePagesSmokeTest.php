@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Completes the Phase 4 N+1 audit's route-shape coverage (see
@@ -34,9 +35,7 @@ class AdminCreatePagesSmokeTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /**
-     * @dataProvider createRoutes
-     */
+    #[DataProvider('createRoutes')]
     public function test_admin_create_page_loads_without_a_server_error(string $routeName): void
     {
         $admin = User::factory()->admin()->create();

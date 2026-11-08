@@ -6,6 +6,7 @@ use App\Http\Middleware\PreventCrlfInjection;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Covers App\Http\Middleware\PreventCrlfInjection.
@@ -29,9 +30,7 @@ class CrlfInjectionTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider crlfPayloads
-     */
+    #[DataProvider('crlfPayloads')]
     public function test_it_rejects_line_breaks_in_an_email_field(string $value): void
     {
         $this->postJson('/api/v1/mobile/auth/register', [

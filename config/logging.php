@@ -1,5 +1,6 @@
 <?php
 
+use App\Logging\StructuredJsonFormatter;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -74,6 +75,14 @@ return [
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+
+        'json' => [
+            'driver' => 'single',
+            'name' => 'json',
+            'path' => storage_path('logs/structured.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'formatter' => StructuredJsonFormatter::class,
         ],
     ],
 ];

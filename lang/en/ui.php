@@ -6,6 +6,7 @@ return [
         'tagline' => 'Your Gateway to African Products',
     ],
     'nav' => [
+        'home' => 'Home',
         'shop' => 'Shop',
         'pricing' => 'Pricing',
         'salon' => 'Salon',

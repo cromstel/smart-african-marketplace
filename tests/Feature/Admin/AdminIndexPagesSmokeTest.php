@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Phase 4 (roadmap): "Audit N+1 queries across the 49 admin and 32 vendor
@@ -23,9 +24,7 @@ class AdminIndexPagesSmokeTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /**
-     * @dataProvider indexRoutes
-     */
+    #[DataProvider('indexRoutes')]
     public function test_admin_index_page_loads_without_a_server_error(string $routeName): void
     {
         $admin = User::factory()->admin()->create();

@@ -64,17 +64,6 @@ class UserSeeder extends Seeder
                 'country' => 'South Africa',
                 'postal_code' => '2000',
             ],
-            [
-                'name' => 'Another Customer',
-                'email' => 'customer2@africanmarket.com',
-                'role' => 'customer',
-                'phone' => '+1234567894',
-                'address' => '555 Market Street',
-                'city' => 'Cairo',
-                'state' => 'Cairo Governorate',
-                'country' => 'Egypt',
-                'postal_code' => '11511',
-            ],
         ];
 
         foreach ($demoUsers as $demoUser) {

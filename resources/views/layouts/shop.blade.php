@@ -98,7 +98,7 @@
         }
         html, body {
             max-width: 100%;
-            overflow-x: hidden;
+            overflow-x: clip;
         }
         h1, h2, h3, h4, h5, h6 {
             font-family: var(--theme-font-heading);
@@ -211,14 +211,17 @@
     <nav id="main-nav" 
         class="theme-nav sticky top-0 z-50 transition-all duration-300 shadow-sm"
     >
-        <div class="site-container px-4">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 md:h-20">
                 <div class="flex items-center space-x-8 lg:space-x-12">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0">
-                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-10 w-10">
-                        <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent truncate max-w-[10.5rem] sm:max-w-[13rem] xl:max-w-none" style="background-image: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));">{{ config('app.name') }}</span>
+                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
+                        <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent" style="background-image: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));">{{ config('app.name') }}</span>
                     </a>
                     <div class="hidden md:flex md:space-x-3 lg:space-x-4 xl:space-x-8 min-w-0">
+                        <a href="{{ route('home') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('home') ? 'theme-accent-text' : '' }}">
+                            {{ __('ui.nav.home') }}
+                        </a>
                         <a href="{{ route('shop.index') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('shop.*') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.shop') }}
                         </a>
@@ -363,8 +366,8 @@
         
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0">
-                <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8">
-                <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 bg-clip-text text-transparent truncate max-w-[10rem] sm:max-w-none">{{ config('app.name') }}</span>
+                <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
+                <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 bg-clip-text text-transparent">{{ config('app.name') }}</span>
             </a>
             <button type="button" @click="mobileMenuOpen = false" aria-label="Close mobile menu" class="p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -379,6 +382,12 @@
             </div>
 
             <nav class="space-y-1">
+                <a href="{{ route('home') }}" class="flex items-center px-4 py-3 text-xs sm:text-sm md:text-base text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-lg font-medium transition-colors {{ request()->routeIs('home') ? 'bg-orange-50 text-orange-600' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    {{ __('ui.nav.home') }}
+                </a>
                 <a href="{{ route('shop.index') }}" class="flex items-center px-4 py-3 text-xs sm:text-sm md:text-base text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-lg font-medium transition-colors {{ request()->routeIs('shop.*') ? 'bg-orange-50 text-orange-600' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
@@ -576,11 +585,7 @@
 
     <main class="flex-grow page-enter{{ $hideFooter ?? false ? ' auth-full-height' : '' }}">
 
-        {{-- Breadcrumbs shown by default - set $hideBreadcrumbs = true in page to hide --}}
-        @unless($hideBreadcrumbs ?? false)
-            <x-breadcrumbs :items="$breadcrumbs ?? null" :hide-breadcrumbs="$hideBreadcrumbs ?? false" />
-        @endunless
-
+        {{-- Breadcrumbs removed --}}
         @if(session('success'))
             <div class="site-container px-4 sm:px-6 lg:px-8 mt-4">
                 <div class="bg-green-900 border border-green-700 text-green-100 px-4 py-3 rounded">

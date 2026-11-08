@@ -5,7 +5,7 @@
 /* Keep Alpine.js components (e.g. the forgot-password modal) hidden until
    Alpine initializes, preventing a flash of unstyled/visible markup. */
 [x-cloak] {
-    display: none !important;
+  display: none !important;
 }
 
 /* WCAG 2.3.3: respect the OS-level reduced-motion preference by collapsing
@@ -13,12 +13,12 @@
    outright, so state changes (e.g. Alpine x-show/x-transition) still apply
    correctly rather than getting stuck mid-animation. */
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

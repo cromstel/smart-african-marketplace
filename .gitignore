@@ -5,16 +5,16 @@
 /public/storage
 /storage/*.key
 /vendor
-/scripts/*
+scripts/*
 *.ps1
 *.bat
 *.txt
+*.bak
 /issues-to-fix/
 .env
 .env.local
-.env.*.local
-.env.backup
-.env.production
+.env.*
+!.env.example
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -24,6 +24,8 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+.claude
+.kilo
 
 # Laravel Specific
 bootstrap/cache/*
@@ -51,7 +53,7 @@ storage/logs/*
 /install.lock
 
 # Testing
-/test/
+/test/*
 /tests/coverage
 /.phpunit.cache
 
@@ -80,6 +82,7 @@ Desktop.ini
 *.backup
 *.orig
 *.rej
+*.zip
 
 # Composer
 # composer.phar

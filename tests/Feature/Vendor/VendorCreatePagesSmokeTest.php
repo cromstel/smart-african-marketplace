@@ -11,6 +11,7 @@ use App\Models\Vendor;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Feature\Vendor\Concerns\MakesIsolatedVendors;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Completes the Phase 4 N+1 audit's route-shape coverage on the vendor side
@@ -42,9 +43,7 @@ class VendorCreatePagesSmokeTest extends TestCase
     use DatabaseTransactions;
     use MakesIsolatedVendors;
 
-    /**
-     * @dataProvider createRoutes
-     */
+    #[DataProvider('createRoutes')]
     public function test_vendor_create_page_loads_without_a_server_error(string $routeName): void
     {
         [$user, $routeParams] = $this->fixtureFor($routeName);

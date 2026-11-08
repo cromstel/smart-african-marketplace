@@ -8,6 +8,7 @@
         fallback-subtitle="{{ __('ui.home.hero_subtitle') }}"
         heading-tag="h1"
         fallback-image="/images/hero-banners/hero-banner.avif"
+        :fallback-stats="$heroStats ?? []"
     />
 
 
@@ -72,7 +73,8 @@
 
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @php
-                    $featuredProducts = \App\Models\Product::where('is_featured', true)
+                    $featuredProducts = \App\Models\Product::with('category')
+                        ->where('is_featured', true)
                         ->where('is_active', true)
                         ->take(12)
                         ->get();
