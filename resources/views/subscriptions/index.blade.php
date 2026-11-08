@@ -47,8 +47,8 @@
 @section('content')
 <x-hero-section 
     page-identifier="pricing"
-    fallback-title="Choose Your Perfect Plan"
-    fallback-subtitle="Compare paid vendor plans and upgrade anytime to unlock more capacity and growth features."
+    fallback-title="{{ __('ui.subscription.hero_title') }}"
+    fallback-subtitle="{{ __('ui.subscription.hero_subtitle') }}"
     heading-tag="h2"
     background-image-url="/images/hero-banners/pricing-banner.avif"
 />
@@ -82,20 +82,20 @@
                     @auth
                         @if($userSubscription && $userSubscription->subscription_plan_id === $plan->id)
                             <button disabled class="w-full bg-gray-400 text-white rounded-lg px-6 py-3 font-semibold mt-auto mb-6 cursor-not-allowed">
-                                Current Plan
+                                {{ __('ui.subscription.current_plan') }}
                             </button>
                         @elseif(auth()->user()?->hasActiveSubscription())
                             <a href="{{ route('subscriptions.my') }}" class="block w-full bg-orange-600 hover:bg-orange-700 text-white text-center rounded-lg px-6 py-3 font-semibold mt-auto mb-6 transition-colors">
-                                Manage Subscription
+                                {{ __('ui.subscription.manage_subscription') }}
                             </a>
                         @else
                             <a href="{{ route('subscriptions.checkout', $plan) }}" class="block w-full bg-orange-600 hover:bg-orange-700 text-white text-center rounded-lg px-6 py-3 font-semibold mt-auto mb-6 transition-colors">
-                                Get Started
+                                {{ __('ui.subscription.get_started') }}
                             </a>
                         @endif
                     @else
                         <a href="{{ route('login') }}?redirect={{ urlencode(route('subscriptions.checkout', $plan)) }}" class="block w-full bg-orange-600 hover:bg-orange-700 text-white text-center rounded-lg px-6 py-3 font-semibold mt-auto mb-6 transition-colors">
-                            Get Started
+                            {{ __('ui.subscription.get_started') }}
                         </a>
                     @endauth
 
@@ -186,7 +186,7 @@
                         </p>
                     </div>
                     <a href="{{ route('subscriptions.my') }}" class="inline-flex items-center justify-center bg-orange-600 hover:bg-orange-700 text-white rounded-lg px-5 py-2.5 font-semibold transition-colors">
-                        Upgrade Now
+                        {{ __('ui.subscription.manage_subscription') }}
                     </a>
                 </div>
             </div>
@@ -198,28 +198,28 @@
             <span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-orange-100 text-orange-700 glow-chip">
                 Built for Growth
             </span>
-            <h2 class="mt-4 text-3xl md:text-4xl font-bold text-gray-900">Functionalities for Vendors</h2>
+            <h2 class="mt-4 text-3xl md:text-4xl font-bold text-gray-900">{{ __('ui.subscription.vendor_features.title') }}</h2>
             <p class="mt-3 text-gray-600 max-w-2xl mx-auto">
-                Tools that help vendors launch quickly, sell consistently, and scale with predictable operations.
+                {{ __('ui.subscription.vendor_features.subtitle') }}
             </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             <div class="reveal-item group bg-white rounded-2xl border border-orange-100 p-6 shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Catalog Management</h3>
-                <p class="text-sm text-gray-700">Manage products, variants, pricing, and stock from one place.</p>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{{ __('ui.subscription.vendor_features.catalog_management.title') }}</h3>
+                <p class="text-sm text-gray-700">{{ __('ui.subscription.vendor_features.catalog_management.desc') }}</p>
             </div>
             <div class="reveal-item group bg-white rounded-2xl border border-orange-100 p-6 shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Order Operations</h3>
-                <p class="text-sm text-gray-700">Track orders, shipping updates, and fulfillment statuses in real time.</p>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{{ __('ui.subscription.vendor_features.order_operations.title') }}</h3>
+                <p class="text-sm text-gray-700">{{ __('ui.subscription.vendor_features.order_operations.desc') }}</p>
             </div>
             <div class="reveal-item group bg-white rounded-2xl border border-orange-100 p-6 shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Revenue Controls</h3>
-                <p class="text-sm text-gray-700">Clear commission visibility, withdrawal workflows, and plan-based limits.</p>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{{ __('ui.subscription.vendor_features.revenue_controls.title') }}</h3>
+                <p class="text-sm text-gray-700">{{ __('ui.subscription.vendor_features.revenue_controls.desc') }}</p>
             </div>
             <div class="reveal-item group bg-white rounded-2xl border border-orange-100 p-6 shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Enterprise Domains</h3>
-                <p class="text-sm text-gray-700">Enterprise vendors can map verified custom domains to branded storefronts.</p>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{{ __('ui.subscription.vendor_features.enterprise_domains.title') }}</h3>
+                <p class="text-sm text-gray-700">{{ __('ui.subscription.vendor_features.enterprise_domains.desc') }}</p>
             </div>
         </div>
     </div>
@@ -230,23 +230,23 @@
             <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-red-500/20 blur-3xl"></div>
             <div class="relative">
                 <div class="text-center mb-8 md:mb-10">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white">Ultimate Customer Experience</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">{{ __('ui.subscription.customer_experience.title') }}</h2>
                     <p class="mt-3 text-gray-300 max-w-2xl mx-auto">
-                        Every plan supports a fast and trusted shopping journey that keeps customers returning.
+                        {{ __('ui.subscription.customer_experience.subtitle') }}
                     </p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
                     <div class="reveal-item bg-white rounded-2xl border border-orange-100 p-6 text-gray-900 shadow-lg">
-                        <h3 class="font-bold text-lg mb-2 text-gray-900">Fast Discovery</h3>
-                        <p class="text-sm text-gray-700">Customers quickly find products and services through curated browsing flows.</p>
+                        <h3 class="font-bold text-lg mb-2 text-gray-900">{{ __('ui.subscription.customer_experience.fast_discovery.title') }}</h3>
+                        <p class="text-sm text-gray-700">{{ __('ui.subscription.customer_experience.fast_discovery.desc') }}</p>
                     </div>
                     <div class="reveal-item bg-white rounded-2xl border border-orange-100 p-6 text-gray-900 shadow-lg">
-                        <h3 class="font-bold text-lg mb-2 text-gray-900">Trusted Checkout</h3>
-                        <p class="text-sm text-gray-700">Secure payments and clear order visibility from checkout to delivery.</p>
+                        <h3 class="font-bold text-lg mb-2 text-gray-900">{{ __('ui.subscription.customer_experience.trusted_checkout.title') }}</h3>
+                        <p class="text-sm text-gray-700">{{ __('ui.subscription.customer_experience.trusted_checkout.desc') }}</p>
                     </div>
                     <div class="reveal-item bg-white rounded-2xl border border-orange-100 p-6 text-gray-900 shadow-lg">
-                        <h3 class="font-bold text-lg mb-2 text-gray-900">Loyal Retention</h3>
-                        <p class="text-sm text-gray-700">Wishlist, loyalty, and referrals create a repeat-purchase flywheel.</p>
+                        <h3 class="font-bold text-lg mb-2 text-gray-900">{{ __('ui.subscription.customer_experience.loyal_retention.title') }}</h3>
+                        <p class="text-sm text-gray-700">{{ __('ui.subscription.customer_experience.loyal_retention.desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -255,28 +255,28 @@
 
     <div class="mt-16 bg-gray-50 rounded-2xl p-8 md:p-12">
         <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ __('ui.subscription.faq.title') }}</h2>
         </div>
 
         <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             <div>
-                <h3 class="font-semibold text-gray-900 mb-2">Can I change my plan later?</h3>
-                <p class="text-gray-600 text-sm">Yes! You can upgrade or downgrade your plan at any time from your subscription dashboard.</p>
+                <h3 class="font-semibold text-gray-900 mb-2">{{ __('ui.subscription.faq.change_plan.q') }}</h3>
+                <p class="text-gray-600 text-sm">{{ __('ui.subscription.faq.change_plan.a') }}</p>
             </div>
 
             <div>
-                <h3 class="font-semibold text-gray-900 mb-2">What happens after my trial ends?</h3>
-                <p class="text-gray-600 text-sm">Your trial will automatically convert to a paid subscription. You'll receive reminders 7 days before it ends.</p>
+                <h3 class="font-semibold text-gray-900 mb-2">{{ __('ui.subscription.faq.trial_ends.q') }}</h3>
+                <p class="text-gray-600 text-sm">{{ __('ui.subscription.faq.trial_ends.a') }}</p>
             </div>
 
             <div>
-                <h3 class="font-semibold text-gray-900 mb-2">Can I cancel anytime?</h3>
-                <p class="text-gray-600 text-sm">Absolutely! You can cancel your subscription at any time. You'll retain access until the end of your billing period.</p>
+                <h3 class="font-semibold text-gray-900 mb-2">{{ __('ui.subscription.faq.cancel_anytime.q') }}</h3>
+                <p class="text-gray-600 text-sm">{{ __('ui.subscription.faq.cancel_anytime.a') }}</p>
             </div>
 
             <div>
-                <h3 class="font-semibold text-gray-900 mb-2">What payment methods do you accept?</h3>
-                <p class="text-gray-600 text-sm">We accept all major credit cards via Stripe and Paystack, plus mobile money (MTN, Airtel) for {{ config('app.name') }}.</p>
+                <h3 class="font-semibold text-gray-900 mb-2">{{ __('ui.subscription.faq.payment_methods.q') }}</h3>
+                <p class="text-gray-600 text-sm">{{ __('ui.subscription.faq.payment_methods.a', ['app_name' => config('app.name')]) }}</p>
             </div>
         </div>
     </div>

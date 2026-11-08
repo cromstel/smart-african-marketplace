@@ -102,7 +102,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12V8H4v4M20 12H4m16 0v4H4v-4m0 0V8m0 8v4h16v-4"/>
                         </svg>
                         <span>
-                            Brand
+                            {{ __('ui.shop.brand') }}
                             <a href="{{ route('brands.show', $product->brand) }}" class="font-medium text-indigo-400 hover:text-indigo-300">
                                 {{ $product->brand->name }}
                             </a>

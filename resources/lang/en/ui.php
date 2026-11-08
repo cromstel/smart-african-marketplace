@@ -432,4 +432,77 @@ return [
         'contact_support' => 'Contact Support',
         'scan_qr' => 'Or scan the QR code in the footer',
     ],
+    'subscription' => [
+        'hero_title' => 'Choose Your Perfect Plan',
+        'hero_subtitle' => 'Compare paid vendor plans and upgrade anytime to unlock more capacity and growth features.',
+        'plan_details_title' => 'Plan Details',
+        'plan_details_subtitle' => 'View plan features and upgrade your subscription.',
+        'per' => '/:cycle',
+        'free_trial' => 'Free Trial',
+        'trial_days' => ':days days free trial',
+        'unlimited' => 'Unlimited',
+        'products' => 'Products',
+        'orders_per_month' => 'Orders/month',
+        'commission_rate' => 'Commission Rate',
+        'features' => 'Features',
+        'get_started' => 'Get Started',
+        'manage_subscription' => 'Manage Subscription',
+        'current_plan' => 'Current Plan',
+        'back_to_plans' => 'Back to Plans',
+        'vendor_features' => [
+            'title' => 'Functionalities for Vendors',
+            'subtitle' => 'Tools that help vendors launch quickly, sell consistently, and scale with predictable operations.',
+            'catalog_management' => [
+                'title' => 'Catalog Management',
+                'desc' => 'Manage products, variants, pricing, and stock from one place.',
+            ],
+            'order_operations' => [
+                'title' => 'Order Operations',
+                'desc' => 'Track orders, shipping updates, and fulfillment statuses in real time.',
+            ],
+            'revenue_controls' => [
+                'title' => 'Revenue Controls',
+                'desc' => 'Clear commission visibility, withdrawal workflows, and plan-based limits.',
+            ],
+            'enterprise_domains' => [
+                'title' => 'Enterprise Domains',
+                'desc' => 'Enterprise vendors can map verified custom domains to branded storefronts.',
+            ],
+        ],
+        'customer_experience' => [
+            'title' => 'Ultimate Customer Experience',
+            'subtitle' => 'Every plan supports a fast and trusted shopping journey that keeps customers returning.',
+            'fast_discovery' => [
+                'title' => 'Fast Discovery',
+                'desc' => 'Customers quickly find products and services through curated browsing flows.',
+            ],
+            'trusted_checkout' => [
+                'title' => 'Trusted Checkout',
+                'desc' => 'Secure payments and clear order visibility from checkout to delivery.',
+            ],
+            'loyal_retention' => [
+                'title' => 'Loyal Retention',
+                'desc' => 'Wishlist, loyalty, and referrals create a repeat-purchase flywheel.',
+            ],
+        ],
+        'faq' => [
+            'title' => 'Frequently Asked Questions',
+            'change_plan' => [
+                'q' => 'Can I change my plan later?',
+                'a' => 'Yes! You can upgrade or downgrade your plan at any time from your subscription dashboard.',
+            ],
+            'trial_ends' => [
+                'q' => 'What happens after my trial ends?',
+                'a' => 'Your trial will automatically convert to a paid subscription. You will receive reminders 7 days before it ends.',
+            ],
+            'cancel_anytime' => [
+                'q' => 'Can I cancel anytime?',
+                'a' => 'Absolutely! You can cancel your subscription at any time. You will retain access until the end of your billing period.',
+            ],
+            'payment_methods' => [
+                'q' => 'What payment methods do you accept?',
+                'a' => 'We accept all major credit cards via Stripe and Paystack, plus mobile money (MTN, Airtel) for :app_name.',
+            ],
+        ],
+    ],
 ];
