@@ -141,6 +141,11 @@ class Product extends Model
             ->where('published_at', '<=', now());
     }
 
+    public function scopeForVendor($query, int $vendorId)
+    {
+        return $query->where('vendor_id', $vendorId);
+    }
+
     public function isInStock(): bool
     {
         return $this->stock_status === 'in_stock' && $this->stock_quantity > 0;
