@@ -237,9 +237,9 @@
         <div class="absolute inset-0" style="{{ $backgroundStyle }}"></div>
     @endif
     
-    <div class="relative max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 {{ $heroContentPaddingClasses }} h-full flex items-center">
-        <div class="w-full flex justify-center items-center">
-            <div class="text-left max-w-3xl">
+    <div class="relative w-full px-4 sm:px-6 lg:px-8 {{ $heroContentPaddingClasses }} h-full flex items-center">
+        <div class="w-full flex justify-start items-center">
+            <div class="text-left">
                 <{{ $headingTag }} class="hero-title {{ $heroTitleSizeClasses }} {{ $heroTitleWeightClass }} mb-4 md:mb-6 leading-tight sm:leading-tight break-words text-white">
                     {!! $hero->title ?? $fallbackTitle !!}
                 </{{ $headingTag }}>
