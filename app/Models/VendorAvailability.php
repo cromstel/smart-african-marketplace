@@ -38,4 +38,9 @@ class VendorAvailability extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function scopeForVendor($query, int $vendorId)
+    {
+        return $query->where('vendor_id', $vendorId);
+    }
 }

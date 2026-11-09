@@ -24,4 +24,9 @@ class VendorFollower extends Model
     {
         return $this->belongsTo(User::class, 'vendor_id');
     }
+
+    public function scopeForVendor($query, int $vendorId)
+    {
+        return $query->where('vendor_id', $vendorId);
+    }
 }

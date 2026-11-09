@@ -30,6 +30,11 @@ class VendorLedger extends Model
         return $this->belongsTo(Vendor::class);
     }
 
+    public function scopeForVendor($query, int $vendorId)
+    {
+        return $query->where('vendor_id', $vendorId);
+    }
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);

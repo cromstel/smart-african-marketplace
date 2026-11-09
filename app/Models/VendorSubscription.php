@@ -40,6 +40,11 @@ class VendorSubscription extends Model
         return $this->belongsTo(Vendor::class);
     }
 
+    public function scopeForVendor($query, int $vendorId)
+    {
+        return $query->where('vendor_id', $vendorId);
+    }
+
     public function isTrialing(): bool
     {
         return $this->status === 'trialing' &&
