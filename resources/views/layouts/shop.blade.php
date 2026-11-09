@@ -218,7 +218,7 @@
                         <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 mr-1">
                         <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent" style="background-image: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));">{{ config('app.name') }}</span>
                     </a>
-                    <div class="hidden md:flex md:space-x-3 lg:space-x-4 xl:space-x-8 min-w-0">
+                    <div class="hidden lg:flex md:space-x-3 lg:space-x-4 xl:space-x-8 min-w-0">
                         <a href="{{ route('home') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('home') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.home') }}
                         </a>
@@ -244,13 +244,13 @@
                 </div>
 
                 <div class="flex items-center space-x-5 md:space-x-6 min-w-0">
-                    <div class="hidden md:block min-w-0 shrink md:ps-4">
+                    <div class="hidden lg:block min-w-0 shrink lg:ps-4">
                         @livewire('live-search')
                     </div>
 
                     @auth
                         @php $notificationCount = auth()->user()?->unreadUserNotifications()?->count() ?? 0; @endphp
-                        <a href="{{ route('wishlist.index') }}" class="hidden sm:inline-block relative text-gray-700 hover:text-orange-600" title="{{ __('ui.common.wishlist') }}">
+                        <a href="{{ route('wishlist.index') }}" class="hidden lg:inline-block relative text-gray-700 hover:text-orange-600" title="{{ __('ui.common.wishlist') }}">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                             </svg>
@@ -260,7 +260,7 @@
                                 </span>
                             @endif
                         </a>
-                        <a href="{{ route('cart.index') }}" class="hidden sm:inline-block relative text-gray-700 hover:text-orange-600" title="{{ __('ui.common.shopping_cart') }}">
+                        <a href="{{ route('cart.index') }}" class="hidden lg:inline-block relative text-gray-700 hover:text-orange-600" title="{{ __('ui.common.shopping_cart') }}">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
@@ -271,7 +271,7 @@
                             @endif
                         </a>
                         
-                        <div class="relative hidden md:block" x-data="{ accountMenuOpen: false }">
+                        <div class="relative hidden lg:block" x-data="{ accountMenuOpen: false }">
                             <button
                                 type="button"
                                 @click="accountMenuOpen = !accountMenuOpen"
@@ -321,7 +321,7 @@
                             </div>
                         </div>
                     @else
-                        <div class="hidden md:flex items-center">
+                        <div class="hidden lg:flex items-center">
                             <a href="{{ route('login') }}" class="theme-cta inline-flex items-center text-sm sm:text-sm md:text-base text-white px-6 py-2.5 font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
@@ -331,7 +331,7 @@
                         </div>
                     @endauth
 
-                    <button type="button" @click="mobileMenuOpen = true" aria-label="Open mobile menu" :aria-expanded="mobileMenuOpen.toString()" class="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-gray-700 hover:text-orange-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-600 transition-all duration-200">
+                    <button type="button" @click="mobileMenuOpen = true" aria-label="Open mobile menu" :aria-expanded="mobileMenuOpen.toString()" class="lg:hidden inline-flex items-center justify-center p-2 rounded-lg text-gray-700 hover:text-orange-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-600 transition-all duration-200">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         </svg>
@@ -349,7 +349,7 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          @click="mobileMenuOpen = false"
-         class="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
+         class="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden"
          style="display: none;">
     </div>
 
@@ -361,7 +361,7 @@
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="translate-x-full"
          @click.away="mobileMenuOpen = false"
-         class="fixed top-0 right-0 bottom-0 w-full max-w-[88vw] sm:w-80 sm:max-w-[85vw] bg-white shadow-2xl z-50 md:hidden overflow-y-auto"
+         class="fixed top-0 right-0 bottom-0 w-full max-w-[88vw] sm:w-80 sm:max-w-[85vw] bg-white shadow-2xl z-50 lg:hidden overflow-y-auto"
          style="display: none;">
         
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
