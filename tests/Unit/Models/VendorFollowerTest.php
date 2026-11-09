@@ -24,18 +24,18 @@ class VendorFollowerTest extends TestCase
 
         VendorFollower::create([
             'user_id' => $followerA->id,
-            'vendor_id' => $vendorA->id,
+            'vendor_id' => $vendorA->user_id,
         ]);
 
         VendorFollower::create([
             'user_id' => $followerB->id,
-            'vendor_id' => $vendorB->id,
+            'vendor_id' => $vendorB->user_id,
         ]);
 
-        $results = VendorFollower::forVendor($vendorA->id)->get();
+        $results = VendorFollower::forVendor($vendorA->user_id)->get();
 
         $this->assertCount(1, $results);
-        $this->assertEquals($vendorA->id, $results->first()->vendor_id);
+        $this->assertEquals($vendorA->user_id, $results->first()->vendor_id);
     }
 
     /** @test */

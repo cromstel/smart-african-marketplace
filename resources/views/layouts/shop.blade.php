@@ -211,39 +211,39 @@
     <nav id="main-nav" 
         class="theme-nav sticky top-0 z-50 transition-all duration-300 shadow-sm"
     >
-        <div class="w-full px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16 md:h-20">
-                <div class="flex items-center space-x-8 lg:space-x-12">
+        <div class="w-full px-5 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-18 md:h-20">
+                <div class="flex items-center space-x-6 lg:space-x-12">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0">
-                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
+                        <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 mr-1">
                         <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent" style="background-image: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));">{{ config('app.name') }}</span>
                     </a>
                     <div class="hidden md:flex md:space-x-3 lg:space-x-4 xl:space-x-8 min-w-0">
-                        <a href="{{ route('home') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('home') ? 'theme-accent-text' : '' }}">
+                        <a href="{{ route('home') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('home') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.home') }}
                         </a>
-                        <a href="{{ route('shop.index') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('shop.*') ? 'theme-accent-text' : '' }}">
+                        <a href="{{ route('shop.index') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('shop.*') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.shop') }}
                         </a>
-                        <a href="{{ route('subscriptions.index') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('subscriptions.*') ? 'theme-accent-text' : '' }}">
+                        <a href="{{ route('subscriptions.index') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('subscriptions.*') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.pricing') }}
                         </a>
-                        <a href="{{ route('salon.index') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('salon.*') ? 'theme-accent-text' : '' }}">
+                        <a href="{{ route('salon.index') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('salon.*') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.salons') }}
                         </a>
-                        <a href="{{ route('blog.index') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('blog.*') ? 'theme-accent-text' : '' }}">
+                        <a href="{{ route('blog.index') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('blog.*') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.blog') }}
                         </a>
-                        <a href="{{ route('about') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors">
+                        <a href="{{ route('about') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors">
                             {{ __('ui.nav.about') }}
                         </a>
-                        <a href="{{ route('contact.index') }}" class="theme-link text-xs sm:text-sm md:text-base text-gray-700 font-medium transition-colors">
+                        <a href="{{ route('contact.index') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors">
                             {{ __('ui.nav.contact') }}
                         </a>
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-4 md:space-x-6 min-w-0">
+                <div class="flex items-center space-x-5 md:space-x-6 min-w-0">
                     <div class="hidden md:block min-w-0 shrink md:ps-4">
                         @livewire('live-search')
                     </div>
@@ -278,7 +278,7 @@
                                 @keydown.escape.window="accountMenuOpen = false"
                                 :aria-expanded="accountMenuOpen.toString()"
                                 aria-haspopup="true"
-                                class="flex items-center space-x-2 text-xs sm:text-sm md:text-base text-gray-700 hover:text-orange-600"
+                                class="flex items-center space-x-2 text-sm sm:text-sm md:text-base text-gray-700 hover:text-orange-600"
                             >
                                 <span class="font-medium">{{ auth()->user()->name }}</span>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -322,7 +322,7 @@
                         </div>
                     @else
                         <div class="hidden md:flex items-center">
-                            <a href="{{ route('login') }}" class="theme-cta inline-flex items-center text-xs sm:text-sm md:text-base text-white px-6 py-2.5 font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            <a href="{{ route('login') }}" class="theme-cta inline-flex items-center text-sm sm:text-sm md:text-base text-white px-6 py-2.5 font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                                 </svg>
