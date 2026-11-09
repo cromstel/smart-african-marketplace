@@ -216,7 +216,9 @@
                 <div class="flex items-center space-x-6 lg:space-x-12">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0">
                         <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 mr-1">
-                        <span class="text-sm sm:text-base surface:text-lg lg:text-xl font-extrabold uppercase tracking-wide bg-clip-text text-transparent" style="background-image: linear-gradient(90deg, var(--theme-brand-from), var(--theme-brand-to));">{{ config('app.name') }}</span>
+                        <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wide">
+                        <span class="text-black">African</span><span class="text-orange-600">Market</span>
+</span>
                     </a>
                     <div class="hidden lg:flex md:space-x-3 lg:space-x-4 xl:space-x-8 min-w-0">
                         <a href="{{ route('home') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('home') ? 'theme-accent-text' : '' }}">
