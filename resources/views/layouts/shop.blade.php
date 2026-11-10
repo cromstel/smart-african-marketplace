@@ -333,7 +333,10 @@
                         </div>
                     @endauth
 
-                    @include('components.language-switcher', ['placement' => 'header'])
+                    <!-- Language Switcher -->
+                    <div class="hidden lg:flex">
+                        @include('components.language-switcher', ['placement' => 'header'])
+                    </div>
 
                     <button type="button" @click="mobileMenuOpen = true" aria-label="Open mobile menu" :aria-expanded="mobileMenuOpen.toString()" class="lg:hidden inline-flex items-center justify-center p-2 rounded-lg text-gray-700 hover:text-orange-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-600 transition-all duration-200">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -431,7 +434,7 @@
             </nav>
 
             <!-- Language Switcher -->
-            <div class="mb-6 pt-4 border-t border-gray-200">
+            <div class="hidden lg:flex">
                 @include('components.language-switcher', ['placement' => 'header'])
             </div>
 
