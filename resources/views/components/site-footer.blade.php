@@ -16,17 +16,7 @@
                 <p class="text-gray-400 mb-4">
                     {{ __('ui.brand.tagline') }}
                 </p>
-                {{-- Language switcher lives inline in the footer's normal document
-                     flow rather than as a viewport-fixed overlay. A fixed floating
-                     button had to guess a safe screen position across every page,
-                     and kept landing on top of real content instead: page hero CTAs,
-                     the shop category sidebar, and the footer's own newsletter form
-                     at wider breakpoints. Placing it here removes that whole class of
-                     bug — it just reflows with the rest of the footer like everything
-                     else on the page. --}}
-                <div class="mb-4">
-                    @include('components.language-switcher', ['placement' => 'footer'])
-                </div>
+                {{-- Language switcher moved to header --}}
                 <!-- Mobile App QR Code -->
                 <div class="flex items-center space-x-4 p-4">
                     <div class="flex-shrink-0">
