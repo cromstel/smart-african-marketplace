@@ -430,6 +430,11 @@
                 </a>
             </nav>
 
+            <!-- Language Switcher -->
+            <div class="mb-6 pt-4 border-t border-gray-200">
+                @include('components.language-switcher', ['placement' => 'header'])
+            </div>
+
             @auth
                 @php $notificationCount = auth()->user()->unreadUserNotifications()->count(); @endphp
                 <div class="mt-6 pt-6 border-t border-gray-200">
