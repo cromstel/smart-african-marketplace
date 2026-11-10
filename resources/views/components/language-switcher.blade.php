@@ -20,7 +20,7 @@
         aria-label="Change language"
     >
         <svg class="h-5 w-5 {{ $isFooterPlacement ? 'text-gray-400' : ($isHeaderPlacement ? 'text-gray-700' : '') }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12C2 6.477 4.477 4 7.477 4h1.954c.532 0 .999.339 1.174.82.466.917.466 2.016 0 2.934-.173.483-.634.82-1.174.82H5.477c-.532 0-.999.339-1.174.82-.466.917-.466 2.016 0 2.934.173.483.634.82 1.174.82h2.45c.532 0 .999.339 1.174.82.466.917.466 2.016 0 2.934-.173.483-.634.82-1.174.82H7.477c-.532 0-.999.339-1.174.82-.466.917-.466 2.016 0 2.934.173.483.634.82 1.174.82h1.954c2.997 0 5.477-2.477 5.477-6V6c0-3.523-2.477-6-5.477-6H5.477C2.477 4 0 6.477 0 12zM12 14a2 2 0 100-4 2 2 0 000 4z"/>
         </svg>
         @if($isFooterPlacement || $isHeaderPlacement)
             <span>{{ $languageLabels[app()->getLocale()] ?? strtoupper(app()->getLocale()) }}</span>
@@ -44,7 +44,6 @@
                 class="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition {{ $isActiveLocale ? ($isFooterPlacement ? 'bg-orange-600/20 text-orange-300 font-semibold' : ($isHeaderPlacement ? 'bg-orange-50 text-orange-700 font-semibold' : 'bg-orange-50 text-orange-700 font-semibold')) : ($isFooterPlacement ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50') }}"
             >
                 <span>{{ $languageLabels[$localeOption] ?? strtoupper($localeOption) }}</span>
-                <span class="text-xs {{ $isFooterPlacement ? 'text-gray-400' : ($isHeaderPlacement ? 'text-gray-500' : 'text-gray-500') }}">{{ strtoupper($localeOption) }}</span>
             </a>
         @endforeach
     </div>
