@@ -127,8 +127,8 @@
     </button>
 
     <div class="min-h-screen flex flex-col lg:flex-row">
-        <aside id="sidebar" class="fixed top-0 left-0 h-screen lg:sticky lg:top-0 overflow-hidden z-40 w-64 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
-            <div class="p-6 border-b border-gray-700">
+        <aside id="sidebar" class="fixed top-0 left-0 h-screen lg:sticky lg:top-0 overflow-hidden z-40 w-64 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0 flex flex-col">
+            <div class="p-6 border-b border-gray-700 flex-shrink-0">
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0" aria-label="{{ config('app.name', 'Smart African Market') }} - Go to homepage">
                         <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Market') }}" class="h-8 w-8">
@@ -159,7 +159,7 @@
                     'settings' => request()->routeIs('admin.settings.*', 'admin.users.*', 'admin.subscriptions.*', 'admin.shipping-settings.*', 'admin.maintenance.*'),
                 ];
             @endphp
-            <nav class="p-4 space-y-1 overflow-x-visible no-scrollbar h-[calc(100vh-120px)]">
+            <nav class="p-4 space-y-1 overflow-x-visible no-scrollbar flex-1 overflow-y-auto min-h-0">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2 px-4 py-2 rounded {{ request()->routeIs('admin.dashboard') ? 'bg-brand-gradient text-white' : 'text-gray-300 hover:bg-gray-700' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>

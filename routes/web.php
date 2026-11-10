@@ -856,6 +856,40 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
     });
 });
 
+// ============================================================================
+// Salon Owner Console
+// ============================================================================
+Route::prefix('salon-console')->name('salon.')->middleware(['auth', 'salon_owner', 'verified'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Salon\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/services', [App\Http\Controllers\Salon\ServiceController::class, 'index'])->name('services.index');
+    Route::get('/services/create', [App\Http\Controllers\Salon\ServiceController::class, 'create'])->name('services.create');
+    Route::post('/services', [App\Http\Controllers\Salon\ServiceController::class, 'store'])->name('services.store');
+    Route::get('/services/{service}/edit', [App\Http\Controllers\Salon\ServiceController::class, 'edit'])->name('services.edit');
+    Route::put('/services/{service}', [App\Http\Controllers\Salon\ServiceController::class, 'update'])->name('services.update');
+    Route::delete('/services/{service}', [App\Http\Controllers\Salon\ServiceController::class, 'destroy'])->name('services.destroy');
+    Route::get('/stylists', [App\Http\Controllers\Salon\StylistController::class, 'index'])->name('stylists.index');
+    Route::get('/bookings', [App\Http\Controllers\Salon\BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/{booking}', [App\Http\Controllers\Salon\BookingController::class, 'show'])->name('bookings.show');
+    Route::get('/earnings', [App\Http\Controllers\Salon\EarningsController::class, 'index'])->name('earnings.index');
+    Route::get('/profile', [App\Http\Controllers\Salon\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Salon\ProfileController::class, 'update'])->name('profile.update');
+});
+
+// ============================================================================
+// Customer Console
+// ============================================================================
+Route::prefix('customer-console')->name('customer.')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/orders', [App\Http\Controllers\Customer\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [App\Http\Controllers\Customer\OrderController::class, 'show'])->name('orders.show');
+    Route::get('/bookings', [App\Http\Controllers\Customer\BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/{booking}', [App\Http\Controllers\Customer\BookingController::class, 'show'])->name('bookings.show');
+    Route::get('/wishlist', [App\Http\Controllers\Customer\WishlistController::class, 'index'])->name('wishlist.index');
+    Route::get('/profile', [App\Http\Controllers\Customer\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Customer\ProfileController::class, 'update'])->name('profile.update');
+});
+
+
 // Payment/SMS provider callbacks. These sit inside the `web` group (session,
 // CRLF protection, etc. -- CSRF is excepted for `webhooks/*` in
 // VerifyCsrfToken) like the rest of this file, but unlike the other public

@@ -119,8 +119,8 @@
     </button>
 
     <div class="min-h-screen flex flex-col lg:flex-row">
-        <aside id="sidebar" class="fixed lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden inset-y-0 left-0 z-40 w-72 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0">
-            <div class="px-4 py-6 border-b border-gray-700">
+        <aside id="sidebar" class="fixed lg:sticky lg:top-0 lg:h-screen lg:overflow-hidden inset-y-0 left-0 z-40 w-72 bg-gray-800 border-r border-gray-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex-shrink-0 flex flex-col">
+            <div class="px-4 py-6 border-b border-gray-700 flex-shrink-0">
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0" aria-label="{{ config('app.name', 'Smart African Market') }} - Go to homepage">
                         <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name', 'Smart African Market') }}" class="h-8 w-8">
@@ -136,7 +136,7 @@
                     </button>
                 </div>
             </div>
-            <nav class="p-4 space-y-1 overflow-x-visible no-scrollbar h-[calc(100vh-120px)] flex flex-col pb-0">
+            <nav class="p-4 space-y-1 overflow-x-visible no-scrollbar flex-1 overflow-y-auto min-h-0 flex flex-col pb-0">
                 @php
                     try {
                         $canProducts = auth()->user()->hasModuleAccess('multiple_product_category');
