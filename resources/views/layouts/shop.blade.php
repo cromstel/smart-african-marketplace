@@ -434,7 +434,7 @@
             </nav>
 
             <!-- Language Switcher -->
-            <div class="hidden lg:flex">
+            <div class="mb-6 pt-4 border-t border-gray-200 lg:hidden">
                 @include('components.language-switcher', ['placement' => 'header'])
             </div>
 
