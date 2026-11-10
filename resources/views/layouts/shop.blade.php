@@ -217,7 +217,7 @@
                     <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0">
                         <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 mr-1">
                         <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wide">
-                        <span class="text-black">Smart</span><span class="text-orange-600">AfricanMarketplace</span>
+                        <span class="text-orange-600">Smart</span><span class="text-black">AfricanMarketplace</span>
 </span>
                     </a>
                     <div class="hidden lg:flex md:space-x-3 lg:space-x-4 xl:space-x-8 min-w-0">

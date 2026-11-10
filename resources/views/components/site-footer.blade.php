@@ -28,7 +28,7 @@
                     @include('components.language-switcher', ['placement' => 'footer'])
                 </div>
                 <!-- Mobile App QR Code -->
-                <div class="flex items-center space-x-4 p-4 bg-gray-800 rounded-lg">
+                <div class="flex items-center space-x-4 p-4">
                     <div class="flex-shrink-0">
                         {{-- Generated locally with endroid/qr-code. Previously this
                              hit api.qrserver.com on every page render, which leaked the
