@@ -127,15 +127,15 @@
         </div>
 
         <!-- Quick Stats -->
-        <div class="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
-            <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Popular Categories</h4>
+        <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-sm">
+            <h4 class="text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-3">Popular Categories</h4>
             <div class="space-y-2">
                 @php
                     $popularCategories = $parentCategories->take(4);
                 @endphp
                 @foreach($popularCategories as $cat)
-                    <div class="flex items-center justify-between p-2 bg-gray-800/50 rounded-lg">
-                        <span class="text-sm text-gray-300">{{ $cat->name }}</span>
+                    <div class="flex items-center justify-between p-2 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors">
+                        <span class="text-sm text-white">{{ $cat->name }}</span>
                         <span class="text-xs font-bold text-indigo-400">{{ $cat->children->sum(fn($c) => $c->vendorServices()->count()) }} services</span>
                     </div>
                 @endforeach
