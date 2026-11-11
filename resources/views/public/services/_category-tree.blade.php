@@ -38,7 +38,7 @@
                                $childActive = $currentRoute === 'services.category' && request()->route('category') === $child->slug;
                            @endphp
                            {{ $childActive ? 'bg-indigo-600/50 text-indigo-300' : 'text-gray-400 hover:text-white hover:bg-gray-700' }}
-                           {{ $child->vendorServices()->count() > 0 ? '' : 'opacity-50' cursor-not-allowed' }}">
+                           {{ $child->vendorServices()->count() > 0 ? '' : 'opacity-50 cursor-not-allowed' }}">
                             {{ $child->name }}
                         </a>
                     @endforeach
