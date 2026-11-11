@@ -17,7 +17,7 @@
     :fallbackTitle="$brand->name . ' Products'"
     :fallbackSubtitle="$brand->description ?: ('Browse products from ' . $brand->name . '.')"
     :fallbackStats="$fallbackStats"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

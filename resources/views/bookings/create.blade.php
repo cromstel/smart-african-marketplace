@@ -9,7 +9,7 @@
     fallbackSubtitle="Select your preferred date and time"
     fallbackImage="/images/booking-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-10">

@@ -1,4 +1,8 @@
 @extends('layouts.shop')
+@section('title', 'Subscription Plans - Smart African Market')
+@section('seoDescription', 'Choose the right subscription plan for your Smart African Market account.')
+@section('seoKeywords', 'subscription plans, pricing plans, premium, African Market')
+@section('content')
 
 @push('head')
 <style>

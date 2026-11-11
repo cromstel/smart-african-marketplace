@@ -27,7 +27,7 @@
      :fallbackSubtitle="__('Discover and book professional services from vetted vendors across beauty, automotive, home, and commercial categories.')"
      fallbackImage="/images/hero-banners/salon-banner.avif"
      :fallbackStats="$fallbackStats"
-     :animated="true"
+     
  />
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', 'Salon Services')
+@section('title', 'Salon Services - Smart African Market')
+@section('seoDescription', 'Professional salon services including haircuts, styling, coloring, and beauty treatments from vetted vendors across Africa.')
+@section('seoKeywords', 'salon services, haircuts, styling, coloring, beauty treatments, African salon, book salon')
 
 @section('content')
 {{-- Hero Section --}}
@@ -28,7 +30,7 @@
     :backgroundImageUrl="$categoryBannerImageUrl"
     fallbackImage="/images/hero-banners/salon-banner.avif"
     :fallbackStats="$fallbackStats"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

@@ -8,7 +8,7 @@
     fallbackTitle="Start a Booking"
     fallbackSubtitle="Choose what you'd like to book"
     fallbackImage="/images/hero-banners/booking-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

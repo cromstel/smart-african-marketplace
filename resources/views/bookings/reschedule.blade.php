@@ -9,7 +9,7 @@
     fallbackSubtitle="Pick a new date and time for your appointment"
     fallbackImage="/images/booking-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-10">

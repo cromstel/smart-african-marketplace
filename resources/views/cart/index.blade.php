@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', 'Shopping Cart')
+@section('title', 'Shopping Cart - Smart African Market')
+@section('seoDescription', 'Review your shopping cart items before checkout. Secure payment options available.')
+@section('seoKeywords', 'shopping cart, checkout, review items, African Market')
 
 @section('content')
 <x-hero-section
@@ -8,7 +10,7 @@
     fallbackTitle="Shopping Cart"
     fallbackSubtitle="Review your items before checkout"
     fallbackImage="/images/hero-banners/shopping-cart-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

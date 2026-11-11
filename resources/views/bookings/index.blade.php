@@ -8,7 +8,7 @@
     fallbackTitle="My Bookings"
     fallbackSubtitle="View and manage your bookings and rentals"
     fallbackImage="/images/booking-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

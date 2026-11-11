@@ -8,7 +8,7 @@
     fallbackTitle="Address Book"
     fallbackSubtitle="Manage your saved shipping and billing addresses"
     fallbackImage="/images/hero-banners/hero-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

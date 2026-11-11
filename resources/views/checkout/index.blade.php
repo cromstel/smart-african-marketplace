@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', 'Checkout')
+@section('title', 'Checkout - Smart African Market')
+@section('seoDescription', 'Secure checkout for your order. Complete your purchase with multiple payment options.')
+@section('seoKeywords', 'checkout, secure checkout, payment, complete order, African Market')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">

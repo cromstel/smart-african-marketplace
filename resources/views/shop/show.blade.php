@@ -20,7 +20,7 @@
     :fallbackSubtitle="__('ui.shop.product_details_subtitle')"
     fallbackImage="/images/hero-banners/shop-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

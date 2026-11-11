@@ -9,7 +9,7 @@
     fallbackSubtitle="View your order information"
     fallbackImage="/images/hero-banners/hero-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

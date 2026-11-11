@@ -39,6 +39,12 @@
         :image="$seoImage ?? null"
         :canonical="$seoCanonical ?? null"
         :type="$seoType ?? 'website'"
+        :ogTitle="$seoOgTitle ?? $seoTitle ?? null"
+        :ogDescription="$seoOgDescription ?? $seoDescription ?? null"
+        :ogImage="$seoOgImage ?? $seoImage ?? null"
+        :twitterTitle="$seoTwitterTitle ?? $seoTitle ?? null"
+        :twitterDescription="$seoTwitterDescription ?? $seoDescription ?? null"
+        :twitterImage="$seoTwitterImage ?? $seoImage ?? null"
     />
 
     {{--
@@ -54,8 +60,8 @@
     @endforeach
 
         <!-- Theme fonts (Inter / Poppins per theme settings) -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700&display=swap" rel="stylesheet">
 
     @livewireStyles
     @livewireScripts

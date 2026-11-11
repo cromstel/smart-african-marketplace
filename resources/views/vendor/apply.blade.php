@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', 'Vendor Application')
+@section('title', 'Vendor Application - Smart African Market')
+@section('seoDescription', 'Apply to become a vendor on Smart African Market. Sell your products to customers across Africa.')
+@section('seoKeywords', 'vendor application, become a vendor, sell on marketplace, African Market')
 
 @section('content')
 <x-hero-section
@@ -9,7 +11,7 @@
     fallbackSubtitle="Apply to sell on {{ config('app.name') }}"
     fallbackImage="/images/hero-banners/referral-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-10">

@@ -11,7 +11,7 @@
     :fallbackStats="[
         ['value' => $featuredAuctions->count(), 'label' => 'Featured Now']
     ]"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

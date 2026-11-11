@@ -8,7 +8,7 @@
     fallbackTitle="Add Address"
     fallbackSubtitle="Save a new shipping or billing address"
     fallbackImage="/images/hero-banners/hero-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8 max-w-2xl">

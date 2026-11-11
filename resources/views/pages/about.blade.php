@@ -1,5 +1,9 @@
 @extends('layouts.shop')
 
+@section('title', __('ui.about.meta_title'))
+@section('seoDescription', __('ui.about.meta_description'))
+@section('seoKeywords', __('ui.about.meta_keywords'))
+
 @section('content')
 <x-hero-section 
     pageIdentifier="about"

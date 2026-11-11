@@ -1,5 +1,9 @@
 @extends('layouts.shop')
 
+@section('title', 'Account Settings - Smart African Market')
+@section('seoDescription', 'Manage your profile information and account security on Smart African Market.')
+@section('seoKeywords', 'account settings, profile, security, African Market')
+
 @section('content')
 <div class="min-h-screen bg-gray-50 py-6 lg:py-12">
     <div class="container mx-auto px-4">

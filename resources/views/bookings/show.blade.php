@@ -9,7 +9,7 @@
     fallbackSubtitle="View your booking information"
     fallbackImage="/images/booking-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

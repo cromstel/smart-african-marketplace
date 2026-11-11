@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', $stylist->name)
+@section('title', $stylist->name . ' - Smart African Market')
+@section('seoDescription', $stylist->bio ?? "Professional salon stylist offering expert hair styling and beauty services.")
+@section('seoKeywords', 'salon stylist, hair stylist, beauty professional, book stylist, ' . $stylist->name)
 
 @section('content')
 <x-hero-section
@@ -9,7 +11,7 @@
     fallbackSubtitle="{{ $stylist->salon->name ?? 'Independent Stylist' }}"
     fallbackImage="/images/salon-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

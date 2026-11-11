@@ -8,7 +8,7 @@
     :fallbackTitle="__('ui.subscription.plan_details_title')"
     :fallbackSubtitle="__('ui.subscription.plan_details_subtitle')"
     fallbackImage="/images/hero-banners/pricing-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

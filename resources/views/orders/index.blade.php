@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', 'My Orders')
+@section('title', 'My Orders - Smart African Market')
+@section('seoDescription', 'Track and manage your orders from Smart African Market.')
+@section('seoKeywords', 'my orders, order tracking, order history, African Market')
 
 @section('content')
 <x-hero-section
@@ -8,7 +10,7 @@
     fallbackTitle="My Orders"
     fallbackSubtitle="Track and manage your orders"
     fallbackImage="/images/hero-banners/hero-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

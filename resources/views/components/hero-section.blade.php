@@ -71,8 +71,7 @@
     }
     
     $heightPresets = [
-        'standard' => ['mobile' => '45vh', 'desktop' => '50vh', 'exact' => true],
-        'home' => ['mobile' => '45vh', 'desktop' => '60vh', 'exact' => true],
+        'standard' => ['mobile' => '45vh', 'desktop' => '600px', 'exact' => true],
     ];
     $resolvedPreset = $heightPreset && isset($heightPresets[$heightPreset]) ? $heightPresets[$heightPreset] : null;
     $heroInlineStyle = null;
@@ -82,13 +81,13 @@
     // on narrow viewports or with longer translated button labels.
     $heroButtonsLayoutClasses = 'flex-wrap';
     $heroMobileHeight = '45vh';
-    $heroDesktopHeight = '50vh';
-    $heroUseExactHeight = false;
+    $heroDesktopHeight = '600px';
+    $heroUseExactHeight = true;
 
-    // Determine hero height values: custom > preset > home (60vh desktop) > default (50vh desktop)
+    // Determine hero height values: custom > preset > home (60vh desktop) > default (600px desktop)
     if ($customHeight) {
         $heroUseExactHeight = true;
-        $customHeightValue = $customHeightValue ?? ($pageIdentifier === 'home' ? '50vh|60vh' : '45vh|50vh');
+        $customHeightValue = $customHeightValue ?? ($pageIdentifier === 'home' ? '50vh|60vh' : '45vh|600px');
         if (str_contains($customHeightValue, '|')) {
             [$mobileValue, $desktopValue] = array_pad(explode('|', $customHeightValue, 2), 2, null);
             $heroMobileHeight = trim((string) ($mobileValue ?: '45vh'));
@@ -101,7 +100,7 @@
         $heroMobileHeight = $resolvedPreset['mobile'];
         $heroDesktopHeight = $resolvedPreset['desktop'];
         $heroUseExactHeight = (bool) ($resolvedPreset['exact'] ?? false);
-        $heroContentPaddingClasses = $heightPreset === 'home' ? 'py-8 md:py-12' : 'py-6 md:py-10';
+        $heroContentPaddingClasses = 'py-6 md:py-10';
     } elseif ($pageIdentifier === 'home') {
         $heroMobileHeight = '50vh';
         $heroDesktopHeight = '60vh';
@@ -109,8 +108,8 @@
         $heroContentPaddingClasses = 'py-8 md:py-12';
     } else {
         $heroMobileHeight = '45vh';
-        $heroDesktopHeight = '50vh';
-        $heroUseExactHeight = false;
+        $heroDesktopHeight = '600px';
+        $heroUseExactHeight = true;
         $heroContentPaddingClasses = 'py-6 md:py-10';
     }
 
@@ -147,6 +146,12 @@
         .hero-height-managed.hero-height-exact {
             min-height: var(--hero-height-desktop);
         }
+    }
+
+    .decoration-clone {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        backface-visibility: hidden;
     }
 
     @keyframes slowZoom {
@@ -229,10 +234,10 @@
 <div class="relative text-white {{ $heroHeightModeClass }} {{ $heroUseExactHeight ? 'hero-height-exact' : '' }} overflow-hidden" style="{{ $heroInlineStyle }}">
     @if($hasImageBackground)
         <div class="absolute inset-0 overflow-hidden">
-            <div class="hero-background-animated hero-background-drift absolute inset-0 w-full h-full" style="{{ $backgroundStyle }}"></div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.16),transparent_45%),radial-gradient(circle_at_80%_70%,rgba(255,255,255,0.12),transparent_42%)] mix-blend-screen pointer-events-none"></div>
+            <div class="absolute inset-0 w-full h-full {{ $animated ? 'hero-background-animated hero-background-drift' : '' }} decoration-clone" style="{{ $backgroundStyle }}"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.1),transparent_45%),radial-gradient(circle_at_80%_70%,rgba(255,255,255,0.08),transparent_42%)] mix-blend-screen pointer-events-none"></div>
         </div>
-        <div class="absolute inset-0" style="background-color: rgba(0, 0, 0, 0.65);"></div>
+        <div class="absolute inset-0" style="background-color: rgba(0, 0, 0, 0.4);"></div>
     @else
         <div class="absolute inset-0" style="{{ $backgroundStyle }}"></div>
     @endif

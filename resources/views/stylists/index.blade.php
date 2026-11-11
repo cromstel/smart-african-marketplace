@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', 'Stylists')
+@section('title', 'Salon Stylists - Smart African Market')
+@section('seoDescription', 'Meet professional salon stylists offering hair styling, coloring, and beauty services across Africa.')
+@section('seoKeywords', 'salon stylists, hair stylists, beauty professionals, booking stylists, African salons')
 
 @section('content')
 <x-hero-section
@@ -8,7 +10,7 @@
     fallbackTitle="Salon Stylists"
     fallbackSubtitle="Meet the professionals behind the services"
     fallbackImage="/images/salon-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', 'Vendor Application Status')
+@section('title', 'Vendor Application Status - Smart African Market')
+@section('seoDescription', 'Track your vendor verification progress on Smart African Market.')
+@section('seoKeywords', 'vendor application status, vendor verification, African Market')
 
 @section('content')
 <x-hero-section
@@ -9,7 +11,7 @@
     fallbackSubtitle="Track your vendor verification progress"
     fallbackImage="/images/hero-banners/referral-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-10">

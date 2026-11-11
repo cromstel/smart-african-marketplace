@@ -8,7 +8,7 @@
     fallbackTitle="Notifications"
     fallbackSubtitle="Stay on top of booking updates and marketplace alerts"
     fallbackImage="/images/hero-banners/hero-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-10">

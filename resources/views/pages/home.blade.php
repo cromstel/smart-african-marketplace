@@ -1,5 +1,9 @@
 @extends('layouts.shop')
 
+@section('title', __('ui.home.meta_title'))
+@section('seoDescription', __('ui.home.meta_description'))
+@section('seoKeywords', __('ui.home.meta_keywords'))
+
 @section('content')
 <div class="min-h-screen">
     <x-hero-section 

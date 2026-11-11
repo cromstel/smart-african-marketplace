@@ -1,6 +1,8 @@
 @extends('layouts.shop')
 
-@section('title', 'My Wishlist')
+@section('title', 'My Wishlist - Smart African Market')
+@section('seoDescription', 'Your favorite products saved for later from Smart African Market.')
+@section('seoKeywords', 'wishlist, favorite products, saved items, African Market')
 
 @section('content')
 <x-hero-section
@@ -11,7 +13,7 @@
     :fallbackStats="[
         ['value' => $wishlistItems->count(), 'label' => 'Saved Items']
     ]"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

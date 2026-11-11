@@ -1,5 +1,9 @@
 @extends('layouts.shop')
 
+@section('title', __('ui.blog.meta_title'))
+@section('seoDescription', __('ui.blog.meta_description'))
+@section('seoKeywords', __('ui.blog.meta_keywords'))
+
 @section('content')
 @php $suppressHeaderWidgets = true; @endphp
 <x-hero-section
@@ -8,7 +12,7 @@
     fallbackTitle="{{ __('ui.blog.title') }}"
     fallbackSubtitle="{{ __('ui.blog.subtitle') }}"
     fallbackImage="/images/hero-banners/blog-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-16">

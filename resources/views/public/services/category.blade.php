@@ -39,7 +39,7 @@
      :fallbackTitle="{{ $category->name }}"
      :fallbackSubtitle="{{ $category->description }}"
      fallbackImage="/images/hero-banners/salon-banner.avif"
-     :animated="true"
+     
  />
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

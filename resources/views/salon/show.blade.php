@@ -10,7 +10,7 @@
     fallbackSubtitle="View service information and book your appointment"
     fallbackImage="/images/hero-banners/salon-banner.avif"
     headingTag="h2"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

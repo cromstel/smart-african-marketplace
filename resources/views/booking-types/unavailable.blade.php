@@ -8,7 +8,7 @@
     :fallbackTitle="ucfirst($bookingType->name) . ' Booking'"
     :fallbackSubtitle="$bookingType->description"
     fallbackImage="/images/hero-banners/salon-banner.avif"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

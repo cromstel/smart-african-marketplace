@@ -1,5 +1,9 @@
 @extends('layouts.shop')
 
+@section('title', __('ui.faq.meta_title'))
+@section('seoDescription', __('ui.faq.meta_description'))
+@section('seoKeywords', __('ui.faq.meta_keywords'))
+
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <x-hero-section
@@ -8,7 +12,7 @@
         fallbackTitle="{{ __('ui.faq.title') }}"
         fallbackSubtitle="{{ __('ui.faq.subtitle') }}"
         fallbackImage="/images/hero-banners/hero-banner.avif"
-        :animated="true"
+        
     />
 
     <div class="max-w-[1600px] mx-auto px-4 py-12 lg:py-16">

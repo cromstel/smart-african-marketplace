@@ -1,5 +1,9 @@
 @extends('layouts.shop')
 
+@section('title', $post->title ?? __('ui.blog.meta_title'))
+@section('seoDescription', $post->meta_description ?? $post->excerpt ?? __('ui.blog.meta_description'))
+@section('seoKeywords', $post->meta_keywords ?? __('ui.blog.meta_keywords'))
+
 @section('content')
 @php
     $suppressHeaderWidgets = true;
@@ -17,7 +21,7 @@
     :background-image-url="$featuredImageUrl"
     headingTag="h2"
     title-size-classes="text-3xl sm:text-4xl lg:text-5xl"
-    :animated="true"
+    
 />
 
 <div class="container mx-auto px-4 py-8">

@@ -1,5 +1,9 @@
 @extends('layouts.shop')
 
+@section('title', __('ui.contact.meta_title'))
+@section('seoDescription', __('ui.contact.meta_description'))
+@section('seoKeywords', __('ui.contact.meta_keywords'))
+
 @section('content')
 <style>
     @keyframes fadeInUp {
