@@ -7,6 +7,11 @@
 @section('content')
  {{-- Hero Section --}}
  @php
+     $filterParams = [
+         'search' => request('search'),
+         'category_type' => request('category_type'),
+         'gender_target' => request('gender_target'),
+     ];
      $fallbackStats = [
          ['value' => $services->total() . '+', 'label' => 'Services Available'],
          ['value' => $parentCategories->count() . '+', 'label' => 'Categories'],
