@@ -38,6 +38,16 @@ class ServiceController extends Controller
 
         $services = $query->paginate(12)->withQueryString();
 
+        // Load parent categories with their children for hierarchical sidebar
+        $parentCategories = VendorServiceCategory::active()
+            ->parents()
+            ->with(['children' => function ($q) {
+                $q->active()->orderBy('sort_order')->orderBy('name');
+            }])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
         $categoryTypes = VendorServiceCategory::active()
             ->distinct('category_type')
             ->pluck('category_type');
@@ -49,6 +59,7 @@ class ServiceController extends Controller
 
         return view('public.services.index', compact(
             'services',
+            'parentCategories',
             'categoryTypes',
             'genderTargets'
         ));
@@ -58,15 +69,40 @@ class ServiceController extends Controller
     {
         $category = VendorServiceCategory::where('slug', $categorySlug)
             ->where('is_active', true)
+            ->with(['parent', 'children' => function ($q) {
+                $q->active()->orderBy('sort_order')->orderBy('name');
+            }])
             ->firstOrFail();
 
-        $services = VendorService::active()
-            ->where('vendor_service_category_id', $category->id)
-            ->with(['vendor', 'category'])
-            ->paginate(12)
-            ->withQueryString();
+        // Build breadcrumb path
+        $breadcrumb = [$category];
+        $parent = $category->parent;
+        while ($parent) {
+            array_unshift($breadcrumb, $parent);
+            $parent = $parent->parent;
+        }
 
-        return view('public.services.category', compact('category', 'services'));
+        // If category has children, show services from all descendant leaf categories
+        if ($category->children->count() > 0) {
+            $childIds = $category->children->pluck('id');
+            $services = VendorService::active()
+                ->whereIn('vendor_service_category_id', $childIds)
+                ->with(['vendor', 'category'])
+                ->paginate(12)
+                ->withQueryString();
+        } else {
+            $services = VendorService::active()
+                ->where('vendor_service_category_id', $category->id)
+                ->with(['vendor', 'category'])
+                ->paginate(12)
+                ->withQueryString();
+        }
+
+        return view('public.services.category', compact(
+            'category',
+            'breadcrumb',
+            'services'
+        ));
     }
 
     public function show(VendorService $service)
