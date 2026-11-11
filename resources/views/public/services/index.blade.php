@@ -77,7 +77,7 @@
                                 <div class="mt-2 space-y-1 ml-4 border-l-2 border-gray-700 pl-4">
                                     @foreach($parent->children as $child)
                                         <a href="{{ route('services.category', $child->slug) }}"
-                                           class="block px-2 py-1.5 rounded text-sm {{ request()->routeIs('services.category', $child->slug) ? 'bg-indigo-600/50 text-indigo-300' : 'text-gray-400 hover:text-white hover:bg-gray-700' }} {{ $child->services()->count() > 0 ? '' : 'opacity-50' }}">
+                                           class="block px-2 py-1.5 rounded text-sm {{ request()->routeIs('services.category', $child->slug) ? 'bg-indigo-600/50 text-indigo-300' : 'text-gray-400 hover:text-white hover:bg-gray-700' }} {{ $child->vendorServices()->count() > 0 ? '' : 'opacity-50' }}">
                                             {{ $child->name }}
                                         </a>
                                     @endforeach
@@ -111,7 +111,7 @@
 
                             <!-- Service Type Badge -->
                             <span class="absolute top-3 left-3 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-tighter">
-                                {{ ucfirst($service->category->gender_target ?? 'unisex') }}
+                                {{ ucfirst(optional($service->category)->gender_target ?? 'unisex') }}
                             </span>
 
                             <!-- Featured Badge -->

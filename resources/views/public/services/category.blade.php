@@ -100,7 +100,7 @@
                     @endif
 
                     <span class="absolute top-3 left-3 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-tighter">
-                        {{ ucfirst($service->category->gender_target ?? 'unisex') }}
+                        {{ ucfirst(optional($service->category)->gender_target ?? 'unisex') }}
                     </span>
 
                     @if($service->is_featured)
