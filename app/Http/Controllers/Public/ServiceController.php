@@ -98,10 +98,20 @@ class ServiceController extends Controller
                 ->withQueryString();
         }
 
+        $parentCategories = VendorServiceCategory::active()
+            ->parents()
+            ->with(['children' => function ($q) {
+                $q->active()->orderBy('sort_order')->orderBy('name');
+            }])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
         return view('public.services.category', compact(
             'category',
             'breadcrumb',
-            'services'
+            'services',
+            'parentCategories'
         ));
     }
 
