@@ -10,6 +10,7 @@ return [
         'shop' => 'Shop',
         'pricing' => 'Pricing',
         'salon' => 'Salon',
+        'services' => 'Services',
         'blog' => 'Blog',
         'about' => 'About',
         'contact' => 'Contact',

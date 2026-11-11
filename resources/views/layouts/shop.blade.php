@@ -233,6 +233,9 @@
                         <a href="{{ route('salon.index') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('salon.*') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.salons') }}
                         </a>
+                        <a href="{{ route('services.index') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('services.*') ? 'theme-accent-text' : '' }}">
+                            {{ __('ui.nav.services') }}
+                        </a>
                         <a href="{{ route('blog.index') }}" class="theme-link text-sm sm:text-sm md:text-base text-gray-700 font-medium transition-colors {{ request()->routeIs('blog.*') ? 'theme-accent-text' : '' }}">
                             {{ __('ui.nav.blog') }}
                         </a>
@@ -412,6 +415,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     {{ __('ui.nav.salons') }}
+                </a>
+                <a href="{{ route('services.index') }}" class="flex items-center px-4 py-3 text-xs sm:text-sm md:text-base text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-lg font-medium transition-colors {{ request()->routeIs('services.*') ? 'bg-orange-50 text-orange-600' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    {{ __('ui.nav.services') }}
                 </a>
                 <a href="{{ route('blog.index') }}" class="flex items-center px-4 py-3 text-xs sm:text-sm md:text-base text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-lg font-medium transition-colors {{ request()->routeIs('blog.*') ? 'bg-orange-50 text-orange-600' : '' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
