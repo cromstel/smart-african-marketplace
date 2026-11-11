@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\SalonService;
 use App\Models\User;
 use App\Models\Vendor;
+use App\Models\VendorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -42,6 +43,8 @@ class VendorController extends Controller
             'tax_id' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'commission_rate' => 'required|numeric|min:0|max:100',
+            'vendor_type' => 'required|in:private_painter,corporate_painter,private_facility_management,corporate_facility_management,private_construction,corporate_construction,private_home_assistance,corporate_home_assistance,private_mechanic,corporate_mechanic,private_electrician,corporate_electrician,men_salon,women_salon,car_washing_bay,car_garage',
+            'is_service_provider' => 'boolean',
             'status' => 'required|in:pending,approved,suspended,rejected',
         ]);
 
@@ -67,6 +70,8 @@ class VendorController extends Controller
                 'tax_id' => $validated['tax_id'] ?? null,
                 'description' => $validated['description'] ?? null,
                 'commission_rate' => $validated['commission_rate'],
+                'vendor_type' => $validated['vendor_type'],
+                'is_service_provider' => $validated['is_service_provider'] ?? false,
                 'status' => $validated['status'],
                 'is_active' => $validated['status'] === 'approved',
                 'approved_at' => $validated['status'] === 'approved' ? now() : null,
@@ -91,11 +96,18 @@ class VendorController extends Controller
         }]);
 
         $serviceIds = SalonService::where('user_id', $vendor->user_id)->pluck('id');
+        $vendorServiceIds = VendorService::where('vendor_id', $vendor->id)->pluck('id');
         $totalBookings = Booking::whereIn('salon_service_id', $serviceIds)->count();
+        $vendorServiceBookings = Booking::whereIn('vendor_service_id', $vendorServiceIds)->count();
         $confirmedBookings = Booking::whereIn('salon_service_id', $serviceIds)
             ->where('status', 'confirmed')
             ->count();
+        $vendorServiceConfirmedBookings = Booking::whereIn('vendor_service_id', $vendorServiceIds)
+            ->where('status', 'confirmed')
+            ->count();
         $bookingRevenue = Booking::whereIn('salon_service_id', $serviceIds)
+            ->sum('price');
+        $vendorServiceRevenue = Booking::whereIn('vendor_service_id', $vendorServiceIds)
             ->sum('price');
 
         $stats = [
@@ -103,9 +115,11 @@ class VendorController extends Controller
             'active_products' => $vendor->products()->where('is_active', true)->count(),
             'total_sales' => $vendor->orderItems()->sum('total'),
             'total_orders' => $vendor->orderItems()->distinct('order_id')->count(),
-            'total_bookings' => $totalBookings,
-            'confirmed_bookings' => $confirmedBookings,
-            'booking_revenue' => $bookingRevenue,
+            'total_bookings' => $totalBookings + $vendorServiceBookings,
+            'confirmed_bookings' => $confirmedBookings + $vendorServiceConfirmedBookings,
+            'booking_revenue' => $bookingRevenue + $vendorServiceRevenue,
+            'total_services' => $vendor->vendorServices()->count(),
+            'active_services' => $vendor->vendorServices()->where('status', 'available')->count(),
         ];
 
         $vendorOrders = Order::whereHas('items', function ($query) use ($vendor) {
@@ -180,6 +194,8 @@ class VendorController extends Controller
             'tax_id' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'commission_rate' => 'required|numeric|min:0|max:100',
+            'vendor_type' => 'required|in:private_painter,corporate_painter,private_facility_management,corporate_facility_management,private_construction,corporate_construction,private_home_assistance,corporate_home_assistance,private_mechanic,corporate_mechanic,private_electrician,corporate_electrician,men_salon,women_salon,car_washing_bay,car_garage',
+            'is_service_provider' => 'boolean',
             'status' => 'required|in:pending,approved,suspended,rejected',
         ]);
 
@@ -204,6 +220,8 @@ class VendorController extends Controller
                 'tax_id' => $validated['tax_id'] ?? null,
                 'description' => $validated['description'] ?? null,
                 'commission_rate' => $validated['commission_rate'],
+                'vendor_type' => $validated['vendor_type'],
+                'is_service_provider' => $validated['is_service_provider'] ?? false,
                 'status' => $validated['status'],
                 'is_active' => $isNowApproved,
                 'approved_at' => (! $wasApproved && $isNowApproved) ? now() : $vendor->approved_at,

@@ -22,6 +22,7 @@
         <thead class="bg-gray-900">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Business</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Contact</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Commission</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
@@ -35,6 +36,17 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-white">{{ $vendor->business_name }}</div>
                         <div class="text-sm text-gray-400">{{ $vendor->user->name }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium
+                            @if($vendor->vendor_type === 'men_salon') bg-purple-900/30 text-purple-300
+                            @elseif($vendor->vendor_type === 'women_salon') bg-pink-900/30 text-pink-300
+                            @elseif($vendor->vendor_type === 'car_washing_bay') bg-blue-900/30 text-blue-300
+                            @elseif($vendor->vendor_type === 'car_garage') bg-indigo-900/30 text-indigo-300
+                            @elseif(str_contains($vendor->vendor_type, 'corporate')) bg-green-900/30 text-green-300
+                            @else bg-gray-900/30 text-gray-300 @endif">
+                            {{ ucwords(str_replace('_', ' ', $vendor->vendor_type ?? 'private_painter')) }}
+                        </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                         <div>{{ $vendor->business_email }}</div>

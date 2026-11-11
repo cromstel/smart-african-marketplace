@@ -43,6 +43,8 @@ class Vendor extends Model
         'momo_number',
         'commission_rate',
         'status',
+        'vendor_type',
+        'is_service_provider',
         'is_active',
         'approved_at',
         'custom_domain',
@@ -52,6 +54,7 @@ class Vendor extends Model
     protected $casts = [
         'commission_rate' => 'decimal:2',
         'is_active' => 'boolean',
+        'is_service_provider' => 'boolean',
         'approved_at' => 'datetime',
         'custom_domain_verified_at' => 'datetime',
     ];
@@ -124,6 +127,21 @@ class Vendor extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeServiceProviders($query)
+    {
+        return $query->where('is_service_provider', true);
+    }
+
+    public function scopeByVendorType($query, string $type)
+    {
+        return $query->where('vendor_type', $type);
+    }
+
+    public function vendorServices(): HasMany
+    {
+        return $this->hasMany(VendorService::class);
     }
 
     public function scopeApproved($query)

@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             SalonServiceCategorySeeder::class,
 
             VendorSeeder::class,
+            VendorSeederUpdate::class,
+            VendorServiceCategorySeeder::class,
             ProductSeeder::class,
             SalonServiceSeeder::class,
             DeliveryZoneSeeder::class,

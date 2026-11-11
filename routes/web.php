@@ -71,6 +71,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RefundRequestController;
 use App\Http\Controllers\ResourceBookingController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Salon\EarningsController;
+use App\Http\Controllers\Salon\ServiceController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Shop\ProductEnquiryController;
@@ -643,6 +645,14 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
     Route::get('/dashboard', [App\Http\Controllers\Vendor\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/analytics', [App\Http\Controllers\Vendor\AnalyticsController::class, 'index'])->name('analytics.index');
 
+    // Vendor Service Management
+    Route::get('/services', [App\Http\Controllers\Vendor\ServiceController::class, 'index'])->name('services.index');
+    Route::get('/services/create', [App\Http\Controllers\Vendor\ServiceController::class, 'create'])->name('services.create');
+    Route::post('/services', [App\Http\Controllers\Vendor\ServiceController::class, 'store'])->name('services.store');
+    Route::get('/services/{service}/edit', [App\Http\Controllers\Vendor\ServiceController::class, 'edit'])->name('services.edit');
+    Route::put('/services/{service}', [App\Http\Controllers\Vendor\ServiceController::class, 'update'])->name('services.update');
+    Route::delete('/services/{service}', [App\Http\Controllers\Vendor\ServiceController::class, 'destroy'])->name('services.destroy');
+
     Route::get('/data-export/request', [App\Http\Controllers\Vendor\DataExportRequestController::class, 'create'])
         ->name('data-export.request');
     Route::post('/data-export/request', [App\Http\Controllers\Vendor\DataExportRequestController::class, 'store'])
@@ -861,16 +871,16 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor', 'verifie
 // ============================================================================
 Route::prefix('salon-console')->name('salon.')->middleware(['auth', 'salon_owner', 'verified'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Salon\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/services', [App\Http\Controllers\Salon\ServiceController::class, 'index'])->name('services.index');
-    Route::get('/services/create', [App\Http\Controllers\Salon\ServiceController::class, 'create'])->name('services.create');
-    Route::post('/services', [App\Http\Controllers\Salon\ServiceController::class, 'store'])->name('services.store');
-    Route::get('/services/{service}/edit', [App\Http\Controllers\Salon\ServiceController::class, 'edit'])->name('services.edit');
-    Route::put('/services/{service}', [App\Http\Controllers\Salon\ServiceController::class, 'update'])->name('services.update');
-    Route::delete('/services/{service}', [App\Http\Controllers\Salon\ServiceController::class, 'destroy'])->name('services.destroy');
+    Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+    Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
+    Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+    Route::get('/services/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+    Route::put('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
+    Route::delete('/services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
     Route::get('/stylists', [App\Http\Controllers\Salon\StylistController::class, 'index'])->name('stylists.index');
     Route::get('/bookings', [App\Http\Controllers\Salon\BookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{booking}', [App\Http\Controllers\Salon\BookingController::class, 'show'])->name('bookings.show');
-    Route::get('/earnings', [App\Http\Controllers\Salon\EarningsController::class, 'index'])->name('earnings.index');
+    Route::get('/earnings', [EarningsController::class, 'index'])->name('earnings.index');
     Route::get('/profile', [App\Http\Controllers\Salon\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [App\Http\Controllers\Salon\ProfileController::class, 'update'])->name('profile.update');
 });
@@ -889,7 +899,6 @@ Route::prefix('customer-console')->name('customer.')->middleware(['auth', 'verif
     Route::put('/profile', [App\Http\Controllers\Customer\ProfileController::class, 'update'])->name('profile.update');
 });
 
-
 // Payment/SMS provider callbacks. These sit inside the `web` group (session,
 // CRLF protection, etc. -- CSRF is excepted for `webhooks/*` in
 // VerifyCsrfToken) like the rest of this file, but unlike the other public
@@ -907,6 +916,11 @@ Route::middleware('throttle:webhook')->group(function () {
 
 Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+
+// Public Service Routes
+Route::get('/services', [App\Http\Controllers\Public\ServiceController::class, 'index'])->name('services.index');
+Route::get('/services/{category}', [App\Http\Controllers\Public\ServiceController::class, 'byCategory'])->name('services.category');
+Route::get('/services/{service}', [App\Http\Controllers\Public\ServiceController::class, 'show'])->name('services.show');
 
 // Mobile App
 Route::get('/mobile', [MobileController::class, 'index'])->name('mobile.index');

@@ -114,6 +114,29 @@
     </div>
 </div>
 
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <p class="text-gray-400 text-sm mb-2">Total Services</p>
+        <p class="text-3xl font-bold text-white">{{ $stats['total_services'] }}</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <p class="text-gray-400 text-sm mb-2">Active Services</p>
+        <p class="text-3xl font-bold text-white">{{ $stats['active_services'] }}</p>
+    </div>
+    <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <p class="text-gray-400 text-sm mb-2">Vendor Type</p>
+        <span class="inline-block px-3 py-1 text-xs rounded-full
+            @if($vendor->vendor_type === 'men_salon') bg-purple-900 text-purple-300
+            @elseif($vendor->vendor_type === 'women_salon') bg-pink-900 text-pink-300
+            @elseif($vendor->vendor_type === 'car_washing_bay') bg-blue-900 text-blue-300
+            @elseif($vendor->vendor_type === 'car_garage') bg-indigo-900 text-indigo-300
+            @elseif(str_contains($vendor->vendor_type, 'corporate')) bg-green-900 text-green-300
+            @else bg-gray-900 text-gray-300 @endif">
+            {{ ucwords(str_replace('_', ' ', $vendor->vendor_type ?? 'private_painter')) }}
+        </span>
+    </div>
+</div>
+
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
         <h4 class="text-lg font-semibold text-white mb-6 flex items-center">

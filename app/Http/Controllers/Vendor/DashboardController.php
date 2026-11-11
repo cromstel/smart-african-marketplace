@@ -10,6 +10,7 @@ use App\Models\ProductEnquiry;
 use App\Models\RmaRequest;
 use App\Models\VendorBalance;
 use App\Models\VendorFollower;
+use App\Models\VendorService;
 use App\Models\VendorVerification;
 use App\Models\Withdrawal;
 
@@ -102,6 +103,9 @@ class DashboardController extends Controller
 
         $totalFollowers = $canFollowers ? VendorFollower::where('vendor_id', $vendor->id)->count() : 0;
 
+        $totalServices = VendorService::where('vendor_id', $vendor->id)->count();
+        $activeServices = VendorService::where('vendor_id', $vendor->id)->where('status', 'available')->count();
+
         $recentOrders = $canOrders
             ? Order::whereHas('items', function ($query) use ($vendor) {
                 $query->where('vendor_id', $vendor->id);
@@ -192,6 +196,8 @@ class DashboardController extends Controller
             'pendingEnquiries',
             'pendingRmaRequests',
             'totalFollowers',
+            'totalServices',
+            'activeServices',
             'recentOrders',
             'topProducts',
             'unreadAnnouncements',

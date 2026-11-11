@@ -16,6 +16,7 @@ class SalonService extends Model
         'salon_id',
         'stylist_id',
         'salon_category_id',
+        'vendor_service_category_id',
         'category_id',
         'name',
         'slug',
@@ -23,6 +24,8 @@ class SalonService extends Model
         'price',
         'duration_minutes',
         'image',
+        'service_type',
+        'is_service_provider',
         'is_active',
     ];
 
@@ -30,6 +33,7 @@ class SalonService extends Model
         'price' => 'decimal:2',
         'duration_minutes' => 'integer',
         'is_active' => 'boolean',
+        'is_service_provider' => 'boolean',
     ];
 
     public function user(): BelongsTo
