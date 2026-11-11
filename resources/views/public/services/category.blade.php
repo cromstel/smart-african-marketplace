@@ -84,54 +84,11 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($services as $service)
-            <article class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden hover:border-indigo-500 transition-all group">
-                <div class="h-48 bg-gray-700 relative">
-                    @if($service->image)
-                        <img src="{{ asset('storage/'.ltrim($service->image, '/')) }}"
-                             alt="{{ $service->name }}"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-gray-500">
-                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                        </div>
-                    @endif
-
-                    <span class="absolute top-3 left-3 bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-tighter">
-                        {{ ucfirst(optional($service->category)->gender_target ?? 'unisex') }}
-                    </span>
-
-                    @if($service->is_featured)
-                        <span class="absolute top-3 right-3 bg-indigo-500 text-white text-xs font-bold px-2 py-1 rounded-full uppercase tracking-tighter">
-                            Featured
-                        </span>
-                    @endif
-                </div>
-
-                <div class="p-5">
-                    <h3 class="text-lg font-semibold text-white group-hover:text-indigo-400 transition-colors">
-                        {{ $service->name }}
-                    </h3>
-                    <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ $service->description }}</p>
-
-                    <div class="flex items-center justify-between text-sm text-gray-400 mb-4">
-                        <span class="text-indigo-400 font-semibold">${{ number_format($service->price, 2) }}</span>
-                        <span>{{ $service->duration_minutes }} min</span>
-                    </div>
-
-                    <a href="{{ route('services.show', $service) }}"
-                       class="block bg-indigo-600 hover:bg-indigo-700 text-white text-center py-3 rounded-lg text-sm font-medium transition-colors">
-                        Book Service
-                    </a>
-                </div>
-            </article>
+            @include('public.services._service-card', ['service' => $service])
         @empty
             <div class="col-span-full text-center py-12">
                 <svg class="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
                 <h3 class="text-xl font-medium text-white mb-2">No services found</h3>
                 <p class="text-gray-400">No services in this category yet.</p>

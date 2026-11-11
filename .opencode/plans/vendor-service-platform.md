@@ -236,7 +236,7 @@ resources/views/vendor/
 - [ ] Vendor\DashboardController
 - [ ] Vendor dashboard layout (reuse sidebar pattern)
 - [ ] Dashboard overview stats view
-- [] Booking management views
+- [ ] Booking management views
 - [ ] Profile edit view
 
 ### Phase 5: Admin Platform Extension (Days 9-10)
