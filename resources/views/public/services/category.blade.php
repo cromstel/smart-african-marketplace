@@ -6,7 +6,7 @@
 
 @section('content')
  {{-- Category Hero --}}
- <nav class="flex items-center gap-2 mb-6 text-sm text-gray-400 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+ <nav aria-label="Breadcrumb" class="flex items-center gap-2 mb-6 text-sm text-gray-400 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
      <li>
          <a href="{{ route('services.index') }}" class="hover:text-white transition-colors">
              Services
@@ -23,7 +23,7 @@
                  <a href="{{ route('services.category', $crumb->slug) }}" class="hover:text-indigo-400 transition-colors">
                      {{ $crumb->name }}
                  </a>
-                 <svg class="w-3 h-3 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <svg class="w-3 h-3 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                  </svg>
              </li>
@@ -53,10 +53,12 @@
                         $hasServices = $child->vendorServices()->count() > 0;
                     @endphp
                     
-                    <a href="{{ route('services.category', $child->slug) }}"
-                       class="block bg-gray-800/50 border border-gray-700 rounded-xl p-6 hover:bg-indigo-600/20 hover:border-indigo-400 transition-all duration-300 group {{ !$hasServices ? 'opacity-50 pointer-events-none' : '' }}">
+                    <a href="{{ $hasServices ? route('services.category', $child->slug) : '#' }}"
+                       class="block bg-gray-800/50 border border-gray-700 rounded-xl p-6 hover:bg-indigo-600/20 hover:border-indigo-400 transition-all duration-300 group {{ !$hasServices ? 'opacity-50 pointer-events-none' : '' }}"
+                       {{ !$hasServices ? 'tabindex="-1" aria-disabled="true"' : '' }}
+                       {{ !$hasServices ? 'onclick="return false;"' : '' }}>
                         <div class="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 transition-colors">
-                            <svg class="w-7 h-7 text-indigo-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-7 h-7 text-indigo-400 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                             </svg>
                         </div>
@@ -96,7 +98,7 @@
                     @empty
                         <div class="col-span-full text-center py-20">
                             <div class="w-20 h-20 bg-gray-800 border border-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m-2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                 </svg>
                             </div>

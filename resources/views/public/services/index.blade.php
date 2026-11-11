@@ -35,7 +35,7 @@
         <!-- Empty State -->
         <div class="text-center py-20">
             <div class="w-20 h-20 bg-gray-800 border border-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m-2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
             </div>
@@ -82,7 +82,7 @@
             </div>
 
             <!-- Sidebar -->
-            <aside class="lg:sticky lg:top-24 order-first lg:order-first lg:w-[300px]">
+            <aside class="lg:sticky lg:top-24 order-first lg:order-first lg:w-[300px]" aria-label="Service filters and categories">
                 @include('public.services._sidebar', [
                     'parentCategories' => $parentCategories,
                     'currentCategorySlug' => request()->route('category') ?? null,
@@ -99,31 +99,5 @@
         </div>
     @endif
 </div>
-
-<script>
-    // Mobile sidebar toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        const mobileSidebar = document.querySelector('[data-mobile-sidebar]');
-        if (mobileSidebar) {
-            const toggleBtn = document.querySelector('[data-sidebar-toggle]');
-            const closeBtn = document.querySelector('[data-sidebar-close]');
-            const overlay = document.querySelector('[data-sidebar-overlay]');
-            
-            function openSidebar() {
-                mobileSidebar.classList.remove('translate-x-full');
-                overlay?.classList.remove('hidden');
-            }
-            
-            function closeSidebar() {
-                mobileSidebar.classList.add('translate-x-full');
-                overlay?.classList.add('hidden');
-            }
-            
-            toggleBtn?.addEventListener('click', openSidebar);
-            closeBtn?.addEventListener('click', closeSidebar);
-            overlay?.addEventListener('click', closeSidebar);
-        }
-    });
-</script>
 
 @endsection
