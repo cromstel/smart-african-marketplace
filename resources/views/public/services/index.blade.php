@@ -5,47 +5,25 @@
 @section('seoKeywords', 'services, beauty, automotive, home, commercial, vendors, booking, Smart African Market')
 
 @section('content')
-<!-- Hero Section -->
-<div class="relative bg-gradient-to-br from-gray-900 to-gray-950 py-20 md:py-28 overflow-hidden">
-    <div class="absolute inset-0 opacity-10" style="background-image: url('{{ asset('images/hero-banners/hero-banner.avif') }}'); background-size: cover; background-position: center;"></div>
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-            Professional <span class="text-transparent bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text">Services</span>
-        </h1>
-        <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Discover and book verified services from vetted vendors across Africa. From beauty and grooming to automotive care, home services, and commercial solutions.
-        </p>
-        
-        <!-- Quick Search -->
-        <div class="max-w-4xl mx-auto">
-            <form method="GET" action="{{ route('services.index') }}" class="flex flex-col md:flex-row gap-4">
-                @csrf
-                <input type="hidden" name="category_type" value="{{ $filterParams['category_type'] ?? '' }}">
-                <input type="hidden" name="gender_target" value="{{ $filterParams['gender_target'] ?? '' }}">
-                
-                <div class="flex-1 relative">
-                    <input type="text" name="search" 
-                           value="{{ $filterParams['search'] ?? '' }}"
-                           placeholder="Search for services (e.g., haircut, car wash, painting)..."
-                           class="w-full bg-gray-800/50 border border-gray-600 text-white rounded-xl px-5 py-4 text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder-gray-500">
-                    <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                    </button>
-                </div>
-                
-                <button type="submit" 
-                        class="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white px-6 py-4 rounded-lg font-semibold transition-all shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Search
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
+ {{-- Hero Section --}}
+ @php
+     $fallbackStats = [
+         ['value' => $services->total() . '+', 'label' => 'Services Available'],
+         ['value' => $parentCategories->count() . '+', 'label' => 'Categories'],
+         ['value' => '100%', 'label' => 'Professional Vendors']
+     ];
+ @endphp
+
+ <x-hero-section
+     pageIdentifier="services"
+     heightPreset="standard"
+     heading-tag="h1"
+     :fallbackTitle="__('Services')"
+     :fallbackSubtitle="__('Discover and book professional services from vetted vendors across beauty, automotive, home, and commercial categories.')"
+     fallbackImage="/images/hero-banners/salon-banner.avif"
+     :fallbackStats="$fallbackStats"
+     :animated="true"
+ />
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     @if($services->isEmpty() && !$services->currentPage() > 1)

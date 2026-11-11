@@ -5,42 +5,42 @@
 @section('seoKeywords', '{{ $category->name }}, services, vendors, booking, Smart African Market')
 
 @section('content')
-<!-- Category Hero -->
-<div class="relative py-16 md:py-24 overflow-hidden">
-    <div class="absolute inset-0 opacity-15" style="background-image: url('{{ asset('images/hero-banners/salon-banner.avif') }}'); background-size: cover; background-position: center;"></div>
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl">
-            <nav class="flex items-center gap-2 mb-6 text-sm text-gray-400">
-                <li>
-                    <a href="{{ route('services.index') }}" class="hover:text-white transition-colors">
-                        Services
-                    </a>
-                    <svg class="w-3 h-3 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </li>
-                @forelse($breadcrumb as $index => $crumb)
-                    @if($loop->last)
-                        <span class="text-white font-medium">{{ $crumb->name }}</span>
-                    @else
-                        <li>
-                            <a href="{{ route('services.category', $crumb->slug) }}" class="hover:text-indigo-400 transition-colors">
-                                {{ $crumb->name }}
-                            </a>
-                            <svg class="w-3 h-3 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </li>
-                    @endif
-                @empty
-                @endforelse
-            </nav>
+ {{-- Category Hero --}}
+ <nav class="flex items-center gap-2 mb-6 text-sm text-gray-400 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <li>
+         <a href="{{ route('services.index') }}" class="hover:text-white transition-colors">
+             Services
+         </a>
+         <svg class="w-3 h-3 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+         </svg>
+     </li>
+     @forelse($breadcrumb as $index => $crumb)
+         @if($loop->last)
+             <span class="text-white font-medium">{{ $crumb->name }}</span>
+         @else
+             <li>
+                 <a href="{{ route('services.category', $crumb->slug) }}" class="hover:text-indigo-400 transition-colors">
+                     {{ $crumb->name }}
+                 </a>
+                 <svg class="w-3 h-3 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                 </svg>
+             </li>
+         @endif
+     @empty
+     @endforelse
+ </nav>
 
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">{{ $category->name }}</h1>
-            <p class="text-lg text-gray-300 max-w-2xl">{{ $category->description }}</p>
-        </div>
-    </div>
-</div>
+ <x-hero-section
+     pageIdentifier="services.category"
+     heightPreset="standard"
+     heading-tag="h1"
+     :fallbackTitle="{{ $category->name }}"
+     :fallbackSubtitle="{{ $category->description }}"
+     fallbackImage="/images/hero-banners/salon-banner.avif"
+     :animated="true"
+ />
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     @if($category->children->count() > 0)
