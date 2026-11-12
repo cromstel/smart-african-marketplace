@@ -65,7 +65,7 @@ class ServiceController extends Controller
         ));
     }
 
-    public function byCategory(Request $request, string $categorySlug)
+    public function byCategory(Request $request, string $category)
     {
         $category = VendorServiceCategory::where('slug', $categorySlug)
             ->where('is_active', true)
