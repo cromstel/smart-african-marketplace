@@ -30,7 +30,7 @@
                         <select id="category-type-select" name="category_type" 
                                 class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors">
                             <option value="">All Categories</option>
-                            @foreach($filterParams['categoryTypes'] as $type)
+                            @foreach($filterParams['categoryTypes'] ?? [] as $type)
                                 <option value="{{ $type }}" 
                                         {{ ($filterParams['category_type'] ?? '') === $type ? 'selected' : '' }}>
                                     {{ ucwords(str_replace('_', ' ', $type)) }}
@@ -44,7 +44,7 @@
                         <select id="gender-target-select" name="gender_target" 
                                 class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors">
                             <option value="">All Genders</option>
-                            @foreach($filterParams['genderTargets'] as $gender)
+                            @foreach($filterParams['genderTargets'] ?? [] as $gender)
                                 <option value="{{ $gender }}" 
                                         {{ ($filterParams['gender_target'] ?? '') === $gender ? 'selected' : '' }}>
                                     {{ ucfirst($gender) }}

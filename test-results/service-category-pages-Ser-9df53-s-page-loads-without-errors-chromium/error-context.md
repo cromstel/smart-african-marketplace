@@ -20,7 +20,7 @@ Timeout: 5000ms
 
 Call log:
   - Expect "toHaveTitle" with timeout 5000ms
-    13 × locator resolved to <html lang="en">…</html>
+    12 × locator resolved to <html lang="en">…</html>
        - unexpected value "Smart African Market"
 
 ```
