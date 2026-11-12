@@ -7,8 +7,8 @@
 @section('content')
 <x-hero-section
     pageIdentifier="stylists"
-    fallbackTitle="{{ $stylist->name }}"
-    fallbackSubtitle="{{ $stylist->salon->name ?? 'Independent Stylist' }}"
+    fallbackTitle="$stylist->name"
+    fallbackSubtitle="$stylist->salon->name ?? 'Independent Stylist'"
     fallbackImage="/images/salon-banner.avif"
     headingTag="h2"
     

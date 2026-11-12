@@ -9,8 +9,8 @@
 <x-hero-section
     pageIdentifier="blog"
     heightPreset="standard"
-    fallbackTitle="{{ __('ui.blog.title') }}"
-    fallbackSubtitle="{{ __('ui.blog.subtitle') }}"
+    fallbackTitle="__( 'ui.blog.title' )"
+    fallbackSubtitle="__( 'ui.blog.subtitle' )"
     fallbackImage="/images/hero-banners/blog-banner.avif"
     
 />

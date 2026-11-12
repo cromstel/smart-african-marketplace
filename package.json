@@ -19,6 +19,7 @@
         "soketi": "cd soketi && npm start"
     },
     "devDependencies": {
+        "@playwright/test": "^1.65.0",
         "@tailwindcss/forms": "^0.5.2",
         "alpinejs": "^3.4.2",
         "autoprefixer": "^10.4.2",

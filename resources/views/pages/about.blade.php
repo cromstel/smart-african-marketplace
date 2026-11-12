@@ -7,8 +7,8 @@
 @section('content')
 <x-hero-section 
     pageIdentifier="about"
-    fallbackTitle="{{ __('ui.about.hero_title') }}"
-    fallbackSubtitle="{{ __('ui.about.hero_subtitle') }}"
+    fallbackTitle="__( 'ui.about.hero_title' )"
+    fallbackSubtitle="__( 'ui.about.hero_subtitle' )"
     fallbackImage="/images/hero-banners/about-banner.avif"
     headingTag="h2"
 />

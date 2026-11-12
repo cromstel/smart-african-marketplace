@@ -36,8 +36,8 @@
      pageIdentifier="services.category"
      heightPreset="standard"
      heading-tag="h1"
-     :fallbackTitle="{{ $category->name }}"
-     :fallbackSubtitle="{{ $category->description }}"
+     :fallbackTitle="$category->name"
+     :fallbackSubtitle="$category->description"
      fallbackImage="/images/hero-banners/salon-banner.avif"
      
  />

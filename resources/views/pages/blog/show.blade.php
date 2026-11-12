@@ -17,7 +17,7 @@
 <x-hero-section
     pageIdentifier="blog-post"
     heightPreset="standard"
-    fallbackTitle="{{ $post->title }}"
+    fallbackTitle="$post->title"
     :background-image-url="$featuredImageUrl"
     headingTag="h2"
     title-size-classes="text-3xl sm:text-4xl lg:text-5xl"
