@@ -625,16 +625,16 @@ Received: 500
       - navigation:
         - list [ref=e829]:
           - listitem [ref=e830]:
-            - button "6 Queries" [ref=e831] [cursor=pointer]:
-              - generic [ref=e832]: "6"
+            - button "7 Queries" [ref=e831] [cursor=pointer]:
+              - generic [ref=e832]: "7"
               - generic [ref=e833]: Queries
       - generic [ref=e834]:
         - generic [ref=e835]:
           - generic [ref=e836]:
-            - generic [ref=e837]: 9:50:08 AM
+            - generic [ref=e837]: 9:56:43 AM
             - generic [ref=e838]:
               - img "Runtime" [ref=e839]
-              - text: 4.2ms
+              - text: 14.82ms
             - generic [ref=e841]:
               - img "Connection" [ref=e842]
               - text: mysql
@@ -645,10 +645,10 @@ Received: 500
             - button [ref=e855]
         - generic [ref=e858]:
           - generic [ref=e859]:
-            - generic [ref=e860]: 9:50:08 AM
+            - generic [ref=e860]: 9:56:43 AM
             - generic [ref=e861]:
               - img "Runtime" [ref=e862]
-              - text: 1.15ms
+              - text: 0.8ms
             - generic [ref=e864]:
               - img "Connection" [ref=e865]
               - text: mysql
@@ -659,10 +659,10 @@ Received: 500
             - button [ref=e878]
         - generic [ref=e881]:
           - generic [ref=e882]:
-            - generic [ref=e883]: 9:50:08 AM
+            - generic [ref=e883]: 9:56:43 AM
             - generic [ref=e884]:
               - img "Runtime" [ref=e885]
-              - text: 0.75ms
+              - text: 0.64ms
             - generic [ref=e887]:
               - img "Connection" [ref=e888]
               - text: mysql
@@ -675,10 +675,10 @@ Received: 500
             - button "1 query parameter" [ref=e906] [cursor=pointer]
         - generic [ref=e909]:
           - generic [ref=e910]:
-            - generic [ref=e911]: 9:50:08 AM
+            - generic [ref=e911]: 9:56:43 AM
             - generic [ref=e912]:
               - img "Runtime" [ref=e913]
-              - text: 3.75ms
+              - text: 0.91ms
             - generic [ref=e915]:
               - img "Connection" [ref=e916]
               - text: mysql
@@ -691,54 +691,70 @@ Received: 500
             - button "1 query parameter" [ref=e934] [cursor=pointer]
         - generic [ref=e937]:
           - generic [ref=e938]:
-            - generic [ref=e939]: 9:50:08 AM
+            - generic [ref=e939]: 9:56:43 AM
             - generic [ref=e940]:
               - img "Runtime" [ref=e941]
-              - text: 0.74ms
+              - text: 0.73ms
             - generic [ref=e943]:
               - img "Connection" [ref=e944]
               - text: mysql
           - generic [ref=e947]:
             - generic [ref=e948] [cursor=pointer]:
               - code [ref=e951]:
-                - code [ref=e953]: "select * from `sessions` where `id` = afhtYIJXV4FAiclmlzGiidXeQXNEhFCyt933fYcA limit 1"
+                - code [ref=e953]: "select * from `sessions` where `id` = ar8x4dMFa3HsJ11RAG6zqdmTedBaUSySGdm1HtrP limit 1"
               - button "Copy to clipboard" [ref=e955]
               - button [ref=e958]
             - button "1 query parameter" [ref=e962] [cursor=pointer]
         - generic [ref=e965]:
           - generic [ref=e966]:
-            - generic [ref=e967]: 9:50:08 AM
+            - generic [ref=e967]: 9:56:43 AM
             - generic [ref=e968]:
               - img "Runtime" [ref=e969]
-              - text: 0.76ms
+              - text: 0.55ms
             - generic [ref=e971]:
               - img "Connection" [ref=e972]
               - text: mysql
           - generic [ref=e975]:
             - generic [ref=e976] [cursor=pointer]:
               - code [ref=e979]:
-                - code [ref=e981]: "select * from `cache` where `key` in (smart_african_market_cache_maintenance_mode)"
+                - code [ref=e981]: "delete from `sessions` where `last_activity` <= 1794466603"
               - button "Copy to clipboard" [ref=e983]
               - button [ref=e986]
             - button "1 query parameter" [ref=e990] [cursor=pointer]
-    - generic [ref=e994]:
-      - list [ref=e995]:
-        - listitem [ref=e996]
-        - listitem [ref=e1005]: ·
-        - listitem [ref=e1006]:
-          - link "Source" [ref=e1007] [cursor=pointer]:
+        - generic [ref=e993]:
+          - generic [ref=e994]:
+            - generic [ref=e995]: 9:56:43 AM
+            - generic [ref=e996]:
+              - img "Runtime" [ref=e997]
+              - text: 0.57ms
+            - generic [ref=e999]:
+              - img "Connection" [ref=e1000]
+              - text: mysql
+          - generic [ref=e1003]:
+            - generic [ref=e1004] [cursor=pointer]:
+              - code [ref=e1007]:
+                - code [ref=e1009]: "select * from `cache` where `key` in (smart_african_market_cache_maintenance_mode)"
+              - button "Copy to clipboard" [ref=e1011]
+              - button [ref=e1014]
+            - button "1 query parameter" [ref=e1018] [cursor=pointer]
+    - generic [ref=e1022]:
+      - list [ref=e1023]:
+        - listitem [ref=e1024]
+        - listitem [ref=e1033]: ·
+        - listitem [ref=e1034]:
+          - link "Source" [ref=e1035] [cursor=pointer]:
             - /url: https://github.com/spatie/laravel-ignition
-        - listitem [ref=e1008]: ·
-        - listitem [ref=e1009]:
-          - link "Docs" [ref=e1010] [cursor=pointer]:
+        - listitem [ref=e1036]: ·
+        - listitem [ref=e1037]:
+          - link "Docs" [ref=e1038] [cursor=pointer]:
             - /url: https://flareapp.io/docs/ignition/introducing-ignition/overview
-        - listitem [ref=e1011]: ·
-        - listitem [ref=e1012]:
-          - link "Laravel" [ref=e1013] [cursor=pointer]:
+        - listitem [ref=e1039]: ·
+        - listitem [ref=e1040]:
+          - link "Laravel" [ref=e1041] [cursor=pointer]:
             - /url: https://laravel.com
-      - paragraph [ref=e1015]:
+      - paragraph [ref=e1043]:
         - text: Ignition is built by
-        - link "Flare" [ref=e1016] [cursor=pointer]:
+        - link "Flare" [ref=e1044] [cursor=pointer]:
           - /url: https://flareapp.io/?utm_campaign=ignition&utm_source=ignition
         - text: ", the Laravel error reporting service."
 ```

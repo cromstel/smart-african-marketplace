@@ -631,10 +631,10 @@ Received: 500
       - generic [ref=e834]:
         - generic [ref=e835]:
           - generic [ref=e836]:
-            - generic [ref=e837]: 9:50:01 AM
+            - generic [ref=e837]: 9:56:37 AM
             - generic [ref=e838]:
               - img "Runtime" [ref=e839]
-              - text: 3.98ms
+              - text: 3.09ms
             - generic [ref=e841]:
               - img "Connection" [ref=e842]
               - text: mysql
@@ -645,10 +645,10 @@ Received: 500
             - button [ref=e855]
         - generic [ref=e858]:
           - generic [ref=e859]:
-            - generic [ref=e860]: 9:50:01 AM
+            - generic [ref=e860]: 9:56:37 AM
             - generic [ref=e861]:
               - img "Runtime" [ref=e862]
-              - text: 0.87ms
+              - text: 0.8ms
             - generic [ref=e864]:
               - img "Connection" [ref=e865]
               - text: mysql
@@ -659,10 +659,10 @@ Received: 500
             - button [ref=e878]
         - generic [ref=e881]:
           - generic [ref=e882]:
-            - generic [ref=e883]: 9:50:01 AM
+            - generic [ref=e883]: 9:56:37 AM
             - generic [ref=e884]:
               - img "Runtime" [ref=e885]
-              - text: 0.76ms
+              - text: 1.32ms
             - generic [ref=e887]:
               - img "Connection" [ref=e888]
               - text: mysql
@@ -675,10 +675,10 @@ Received: 500
             - button "1 query parameter" [ref=e906] [cursor=pointer]
         - generic [ref=e909]:
           - generic [ref=e910]:
-            - generic [ref=e911]: 9:50:01 AM
+            - generic [ref=e911]: 9:56:37 AM
             - generic [ref=e912]:
               - img "Runtime" [ref=e913]
-              - text: 0.86ms
+              - text: 0.92ms
             - generic [ref=e915]:
               - img "Connection" [ref=e916]
               - text: mysql
@@ -691,26 +691,26 @@ Received: 500
             - button "1 query parameter" [ref=e934] [cursor=pointer]
         - generic [ref=e937]:
           - generic [ref=e938]:
-            - generic [ref=e939]: 9:50:02 AM
+            - generic [ref=e939]: 9:56:37 AM
             - generic [ref=e940]:
               - img "Runtime" [ref=e941]
-              - text: 5.31ms
+              - text: 0.77ms
             - generic [ref=e943]:
               - img "Connection" [ref=e944]
               - text: mysql
           - generic [ref=e947]:
             - generic [ref=e948] [cursor=pointer]:
               - code [ref=e951]:
-                - code [ref=e953]: "select * from `sessions` where `id` = mq40VFbJUnAVSvEkXCSl5vHyoPSQh0j4foaplzzc limit 1"
+                - code [ref=e953]: "select * from `sessions` where `id` = olGzQNz0E4ssBXmQN4XwqVO35uhJsKNoy5zA3m3w limit 1"
               - button "Copy to clipboard" [ref=e955]
               - button [ref=e958]
             - button "1 query parameter" [ref=e962] [cursor=pointer]
         - generic [ref=e965]:
           - generic [ref=e966]:
-            - generic [ref=e967]: 9:50:02 AM
+            - generic [ref=e967]: 9:56:37 AM
             - generic [ref=e968]:
               - img "Runtime" [ref=e969]
-              - text: 10.04ms
+              - text: 0.61ms
             - generic [ref=e971]:
               - img "Connection" [ref=e972]
               - text: mysql

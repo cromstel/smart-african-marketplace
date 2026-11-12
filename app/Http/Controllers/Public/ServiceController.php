@@ -67,7 +67,7 @@ class ServiceController extends Controller
 
     public function byCategory(Request $request, string $category)
     {
-        $category = VendorServiceCategory::where('slug', $categorySlug)
+        $category = VendorServiceCategory::where('slug', $category)
             ->where('is_active', true)
             ->with(['parent', 'children' => function ($q) {
                 $q->active()->orderBy('sort_order')->orderBy('name');
