@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\VendorService;
 use App\Models\VendorServiceCategory;
+use App\Services\SeoService;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -57,6 +58,20 @@ class ServiceController extends Controller
             ->distinct('gender_target')
             ->pluck('gender_target');
 
+        $seo = app(SeoService::class);
+        $seo->setTitle('Professional Services')
+            ->setDescription('Book vetted painters, mechanics, electricians, salon professionals, car wash and construction services across Africa. Find trusted local experts on Smart African Market.')
+            ->setKeywords([
+                'services',
+                'home services',
+                'auto services',
+                'beauty and grooming',
+                'construction services',
+                'book a service',
+                'Smart African Market',
+            ])
+            ->setCanonical(route('services.index'));
+
         return view('public.services.index', compact(
             'services',
             'parentCategories',
@@ -107,11 +122,35 @@ class ServiceController extends Controller
             ->orderBy('name')
             ->get();
 
+        $categoryTypes = VendorServiceCategory::active()
+            ->distinct('category_type')
+            ->pluck('category_type');
+
+        $genderTargets = VendorServiceCategory::active()
+            ->whereNotNull('gender_target')
+            ->distinct('gender_target')
+            ->pluck('gender_target');
+
+        $seo = app(SeoService::class);
+        $seo->setTitle($category->name.' Services')
+            ->setDescription('Browse '.$category->name.' services from vetted vendors on Smart African Market. Compare providers and book an appointment online.')
+            ->setKeywords(array_filter([
+                $category->name,
+                $category->category_type,
+                $category->gender_target,
+                'services',
+                'book a service',
+                'Smart African Market',
+            ]))
+            ->setCanonical(route('services.category', $category->slug));
+
         return view('public.services.category', compact(
             'category',
             'breadcrumb',
             'services',
-            'parentCategories'
+            'parentCategories',
+            'categoryTypes',
+            'genderTargets'
         ));
     }
 

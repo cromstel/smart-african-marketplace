@@ -120,14 +120,12 @@
                     'currentCategorySlug' => $category->slug,
                     'currentRouteName' => request()->route()->getName(),
                     'filterParams' => [
-    'search' => request('search'),
-    'category_type' => request('category_type'),
-    'gender_target' => request('gender_target'),
-    'categoryTypes' => $parentCategories,
-    'genderTargets' => VendorServiceCategory::active()
-        ->whereNotNull('gender_target')
-        ->distinct('gender_target')
-        ->pluck('gender_target')
+                        'search' => request('search'),
+                        'category_type' => request('category_type'),
+                        'gender_target' => request('gender_target'),
+                        'categoryTypes' => $categoryTypes,
+                        'genderTargets' => $genderTargets,
+                    ],
                 ])
             </aside>
         </div>

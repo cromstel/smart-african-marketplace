@@ -160,3 +160,9 @@ dependabot-alerts.json
 dependabot-alerts-utf8.json
 _check_json2.php
 _check_json_directive.php
+
+# Playwright E2E artifacts
+/playwright-report/
+/test-results/
+/tests/e2e/.playwright/
+
