@@ -21,6 +21,7 @@ use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCsrfToken;
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
@@ -66,6 +67,7 @@ return Application::configure(basePath: dirname(__DIR__))
             TrimStrings::class,
             ConvertEmptyStringsToNull::class,
             PreventCrlfInjection::class,
+            SecurityHeaders::class,
         ]);
 
         // 'web'/'api' groups: fully replaced rather than appended to, since
@@ -223,3 +225,5 @@ return Application::configure(basePath: dirname(__DIR__))
             return $response;
         });
     })->create();
+
+

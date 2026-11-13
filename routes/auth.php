@@ -28,7 +28,7 @@ Route::middleware('guest')->group(function () {
         ->name('login');
 
     Route::post('auth/login', [AuthenticatedSessionController::class, 'store'])
-        ->middleware('antispam');
+        ->middleware(['antispam', 'throttle:5,1']);
 
     // Admin login routes
     Route::get('auth/admin/login', [AdminLoginController::class, 'create'])
@@ -75,3 +75,4 @@ Route::middleware('auth')->group(function () {
     Route::post('auth/logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
+
