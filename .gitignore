@@ -175,5 +175,8 @@ mobile/android/.idea/
 /PROGRESS.md
 
 # Docs folder - untracked, kept locally only
+
+# Opencode folder (local only)
+/.opencode/
 /docs/
 
