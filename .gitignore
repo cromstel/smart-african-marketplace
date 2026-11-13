@@ -171,15 +171,8 @@ public/images/backup/
 # Android IDE
 mobile/android/.idea/
 
-# Progress tracking (local only)
+# Local-only working files — never published
 /PROGRESS.md
-
-# Docs folder - untracked, kept locally only
-
-# Opencode folder (local only)
-
-# Tests folder (local only)
 /tests/
 /.opencode/
-/docs/
 

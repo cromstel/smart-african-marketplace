@@ -1,13 +1,13 @@
 # Contributing
 
-[Documentation Hub](docs/README.md) › Contributing
+[Documentation Hub](user-guide/README.md) › Contributing
 
 Thanks for working on Smart African Market. This page covers how to get a
 change reviewed and merged.
 
 New to the codebase? Start with
-[Getting Started](docs/guides/getting-started.md) and the
-[Architecture Overview](docs/architecture/overview.md).
+[Getting Started](user-guide/guides/getting-started.md) and the
+[Architecture Overview](user-guide/architecture/overview.md).
 
 ---
 
@@ -15,18 +15,18 @@ New to the codebase? Start with
 
 - **Understand the existing pattern before adding a new one.** This is a mature
   codebase with established conventions. Consistency beats personal preference.
-- **Check the [Roadmap](docs/product/roadmap.md).** Phases 0 and 1 are higher priority
+- **Check the [Roadmap](user-guide/product/roadmap.md).** Phases 0 and 1 are higher priority
   than new features, and say why.
 - **Know the frontend is Blade + Alpine**, not Livewire, despite what older
   documents said — see
-  [Frontend architecture](docs/architecture/overview.md#frontend-architecture).
+  [Frontend architecture](user-guide/architecture/overview.md#frontend-architecture).
 
 ---
 
 ## Workflow
 
 ```bash
-git checkout -b feature/your-feature   # or fix/ docs/ chore/
+git checkout -b feature/your-feature   # or fix/ user-guide/ chore/
 # make the change, with tests
 vendor/bin/pint
 php artisan test
@@ -100,7 +100,7 @@ Report vulnerabilities per [SECURITY.md](SECURITY.md) — not in a public issue.
 ## Testing
 
 Every behavioural change needs a test that fails without it. See the
-[Testing Guide](docs/guides/testing.md).
+[Testing Guide](user-guide/guides/testing.md).
 
 ```bash
 php artisan test
@@ -120,30 +120,30 @@ Two rules, both enforceable and both learned the hard way:
 1. **Never cite a file that does not exist.** An audit found documents marking
    security work "Complete" with evidence files that were never written. If a
    test is your evidence, the test must exist.
-2. **Link every new document from [the hub](docs/README.md).** An unlinked
+2. **Link every new document from [the hub](user-guide/README.md).** An unlinked
    document is an unread document — the audit found 63 files reachable through
    only 69 links between them.
 
 Where things go:
 
-All documentation lives under `docs/`, grouped by audience:
+All documentation lives under `user-guide/`, grouped by audience:
 
 | Content | Location |
 |---|---|
-| Architecture, decisions, tech stack | `docs/architecture/` |
-| Env vars, API, commands | `docs/reference/` |
-| Developer how-to | `docs/guides/` |
-| Deploy, monitoring, backups, queues | `docs/operations/` |
-| Security policy, audits, findings | `docs/security/` |
-| GDPR, payments, tax, regional | `docs/compliance/` |
-| Marketing, SEO, content calendars | `docs/growth/` |
-| Support SOPs, refunds, moderation | `docs/support/` |
-| PRD, roadmap, backlog, audits | `docs/product/` |
-| Feature module docs | `docs/modules/` |
-| Unbuilt feature designs | `docs/plans/` — with a **Status: Plan** banner |
-| Customer/vendor/admin guides | `docs/user-guide/` |
-| Android and iOS | `docs/mobile/` |
-| Superseded documents | `docs/archive/` |
+| Customer, vendor and admin guides | `user-guide/` (repository root of the guide) |
+| Architecture, decisions, tech stack | `user-guide/architecture/` |
+| Env vars, API, commands | `user-guide/reference/` |
+| Developer how-to | `user-guide/guides/` |
+| Deploy, monitoring, backups, queues | `user-guide/operations/` |
+| Security policy, audits, findings | `user-guide/security/` |
+| GDPR, payments, tax, regional | `user-guide/compliance/` |
+| Marketing, SEO, content calendars | `user-guide/growth/` |
+| Support SOPs, refunds, moderation | `user-guide/support/` |
+| PRD, roadmap, backlog, audits | `user-guide/product/` |
+| Feature module docs | `user-guide/modules/` |
+| Unbuilt feature designs | `user-guide/plans/` — with a **Status: Plan** banner |
+| Screenshot-backed walkthroughs | `user-guide/v2/` |
+| Android and iOS | `user-guide/mobile/` |
 
 Only `README.md`, `CONTRIBUTING.md`, `SECURITY.md` and `LICENSE` stay at the
 repository root, where GitHub expects them.
@@ -154,10 +154,13 @@ New documents carry a status banner: **Current**, **Plan — not yet implemented
 ### Check your work
 
 ```bash
-# both scripts are in docs/DOCUMENTATION_AUDIT.md
-python3 …   # broken relative links
-python3 …   # docs citing files that do not exist
+npm run docs:check
 ```
+
+Fails on any relative link in `user-guide/` that points at a file or directory
+which does not exist. It runs in CI on every push and pull request, so a broken
+link blocks the merge rather than rotting quietly. The checker lives at
+`user-guide/tools/check-links.mjs` and has no dependencies.
 
 ---
 
@@ -190,7 +193,8 @@ Be direct about problems and kind about people.
 
 ## See also
 
-- [Documentation Hub](docs/README.md)
-- [Roadmap](docs/product/roadmap.md)
-- [Testing Guide](docs/guides/testing.md)
-- [AI Agent Instructions](.github/agents.md)
+- [Documentation Hub](user-guide/README.md)
+- [Roadmap](user-guide/product/roadmap.md)
+- [Testing Guide](user-guide/guides/testing.md)
+- [Architecture Overview](user-guide/architecture/overview.md)
+- [AI Agent Instructions](.github/AGENTS.md)

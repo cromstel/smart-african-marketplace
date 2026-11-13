@@ -16,6 +16,7 @@
         "format": "prettier --check \"resources/**/*.{js,css,json,md}\"",
         "format:fix": "prettier --write \"resources/**/*.{js,css,json,md}\"",
         "clean": "rimraf public/build",
+        "docs:check": "node user-guide/tools/check-links.mjs",
         "soketi": "cd soketi && npm start"
     },
     "devDependencies": {

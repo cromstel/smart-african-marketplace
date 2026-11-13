@@ -19,15 +19,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.12'
+          node-version: 22
 
-      # Fails when a document links to a missing file, or cites a repository
-      # file that does not exist -- e.g. a test named as evidence for completed
-      # security work that was never written.
-      - name: Check documentation integrity
-        run: python3 scripts/docs/check-docs.py
-
-
+      # Fails when a document links to a missing file or directory. The checker
+      # is dependency-free so this job does not need `npm install`.
+      - name: Check documentation links
+        run: node user-guide/tools/check-links.mjs
