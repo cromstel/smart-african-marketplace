@@ -141,15 +141,16 @@ deploy.sh
 /mobile/ios/**/build/
 /mobile/ios/**/xcuserdata/
 /mobile/ios/**/.swiftpm/
-docs/codebase-review.md
 
 Claude outputs/
 mobile/android/gradlew.bat
 soketi/run-local.cmd
 mobile/android/PLAY_STORE_LISTING.md
-docs/composer-install-prompt.md
 /composer.phar
 
 _serve.pid
 _check_json2.php
 _check_json_directive.php
+
+# Docs folder - untracked, kept locally only
+/docs/
