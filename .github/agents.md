@@ -6,7 +6,7 @@ This document provides context for AI agents and Copilot about the codebase arch
 
 **Smart African Market** is a Laravel-based multi-vendor e-commerce platform for African products and services. It uses:
 - Laravel 12 (PHP 8.2+)
-- Livewire 3 for reactive UI components
+- Blade + Tailwind CSS 3 + Alpine.js as the default UI; Livewire 4 by exception (2 components)
 - Tailwind CSS 3 for styling
 - Alpine.js for minimal JavaScript interactions
 
@@ -18,7 +18,7 @@ app/
 ├── Http/Controllers/   # Request handlers - MVC pattern
 ├── Models/             # Eloquent models with relationships
 ├── Services/           # Business logic layer
-├── Livewire/           # Reactive components (preferred over controllers for UI)
+├── Livewire/           # Reactive components — used by exception, not by default
 └── Policies/           # Authorization policies (spatie/laravel-permission)
 ```
 
@@ -187,8 +187,9 @@ php artisan queue:work
 ### Dependencies & Versions
 
 - Laravel Framework: ^12.0
-- Livewire: ^3.0|^4.0
-- PHP: ^8.2|^8.3|^8.4
+- Livewire: ^4.0
+- PHP: ^8.2 (CI covers 8.2 and 8.3)
 - MySQL: 8.0+
+- Node: 22 LTS (Vite 8 requires ≥ 20.19)
 
 Check `composer.json` and `package.json` for full dependency list.
