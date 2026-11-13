@@ -13,16 +13,14 @@ export default defineConfig({
         }),
     ],
     server: {
-        // Force IPv4 loopback instead of the "localhost" default, which can
-        // resolve to the IPv6 [::1] address on Windows. Some browsers/
-        // extensions block requests to bracketed IPv6-literal hosts (seen as
-        // net::ERR_BLOCKED_BY_CLIENT), and IPv4 loopback is the more
-        // universally compatible choice for local dev anyway.
-        host: '127.0.0.1',
-        port: 5173,
+        // Bind to 0.0.0.0 by default so the dev server is reachable from
+        // other devices on the local network (for testing on phones, etc.).
+        // Override via VITE_DEV_HOST / VITE_DEV_PORT in .env.
+        host: process.env.VITE_DEV_HOST || '0.0.0.0',
+        port: parseInt(process.env.VITE_DEV_PORT || '5173', 10),
         strictPort: true,
         hmr: {
-            host: '127.0.0.1',
+            host: process.env.VITE_DEV_HOST || '0.0.0.0',
         },
     },
     build: {
