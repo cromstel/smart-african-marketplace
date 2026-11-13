@@ -18,6 +18,9 @@ on:
       - 'package.json'
       - 'package-lock.json'
 
+permissions:
+  contents: read
+
 jobs:
   npm-audit:
     runs-on: ubuntu-latest

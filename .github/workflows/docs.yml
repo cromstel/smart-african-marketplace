@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main, master]
 
+permissions:
+  contents: read
+
 jobs:
   check:
     name: Integrity checks
@@ -24,3 +27,4 @@ jobs:
       # security work that was never written.
       - name: Check documentation integrity
         run: python3 scripts/docs/check-docs.py
+
