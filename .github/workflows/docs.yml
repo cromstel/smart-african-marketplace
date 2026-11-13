@@ -11,6 +11,8 @@ permissions:
 
 jobs:
   check:
+    permissions:
+      contents: read
     name: Integrity checks
     runs-on: ubuntu-latest
     steps:
@@ -27,4 +29,5 @@ jobs:
       # security work that was never written.
       - name: Check documentation integrity
         run: python3 scripts/docs/check-docs.py
+
 

@@ -23,6 +23,8 @@ permissions:
 
 jobs:
   npm-audit:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +48,8 @@ jobs:
           retention-days: 30
 
   composer-audit:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -69,3 +73,4 @@ jobs:
           name: composer-audit-report
           path: composer-outdated.txt
           retention-days: 30
+
