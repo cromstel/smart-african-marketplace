@@ -25,8 +25,9 @@ window.Echo = new Echo({
     key: import.meta.env.VITE_SOKETI_APP_KEY,
     cluster: import.meta.env.VITE_SOKETI_APP_CLUSTER ?? 'mt1',
     wsHost: import.meta.env.VITE_SOKETI_HOST ?? '127.0.0.1',
-    wsPort: import.meta.env.VITE_SOKETI_PORT ?? 6001,
-    wssPort: import.meta.env.VITE_SOKETI_PORT ?? 6001,
+    wsPort: import.meta.env.VITE_SOKETI_PORT,
+    wssPort: import.meta.env.VITE_SOKETI_PORT,
     forceTLS: (import.meta.env.VITE_SOKETI_SCHEME ?? 'http') === 'https',
     enabledTransports: ['ws', 'wss'],
 });
+

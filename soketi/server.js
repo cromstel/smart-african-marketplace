@@ -11,8 +11,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: resolve(__dirname, '../.env') });
 dotenv.config({ path: resolve(__dirname, '../.env.local') });
 
-// The websocket port is sourced from SOKETI_PORT, falling back to 6001.
-const port = parseInt(process.env.SOKETI_PORT || '6001', 10);
+// The websocket port is sourced from SOKETI_PORT.
+const port = parseInt(process.env.SOKETI_PORT, 10);
 const host = process.env.SOKETI_HOST || '0.0.0.0';
 
 const server = new Server({
@@ -35,3 +35,5 @@ const server = new Server({
 server.start().then(() => {
   console.log(`Soketi running on ${host}:${port}`);
 });
+
+

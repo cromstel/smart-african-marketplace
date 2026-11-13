@@ -19,7 +19,7 @@ return [
             'app_id' => env('SOKETI_APP_ID'),
             'options' => [
                 'host' => env('SOKETI_HOST', '127.0.0.1'),
-                'port' => env('SOKETI_PORT', 6001),
+                'port' => env('SOKETI_PORT'),
                 'scheme' => env('SOKETI_SCHEME', 'http'),
                 'encrypted' => false,
                 'useTLS' => false,
@@ -28,3 +28,4 @@ return [
         ],
     ],
 ];
+
