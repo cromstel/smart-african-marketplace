@@ -17,24 +17,16 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
-// Broadcasting is opt-in. Previously this initialised whenever a Pusher key was
-// present, and .env.example ships a placeholder one -- so a fresh install with
-// BROADCAST_DRIVER=log still opened a websocket to a Soketi nobody was running,
-// producing connection errors and retry traffic on every page load. The client
-// now agrees with the server: set BROADCAST_ENABLED=true (and run Soketi) to
-// turn it on.
-const broadcastEnabled =
-  String(import.meta.env.VITE_BROADCAST_ENABLED ?? '').toLowerCase() === 'true';
-
-if (broadcastEnabled && import.meta.env.VITE_PUSHER_APP_KEY) {
-  window.Echo = new Echo({
+// Broadcasting is always enabled using the internal Soketi server.
+// No third-party provider (pusher.com) is used. Soketi speaks the Pusher
+// protocol, so the pusher-js client library is the protocol client only.
+window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-    wsHost: import.meta.env.VITE_PUSHER_HOST ?? undefined,
-    wsPort: import.meta.env.VITE_PUSHER_PORT ?? undefined,
-    wssPort: import.meta.env.VITE_PUSHER_PORT ?? undefined,
-    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+    key: import.meta.env.VITE_SOKETI_APP_KEY,
+    cluster: import.meta.env.VITE_SOKETI_APP_CLUSTER ?? 'mt1',
+    wsHost: import.meta.env.VITE_SOKETI_HOST ?? '127.0.0.1',
+    wsPort: import.meta.env.VITE_SOKETI_PORT ?? 6001,
+    wssPort: import.meta.env.VITE_SOKETI_PORT ?? 6001,
+    forceTLS: (import.meta.env.VITE_SOKETI_SCHEME ?? 'http') === 'https',
     enabledTransports: ['ws', 'wss'],
-  });
-}
+});
