@@ -20,10 +20,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'php artisan serve --host=127.0.0.1 --port=8000',
+    command: 'php artisan serve --host=127.0.0.1 --port=8000 --no-reload',
     port: 8000,
     baseURL: 'http://localhost:8000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120000,
   },
 });
