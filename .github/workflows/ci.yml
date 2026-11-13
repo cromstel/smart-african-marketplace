@@ -75,7 +75,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: npm
 
       - name: Install npm dependencies
@@ -124,5 +124,6 @@ jobs:
           name: coverage-report
           path: coverage.xml
           retention-days: 30
+
 
 
