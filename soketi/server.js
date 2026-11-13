@@ -1,3 +1,4 @@
+/* eslint-env node */
 import { Server } from '@soketi/soketi';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
