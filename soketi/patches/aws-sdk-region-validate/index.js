@@ -1,3 +1,4 @@
+/* eslint-env node */
 /**
  * AWS SDK v2 shim with region parameter validation.
  * Fixes GHSA-j965-2qgj-vjmq (improper input validation for region parameter).
