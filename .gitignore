@@ -32,7 +32,8 @@ bootstrap/cache/*
 !bootstrap/cache/.gitignore
 storage/app/*
 !storage/app/.gitignore
-!storage/app/public
+storage/app/public/*
+!storage/app/public/.gitkeep
 storage/framework/cache/*
 !storage/framework/cache/.gitignore
 storage/framework/sessions/*
@@ -163,6 +164,15 @@ _check_json_directive.php
 /playwright-report/
 /test-results/
 /tests/e2e/.playwright/
+
+# Dev backup files
+public/images/backup/
+
+# Android IDE
+mobile/android/.idea/
+
+# Progress tracking (local only)
+/PROGRESS.md
 
 # Docs folder - untracked, kept locally only
 /docs/
