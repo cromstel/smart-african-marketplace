@@ -177,6 +177,9 @@ mobile/android/.idea/
 # Docs folder - untracked, kept locally only
 
 # Opencode folder (local only)
+
+# Tests folder (local only)
+/tests/
 /.opencode/
 /docs/
 
