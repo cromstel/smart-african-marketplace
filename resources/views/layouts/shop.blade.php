@@ -217,12 +217,12 @@
     <nav id="main-nav" 
         class="theme-nav sticky top-0 z-50 transition-all duration-300 shadow-sm"
     >
-        <div class="w-full px-5 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-18 md:h-20">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-18 md:h-20 min-w-0">
                 <div class="flex items-center space-x-6 lg:space-x-12">
                     <a href="{{ route('home') }}" class="flex items-center space-x-2 min-w-0">
                         <img src="{{ asset(config('branding.logo')) }}" alt="{{ config('app.name') }}" class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 mr-1">
-                        <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wide">
+                        <span class="hidden sm:inline text-xs sm:text-sm font-extrabold uppercase tracking-wide">
                         <span class="text-orange-600">Smart</span><span class="text-black">AfricanMarketplace</span>
 </span>
                     </a>
