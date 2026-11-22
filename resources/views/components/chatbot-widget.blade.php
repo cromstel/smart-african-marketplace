@@ -1,7 +1,10 @@
 <div id="chatbot-widget" class="fixed bottom-20 right-5 z-50">
     <button id="chatbot-toggle" class="bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 py-3 rounded-full shadow-lg">Chat Support</button>
     <div id="chatbot-panel" class="hidden mt-3 w-80 max-w-[90vw] bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden">
-        <div class="px-4 py-3 bg-gray-900 text-white font-semibold">Support Assistant</div>
+        <div class="px-4 py-3 bg-gray-900 text-white font-semibold flex items-center justify-between">
+            <span>Support Assistant</span>
+            <button id="chatbot-close" type="button" aria-label="Close chat" class="text-white/80 hover:text-white text-lg leading-none">&times;</button>
+        </div>
         <div id="chatbot-status" class="px-4 py-2 text-xs text-gray-600 bg-gray-50 border-b border-gray-200 hidden"></div>
         <div id="chatbot-messages" class="h-80 overflow-y-auto p-3 space-y-2 bg-gray-50"></div>
         <div id="chatbot-typing" class="px-4 py-2 text-xs text-gray-500 hidden">Assistant is typing...</div>
@@ -21,6 +24,7 @@
     (function () {
         const toggle = document.getElementById('chatbot-toggle');
         const panel = document.getElementById('chatbot-panel');
+        const closeButton = document.getElementById('chatbot-close');
         const form = document.getElementById('chatbot-form');
         const input = document.getElementById('chatbot-input');
         const messages = document.getElementById('chatbot-messages');
@@ -242,6 +246,34 @@
 
             return true;
         }
+
+        function closePanel() {
+            panel.classList.add('hidden');
+            stopPolling();
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closePanel();
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !panel.classList.contains('hidden')) {
+                closePanel();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (panel.classList.contains('hidden')) {
+                return;
+            }
+            if (panel.contains(e.target) || toggle.contains(e.target)) {
+                return;
+            }
+            closePanel();
+        });
 
         toggle.addEventListener('click', async () => {
             panel.classList.toggle('hidden');
