@@ -42,6 +42,9 @@ class ChatbotService
 
     public function sanitizeMessage(string $message): string
     {
+        // Strip any HTML to prevent stored XSS if messages are ever rendered
+        // outside the widget (which already uses textContent).
+        $message = strip_tags($message);
         $message = preg_replace('/\s+/u', ' ', trim($message)) ?? $message;
 
         return $message;
@@ -53,6 +56,10 @@ class ChatbotService
 
         $redacted = preg_replace('/[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i', '[redacted email]', $redacted) ?? $redacted;
         $redacted = preg_replace('/\+?\d[\d\s().-]{6,}\d/', '[redacted phone]', $redacted) ?? $redacted;
+        // Credit card numbers (13-19 digits, optionally spaced/dashed)
+        $redacted = preg_replace('/\b(?:\d[ -]*?){13,19}\b/', '[redacted card]', $redacted) ?? $redacted;
+        // IPv4 addresses
+        $redacted = preg_replace('/\b(?:\d{1,3}\.){3}\d{1,3}\b/', '[redacted ip]', $redacted) ?? $redacted;
 
         return $redacted;
     }
