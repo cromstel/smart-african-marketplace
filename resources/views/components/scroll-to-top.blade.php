@@ -17,6 +17,18 @@
         const button = document.getElementById('scroll-to-top-btn');
         if (!button) return;
 
+        const chatbotPanel = document.getElementById('chatbot-panel');
+        const isChatOpen = () => !!chatbotPanel && !chatbotPanel.classList.contains('hidden');
+
+        const applyChatOverlap = () => {
+            if (isChatOpen()) {
+                button.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+                button.classList.remove('opacity-100');
+            } else {
+                toggleVisibility();
+            }
+        };
+
         const scrollContainers = Array.from(document.querySelectorAll('[class*="overflow-y-auto"], [class*="overflow-auto"]'));
 
         const getCurrentScroll = () => {
@@ -47,9 +59,15 @@
             });
         });
 
-        window.addEventListener('scroll', toggleVisibility, { passive: true });
-        scrollContainers.forEach((el) => el.addEventListener('scroll', toggleVisibility, { passive: true }));
-        toggleVisibility();
+        window.addEventListener('scroll', applyChatOverlap, { passive: true });
+        scrollContainers.forEach((el) => el.addEventListener('scroll', applyChatOverlap, { passive: true }));
+
+        if (chatbotPanel) {
+            const observer = new MutationObserver(applyChatOverlap);
+            observer.observe(chatbotPanel, { attributes: true, attributeFilter: ['class'] });
+        }
+
+        applyChatOverlap();
     })();
 </script>
 
