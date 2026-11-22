@@ -86,10 +86,10 @@
 
 <!-- Sticky Bottom Bar -->
 <div class="bg-gray-900 text-white border-t border-gray-800 sticky bottom-0 z-40">
-    <div class="w-full px-4 py-3 flex flex-col gap-1 text-center sm:flex-row sm:items-center sm:justify-center">
-        <p class="text-gray-400 text-xs sm:text-sm md:text-base">&copy; 2025-{{ date('Y') }} {{ config('app.name') }}. {{ __('ui.footer.rights') }}</p>
-        <div class="flex items-center justify-center lg:justify-end gap-4">
-            <p class="text-gray-400 text-xs sm:text-sm md:text-base text-center lg:text-right w-full lg:w-auto">
+    <div class="w-full px-4 py-3 flex flex-col gap-1 text-center sm:flex-row sm:items-center sm:justify-center lg:justify-start">
+        <p class="text-gray-400 text-xs sm:text-sm md:text-base text-center lg:text-left">&copy; 2025-{{ date('Y') }} {{ config('app.name') }}. {{ __('ui.footer.rights') }}</p>
+        <div class="flex items-center justify-center lg:justify-start gap-4">
+            <p class="text-gray-400 text-xs sm:text-sm md:text-base text-center lg:text-left w-full lg:w-auto">
                 {{ __('ui.footer.powered_by') }}
                 <a href="https://cromstelit.com" target="_blank" rel="noopener" class="underline hover:text-white">CromStel IT Solutions</a>
             </p>
