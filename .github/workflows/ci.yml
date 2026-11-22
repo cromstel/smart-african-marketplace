@@ -100,7 +100,7 @@ jobs:
       # build on its own; that is a deliberate future decision, not an
       # oversight.
       - name: Run tests with coverage
-        if: matrix.php-version == '8.3'
+        if: matrix.php-version == '8.3' && hashFiles('tests/**/*.php') != ''
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
@@ -109,7 +109,7 @@ jobs:
         run: php artisan test --coverage-clover=coverage.xml --coverage-text
 
       - name: Run tests
-        if: matrix.php-version != '8.3'
+        if: matrix.php-version != '8.3' && hashFiles('tests/**/*.php') != ''
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
@@ -118,7 +118,7 @@ jobs:
         run: php artisan test
 
       - name: Upload coverage report
-        if: matrix.php-version == '8.3'
+        if: matrix.php-version == '8.3' && hashFiles('tests/**/*.php') != ''
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
