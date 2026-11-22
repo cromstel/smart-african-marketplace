@@ -27,7 +27,15 @@ class KnowledgeBaseService
         }
 
         try {
-            $this->reindexAll();
+            // Dispatch the rebuild to the chatbot queue so the request thread
+            // is not blocked. With the 'sync' queue driver (dev) this still
+            // runs inline; in production it runs on a worker. Fall back to a
+            // synchronous rebuild only if dispatching fails.
+            try {
+                \App\Jobs\ReindexChatbotKnowledgeJob::dispatch();
+            } catch (\Throwable $e) {
+                $this->reindexAll();
+            }
         } finally {
             Cache::forget($lockKey);
         }

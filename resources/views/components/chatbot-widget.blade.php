@@ -36,6 +36,7 @@
         let pending = false;
         let pollDelay = 4000;
         let reinitAttempted = false;
+        let pollFailures = 0;
 
         function appendMessage(text, role) {
             const div = document.createElement('div');
@@ -149,36 +150,52 @@
             if (!sessionKey) {
                 return;
             }
-            const response = await fetch(`{{ route('chatbot.messages') }}?session_key=${encodeURIComponent(sessionKey)}&after_id=${lastMessageId}`, {
-                headers: { 'Accept': 'application/json' }
-            });
+            try {
+                const response = await fetch(`{{ route('chatbot.messages') }}?session_key=${encodeURIComponent(sessionKey)}&after_id=${lastMessageId}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
 
-            if (!response.ok) {
-                return;
-            }
-
-            const data = await response.json();
-            const incoming = data.messages || [];
-            if (incoming.length === 0) {
-                pollDelay = Math.min(pollDelay + 1000, 10000);
-                return;
-            }
-
-            incoming.forEach((message) => {
-                const role = message.role === 'agent' ? 'agent' : (message.role === 'user' ? 'user' : 'assistant');
-                if (role === 'user' && message.content === lastUserMessageText()) {
-                    lastMessageId = Math.max(lastMessageId, message.id);
+                if (!response.ok) {
+                    pollFailures += 1;
+                    pollDelay = Math.min(pollDelay + 2000, 30000);
+                    if (pollFailures >= 5) {
+                        stopPolling();
+                        setError('Unable to reach the support assistant. Please reopen the chat.');
+                    }
                     return;
                 }
-                appendMessage(message.content, role);
-                if (role === 'agent') {
-                    handoffActive = true;
-                    setStatus('A human agent is on this chat. Responses may take a moment.');
-                    updateHandoffUI();
+
+                const data = await response.json();
+                const incoming = data.messages || [];
+                pollFailures = 0;
+                if (incoming.length === 0) {
+                    pollDelay = Math.min(pollDelay + 1000, 10000);
+                    return;
                 }
-                lastMessageId = Math.max(lastMessageId, message.id);
-            });
-            pollDelay = 4000;
+
+                incoming.forEach((message) => {
+                    const role = message.role === 'agent' ? 'agent' : (message.role === 'user' ? 'user' : 'assistant');
+                    if (role === 'user' && message.content === lastUserMessageText()) {
+                        lastMessageId = Math.max(lastMessageId, message.id);
+                        return;
+                    }
+                    appendMessage(message.content, role);
+                    if (role === 'agent') {
+                        handoffActive = true;
+                        setStatus('A human agent is on this chat. Responses may take a moment.');
+                        updateHandoffUI();
+                    }
+                    lastMessageId = Math.max(lastMessageId, message.id);
+                });
+                pollDelay = 4000;
+            } catch (error) {
+                pollFailures += 1;
+                pollDelay = Math.min(pollDelay + 2000, 30000);
+                if (pollFailures >= 5) {
+                    stopPolling();
+                    setError('Unable to reach the support assistant. Please reopen the chat.');
+                }
+            }
         }
 
         function startPolling() {
