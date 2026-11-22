@@ -1,5 +1,9 @@
 # Admin Onboarding Checklist
 
+**Status: Current** — created 2026-11-22.
+
+[Documentation Hub](../README.md) › User Documentation › Walkthroughs › Admin Onboarding
+
 ## Objective
 
 Enable a new admin to manage vendors, subscriptions, and platform operations safely.

@@ -1,5 +1,9 @@
 # Customer Onboarding Checklist
 
+**Status: Current** — created 2026-11-22.
+
+[Documentation Hub](../README.md) › User Documentation › Walkthroughs › Customer Onboarding
+
 ## Objective
 
 Get a new customer from first visit to first successful purchase/booking.

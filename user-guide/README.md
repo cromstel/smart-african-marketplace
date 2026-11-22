@@ -104,6 +104,7 @@ Written for customers, vendors, admins and support staff rather than developers.
 | [Customer Onboarding](walkthroughs/onboarding-customer.md) | Customer checklist |
 | [Vendor Onboarding](walkthroughs/onboarding-vendor.md) | Vendor checklist |
 | [Admin Onboarding](walkthroughs/onboarding-admin.md) | Admin checklist |
+| [Support Quick Start](walkthroughs/quick-start.md) | Support triage and quick start |
 
 ---
 

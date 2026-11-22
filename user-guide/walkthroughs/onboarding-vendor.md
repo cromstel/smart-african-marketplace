@@ -1,6 +1,10 @@
 # Vendor Onboarding Checklist
 
-## Objective
+**Status: Current** — created 2026-11-22.
+
+[Documentation Hub](../README.md) › User Documentation › Walkthroughs › Vendor Onboarding
+
+## Objective:
 
 Get a vendor store from account setup to active operations with correct domain access.
 

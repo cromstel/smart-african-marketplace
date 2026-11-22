@@ -1,5 +1,9 @@
 # UI Flows
 
+**Status: Current** — created 2026-11-22.
+
+[Documentation Hub](../README.md) › User Documentation › Walkthroughs › UI Flows
+
 ## Public Discovery Flow
 
 Goal: Help new users discover products, services, and pricing before sign-up.

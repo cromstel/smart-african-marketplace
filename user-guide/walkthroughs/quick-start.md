@@ -1,5 +1,9 @@
 # Support Quick Start
 
+**Status: Current** — created 2026-11-22.
+
+[Documentation Hub](../README.md) › User Documentation › Walkthroughs › Support Quick Start
+
 Audience: Support agents handling first-line onboarding and access issues.
 
 ## 1) First 2 Minutes Triage
@@ -101,8 +105,8 @@ Admin page errors:
 
 ## 7) Linked Walkthrough Docs
 
-- `user-guide/walkthroughs/README.md`
-- `user-guide/walkthroughs/ui-flows.md`
-- `user-guide/walkthroughs/onboarding-customer.md`
-- `user-guide/walkthroughs/onboarding-vendor.md`
-- `user-guide/walkthroughs/onboarding-admin.md`
+- [Walkthroughs Index](README.md)
+- [UI Flows](ui-flows.md)
+- [Customer Onboarding](onboarding-customer.md)
+- [Vendor Onboarding](onboarding-vendor.md)
+- [Admin Onboarding](onboarding-admin.md)

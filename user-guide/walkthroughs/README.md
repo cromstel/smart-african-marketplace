@@ -1,5 +1,7 @@
 # Smart African Market — Walkthroughs
 
+**Status: Current** — created 2026-11-22.
+
 [Documentation Hub](../README.md) › User Documentation › Walkthroughs
 
 This folder contains step-by-step UI flow documentation with screenshots of the running application.
