@@ -61,12 +61,12 @@ class KnowledgeBaseService
     {
         $title = $model->name ?? $model->title ?? class_basename($model).' '.$model->getKey();
         $content = trim(implode("\n\n", array_filter([
-            $model->name ?? null,
-            $model->title ?? null,
-            $model->description ?? null,
-            $model->short_description ?? null,
-            $model->excerpt ?? null,
-            $model->content ?? null,
+            is_scalar($model->name ?? null) ? (string) $model->name : null,
+            is_scalar($model->title ?? null) ? (string) $model->title : null,
+            is_scalar($model->description ?? null) ? (string) $model->description : null,
+            is_scalar($model->short_description ?? null) ? (string) $model->short_description : null,
+            is_scalar($model->excerpt ?? null) ? (string) $model->excerpt : null,
+            is_scalar($model->content ?? null) ? (string) $model->content : null,
         ])));
 
         if ($content === '') {
@@ -84,6 +84,7 @@ class KnowledgeBaseService
     public function search(string $query, int $limit = 4): Collection
     {
         $terms = collect(explode(' ', Str::lower($query)))
+            ->map(fn ($term) => str_replace(['%', '_'], ['\\%', '\\_'], $term))
             ->filter(fn ($term) => strlen($term) > 2)
             ->values();
 

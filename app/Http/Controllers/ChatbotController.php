@@ -21,6 +21,9 @@ class ChatbotController extends Controller
         }
 
         $sessionKey = $request->input('session_key');
+        if (is_string($sessionKey) && strlen($sessionKey) > 255) {
+            return response()->json(['message' => 'Invalid session key'], 422);
+        }
         $userId = auth()->id();
         if ($sessionKey) {
             $existing = $chatbot->findSession($sessionKey);
@@ -59,7 +62,7 @@ class ChatbotController extends Controller
         }
 
         $validated = $request->validate([
-            'session_key' => 'required|string',
+            'session_key' => 'required|string|max:255',
             'message' => 'required|string|max:2000',
         ]);
 
@@ -145,7 +148,7 @@ class ChatbotController extends Controller
     public function messages(Request $request, ChatbotService $chatbot): JsonResponse
     {
         $validated = $request->validate([
-            'session_key' => 'required|string',
+            'session_key' => 'required|string|max:255',
             'after_id' => 'nullable|integer|min:0',
         ]);
 
@@ -172,7 +175,7 @@ class ChatbotController extends Controller
     public function handoff(Request $request, ChatbotService $chatbot, SupportTicketService $tickets): JsonResponse
     {
         $validated = $request->validate([
-            'session_key' => 'required|string',
+            'session_key' => 'required|string|max:255',
         ]);
 
         $session = $chatbot->findSession($validated['session_key']);
