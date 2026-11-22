@@ -1,4 +1,4 @@
-# Support Quick Start (v2)
+# Support Quick Start
 
 Audience: Support agents handling first-line onboarding and access issues.
 
@@ -99,10 +99,10 @@ Admin page errors:
 2. Check failing API endpoints from browser network logs.
 3. Escalate with evidence pack if reproducible.
 
-## 7) Linked v2 Docs
+## 7) Linked Walkthrough Docs
 
-- `user-guide/v2/README.md`
-- `user-guide/v2/ui-flows.md`
-- `user-guide/v2/onboarding-customer.md`
-- `user-guide/v2/onboarding-vendor.md`
-- `user-guide/v2/onboarding-admin.md`
+- `user-guide/walkthroughs/README.md`
+- `user-guide/walkthroughs/ui-flows.md`
+- `user-guide/walkthroughs/onboarding-customer.md`
+- `user-guide/walkthroughs/onboarding-vendor.md`
+- `user-guide/walkthroughs/onboarding-admin.md`

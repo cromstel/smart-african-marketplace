@@ -1,4 +1,4 @@
-# Vendor Onboarding Checklist (v2)
+# Vendor Onboarding Checklist
 
 ## Objective
 
@@ -6,11 +6,14 @@ Get a vendor store from account setup to active operations with correct domain a
 
 ## UI Walkthrough
 
-1. Login at `/login` with vendor account
+1. Login at `/auth/login` with vendor account
 2. Confirm landing on `/vendor/dashboard`
 3. Open store domain settings at `/vendor/store-domain`
 4. If redirected to `/vendor/subscription/upgrade`, complete upgrade first
 5. Return to `/vendor/store-domain` to configure domain details
+
+![Vendor dashboard](../assets/screenshots/walkthroughs/vendor-dashboard.avif)
+![Subscription upgrade](../assets/screenshots/walkthroughs/vendor-subscription-upgrade.avif)
 
 ## URL Behavior Rules
 

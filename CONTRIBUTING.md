@@ -142,7 +142,7 @@ All documentation lives under `user-guide/`, grouped by audience:
 | PRD, roadmap, backlog, audits | `user-guide/product/` |
 | Feature module docs | `user-guide/modules/` |
 | Unbuilt feature designs | `user-guide/plans/` — with a **Status: Plan** banner |
-| Screenshot-backed walkthroughs | `user-guide/v2/` |
+| Screenshot-backed walkthroughs | `user-guide/walkthroughs/` |
 | Android and iOS | `user-guide/mobile/` |
 
 Only `README.md`, `CONTRIBUTING.md`, `SECURITY.md` and `LICENSE` stay at the

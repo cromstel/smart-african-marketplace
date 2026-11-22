@@ -1,4 +1,4 @@
-# Customer Onboarding Checklist (v2)
+# Customer Onboarding Checklist
 
 ## Objective
 
@@ -12,9 +12,12 @@ Get a new customer from first visit to first successful purchase/booking.
    - `/salons`
    - `/blog`
 2. Review plan and account options at `/pricing`
-3. Register at `/register` or log in at `/login`
+3. Register at `/auth/register` or log in at `/auth/login`
 4. Land on `/dashboard`
 5. Continue shopping or service booking flows
+
+![Home page](../assets/screenshots/walkthroughs/home.avif)
+![Customer dashboard](../assets/screenshots/walkthroughs/customer-dashboard.avif)
 
 ## Day-0 Checklist
 

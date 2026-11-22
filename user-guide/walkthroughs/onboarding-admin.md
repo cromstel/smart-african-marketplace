@@ -1,4 +1,4 @@
-# Admin Onboarding Checklist (v2)
+# Admin Onboarding Checklist
 
 ## Objective
 
@@ -6,11 +6,13 @@ Enable a new admin to manage vendors, subscriptions, and platform operations saf
 
 ## UI Walkthrough
 
-1. Login at `/login` with admin account
+1. Login at `/auth/admin/login` with admin account
 2. Confirm landing on `/admin/dashboard`
 3. Verify primary admin widgets and navigation render
 4. Open `Marketplace Manager` and validate vendors, services, and subscription package sections
 5. Validate access to system-level settings sections
+
+![Admin dashboard](../assets/screenshots/walkthroughs/admin-dashboard.avif)
 
 ## Day-0 Checklist
 

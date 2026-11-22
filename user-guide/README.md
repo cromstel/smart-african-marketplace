@@ -57,7 +57,7 @@ user-guide/
 ├── modules/           per-feature module documentation
 ├── plans/             design documents for unbuilt or recent work
 ├── mobile/            Android and iOS
-├── v2/                polished, route-level walkthroughs
+├── walkthroughs/      polished, route-level walkthroughs (with screenshots)
 └── tools/             the documentation link checker
 ```
 
@@ -99,11 +99,11 @@ Written for customers, vendors, admins and support staff rather than developers.
 | [Payments and Checkout](payments-and-checkout.md) | Payment rails and checkout flow |
 | [Subscriptions and Plans](subscriptions-and-plans.md) | Plans, trials and entitlements |
 | [Enterprise Custom Domains](enterprise-custom-domains.md) | Domain setup for Enterprise vendors |
-| [Documentation v2 Index](v2/README.md) | Route-level walkthroughs and checklists |
-| [UI Flows v2](v2/ui-flows.md) | Route-level navigation guidance |
-| [Customer Onboarding v2](v2/onboarding-customer.md) | Customer checklist |
-| [Vendor Onboarding v2](v2/onboarding-vendor.md) | Vendor checklist |
-| [Admin Onboarding v2](v2/onboarding-admin.md) | Admin checklist |
+| [Walkthroughs Index](walkthroughs/README.md) | Route-level walkthroughs and checklists |
+| [UI Flows](walkthroughs/ui-flows.md) | Route-level navigation guidance |
+| [Customer Onboarding](walkthroughs/onboarding-customer.md) | Customer checklist |
+| [Vendor Onboarding](walkthroughs/onboarding-vendor.md) | Vendor checklist |
+| [Admin Onboarding](walkthroughs/onboarding-admin.md) | Admin checklist |
 
 ---
 
