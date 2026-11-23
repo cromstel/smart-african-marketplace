@@ -171,9 +171,8 @@ public/images/backup/
 # Android IDE
 mobile/android/.idea/
 
-# Local-only working files — never published
+# Local-only working files - never published
 /PROGRESS.md
-/tests/
 /.opencode/
 /.tmp/
 
