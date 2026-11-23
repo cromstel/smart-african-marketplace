@@ -52,6 +52,15 @@ This is an owner decision to confirm, not a defect to silently revert. The optio
 
 Either way, record the decision in the repository documentation so the next contributor does not read a green pipeline as green tests.
 
+**Resolved (2026-11-23).** Option 1 was taken: the suite is re-tracked and the CI gate is live. The commits, in order: `2bc5c82e` restored the three missing storage placeholders (which were the *actual* cause of a week of red CI — see below), `d39c6d50` re-tracked the suite, `1e6bdb40` dropped the `hashFiles` guard and pinned `DB_DATABASE=african_market_test`, `ed40ea74` supplied the `.gitignore` edit omitted from the suite commit. Coverage and the Playwright cache remain ignored.
+
+Two corrections to the finding as originally written:
+
+1. CI was **red, not silently green**. Every run for the previous week had failed at `composer install`, ~50s in, on pushes and dependabot PRs alike. The `hashFiles` guard was never reached, so "green with zero tests" was the *intended* failure mode had the composer step passed; the observed reality was a week of unheeded red.
+2. The composer failure was not caused by the missing tests at all. `storage/framework/cache/.gitignore`, `storage/framework/views/.gitignore`, and `storage/logs/.gitignore` had never been committed (5 of Laravel's 8 placeholder files were tracked), so a fresh clone had no `storage/framework/cache` or `views` directory and `artisan package:discover` threw `Please provide a valid cache path.` Note that `storage/framework/.gitignore` contains `*` + `!.gitignore`, so those two files required `git add -f` — which is how the already-tracked `sessions/.gitignore` and `testing/.gitignore` had been added originally.
+
+Verification: run [45107819417](https://github.com/cromstel/smart-african-marketplace/actions/runs/45107819417), both matrix legs green at ~2 minutes, **590 passed / 1364 assertions** on PHP 8.2 and 8.3, `coverage-report` artifact present (which only uploads when the coverage step executes).
+
 ### Blocker B — the `implemented` flag does not gate entitlements
 
 `implemented: false` is **informational only**. It does not remove a module from any plan's entitlement set, so flipping it to `true` is a no-op on its own.
@@ -123,6 +132,14 @@ Consequences in the current configuration:
 - `tests/Feature/Api/ModuleAccessControllerTest.php` — `implemented` and `granted` are consistent.
 
 ### ISSUE-01 — Product Q&A
+
+> **Progress (2026-11-23):** Phase 1 is merged (`a6f8eebf`) — the `product_questions` table, `ProductQuestion` model with `forVendor` tenancy scoping, factory, and 11 tests. No controllers, routes, service, views, or notifications yet, and `config/modules.php` is deliberately still `implemented: false`. Code review returned *approve with comments*; the redundant `product_id` and `is_public` single-column indexes were dropped (the compound index covers both), the factory's random-product pick was removed, and a negative fill-guard assertion was added.
+>
+> Two review findings are recorded here so they are not lost:
+>
+> - **Soft-deleted products hide their questions.** `scopeForVendor` resolves through `whereHas('product')`, which applies `Product`'s `SoftDeletes` global scope. When a vendor soft-deletes a product, all of its questions — including pending ones — disappear from the vendor inbox, and `$question->product` becomes `null` for trashed products. This is probably the desired behaviour (a deleted product is a dead thread), but it is an unflagged coupling between two soft-delete systems. Phase 2 must either switch to `withTrashed()` with a `trashed()` guard in the UI, or document the current behaviour as intended — and Phase 2 views must null-check `question->product` either way.
+>
+> - **Fill-guarding cannot be asserted through a factory.** Laravel wraps every factory `make()`/`create()` inside `Model::unguarded()`, which makes every attribute fillable, and with a non-empty `$fillable` the non-fillable keys are filtered out by `fillableFromArray()` *before* the `MassAssignmentException` branch is ever reached. The Phase 1 test therefore asserts that non-fillable attributes are discarded via a direct instantiation. Mass-assignment protection still needs a real request-level test once the controllers exist (Phase 2), since that is where an unguarded model would actually be exploitable.
 
 **Labels:** `feature`, `module`, `premium`, `tier:business`, `effort:M`
 **Module key:** `product_qa`
