@@ -115,6 +115,11 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function questions(): HasMany
+    {
+        return $this->hasMany(ProductQuestion::class);
+    }
+
     public function seoMeta()
     {
         return $this->morphOne(SeoMeta::class, 'model');
