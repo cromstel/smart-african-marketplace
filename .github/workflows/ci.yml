@@ -63,6 +63,15 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
 
+      # A fresh clone has no storage/framework/cache, views, or logs directory,
+      # so composer's post-autoload-dump (artisan package:discover) fails with
+      # "Please provide a valid cache path." before any test can run. The
+      # .gitignore placeholders committed alongside this fix cover cache, views,
+      # and logs; cache/data is created here because it holds only runtime
+      # artifacts and has no tracked placeholder.
+      - name: Create storage framework directories
+        run: mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/testing storage/framework/views storage/logs
+
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
@@ -86,10 +95,16 @@ jobs:
       - name: Build frontend assets
         run: npm run build
 
+      # The MySQL service creates african_market_test. phpunit.xml pins a local
+      # database name (smart_africanmarket_test) for developer machines, and
+      # PHPUnit's <env> entries do not override a variable that the process
+      # environment already defines, so this value wins in CI without touching
+      # the local configuration.
       - name: Run database migrations
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
+          DB_DATABASE: african_market_test
           DB_USERNAME: root
           DB_PASSWORD: password
         run: php artisan migrate --force
@@ -100,25 +115,27 @@ jobs:
       # build on its own; that is a deliberate future decision, not an
       # oversight.
       - name: Run tests with coverage
-        if: matrix.php-version == '8.3' && hashFiles('tests/**/*.php') != ''
+        if: matrix.php-version == '8.3'
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
+          DB_DATABASE: african_market_test
           DB_USERNAME: root
           DB_PASSWORD: password
         run: php artisan test --coverage-clover=coverage.xml --coverage-text
 
       - name: Run tests
-        if: matrix.php-version != '8.3' && hashFiles('tests/**/*.php') != ''
+        if: matrix.php-version != '8.3'
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
+          DB_DATABASE: african_market_test
           DB_USERNAME: root
           DB_PASSWORD: password
         run: php artisan test
 
       - name: Upload coverage report
-        if: matrix.php-version == '8.3' && hashFiles('tests/**/*.php') != ''
+        if: matrix.php-version == '8.3'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
