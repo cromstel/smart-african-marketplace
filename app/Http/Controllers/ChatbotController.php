@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 
 class ChatbotController extends Controller
 {
+    private const SOURCE_EXCERPT_LENGTH = 180;
+
     public function session(Request $request, ChatbotService $chatbot): JsonResponse
     {
         if (! Setting::get('chatbot_enabled', true)) {
@@ -98,6 +100,7 @@ class ChatbotController extends Controller
 
             return response()->json([
                 'message' => $systemMessage->content,
+                'message_id' => $systemMessage->id,
                 'source' => 'handoff',
             ]);
         }
@@ -123,10 +126,14 @@ class ChatbotController extends Controller
         $reply = $chatbot->reply($redactedMessage, $contextChunks->all(), $history, $session->id);
         $sources = $contextChunks->map(fn ($chunk) => [
             'document_id' => $chunk->knowledge_document_id,
-            'excerpt' => mb_substr($chunk->content, 0, 180),
+            'excerpt' => mb_substr(
+                $chatbot->redactOutput((string) $chunk->content),
+                0,
+                self::SOURCE_EXCERPT_LENGTH
+            ),
         ])->values()->all();
 
-        ChatbotMessage::create([
+        $replyMessage = ChatbotMessage::create([
             'chatbot_session_id' => $session->id,
             'role' => $reply['source'] === 'handoff' ? 'system' : 'assistant',
             'content' => $reply['message'],
@@ -140,6 +147,7 @@ class ChatbotController extends Controller
 
         return response()->json([
             'message' => $reply['message'],
+            'message_id' => $replyMessage->id,
             'source' => $reply['source'],
             'sources' => $sources,
         ]);
@@ -165,7 +173,7 @@ class ChatbotController extends Controller
         $messages = $session->messages()
             ->where('id', '>', $afterId)
             ->orderBy('id')
-            ->get(['id', 'role', 'content', 'created_at']);
+            ->get(['id', 'role', 'content', 'sources', 'created_at']);
 
         return response()->json([
             'messages' => $messages,
@@ -204,6 +212,7 @@ class ChatbotController extends Controller
 
         return response()->json([
             'message' => 'A human agent will join the chat shortly.',
+            'message_id' => $message->id,
             'source' => 'handoff',
         ]);
     }

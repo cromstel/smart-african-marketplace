@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 
 class ChatbotService
 {
+    private const CONTEXT_EXCERPT_LENGTH = 350;
+
     public function ensureSession(?string $sessionKey, ?int $userId, ?string $ip, ?string $ua): ChatbotSession
     {
         if ($sessionKey) {
@@ -64,6 +66,39 @@ class ChatbotService
         return $redacted;
     }
 
+    public function redactOutput(string $text): string
+    {
+        $redacted = $text;
+
+        $redacted = preg_replace('/[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i', '[redacted email]', $redacted) ?? $redacted;
+        $redacted = preg_replace_callback(
+            '/(?<![A-Za-z0-9])(?:\+|00)\s*\d[\d\s().\-\/]{5,}\d(?![A-Za-z0-9])/',
+            function (array $matches): string {
+                $candidate = trim($matches[0]);
+
+                return $this->isOutputPhoneNumber($candidate)
+                    ? '[redacted phone]'
+                    : $matches[0];
+            },
+            $redacted
+        ) ?? $redacted;
+        $redacted = preg_replace('/\b(?:\d[ -]*?){13,19}\b/', '[redacted card]', $redacted) ?? $redacted;
+        $redacted = preg_replace('/\b(?:\d{1,3}\.){3}\d{1,3}\b/', '[redacted ip]', $redacted) ?? $redacted;
+        $redacted = preg_replace_callback(
+            '/(?<![A-Za-z0-9])(?:\+?\d|\(\d{1,4}\))[\d\s().\-\/]{5,}\d(?![A-Za-z0-9])/',
+            function (array $matches): string {
+                $candidate = trim($matches[0]);
+
+                return $this->isOutputPhoneNumber($candidate)
+                    ? '[redacted phone]'
+                    : $matches[0];
+            },
+            $redacted
+        ) ?? $redacted;
+
+        return $redacted;
+    }
+
     public function reply(string $message, array $contextChunks, array $historyMessages = [], ?int $sessionId = null): array
     {
         $fallbackEnabled = (bool) Setting::get('chatbot_fallback_enabled', true);
@@ -71,23 +106,14 @@ class ChatbotService
 
         if ($contentContext === '') {
             if ($fallbackEnabled) {
-                return [
-                    'message' => $this->fallbackReply($message),
-                    'source' => 'fallback',
-                ];
+                return $this->replyPayload($this->fallbackReply($message), 'fallback');
             }
 
-            return [
-                'message' => $this->handoffMessage(),
-                'source' => 'handoff',
-            ];
+            return $this->replyPayload($this->handoffMessage(), 'handoff');
         }
 
         if ($this->isTechnicalRequest($message)) {
-            return [
-                'message' => $this->handoffMessage(),
-                'source' => 'handoff',
-            ];
+            return $this->replyPayload($this->handoffMessage(), 'handoff');
         }
 
         try {
@@ -126,16 +152,10 @@ class ChatbotService
 
             $text = trim($text);
             if (str_starts_with($text, 'HANDOFF')) {
-                return [
-                    'message' => $this->handoffMessage(),
-                    'source' => 'handoff',
-                ];
+                return $this->replyPayload($this->handoffMessage(), 'handoff');
             }
 
-            return [
-                'message' => $text,
-                'source' => 'llm',
-            ];
+            return $this->replyPayload($text, 'llm');
         } catch (\Throwable $e) {
             Log::warning('Chatbot LLM exception', [
                 'error' => $e->getMessage(),
@@ -143,23 +163,77 @@ class ChatbotService
             ]);
             if ($fallbackEnabled) {
                 if (! empty($contextChunks)) {
-                    return [
-                        'message' => $this->fallbackFromContext($contextChunks),
-                        'source' => 'context',
-                    ];
+                    $contextExcerpt = $this->fallbackFromContext($contextChunks);
+                    if ($contextExcerpt !== '') {
+                        $prefix = 'Here is what I found on our site: ';
+
+                        return $this->replyPayload(
+                            $contextExcerpt,
+                            'context',
+                            $prefix,
+                            mb_strlen($prefix) + self::CONTEXT_EXCERPT_LENGTH
+                        );
+                    }
+
+                    return $this->replyPayload($this->handoffMessage(), 'handoff');
                 }
 
-                return [
-                    'message' => $this->fallbackReply($message),
-                    'source' => 'fallback',
-                ];
+                return $this->replyPayload($this->fallbackReply($message), 'fallback');
             }
 
-            return [
-                'message' => $this->handoffMessage(),
-                'source' => 'handoff',
-            ];
+            return $this->replyPayload($this->handoffMessage(), 'handoff');
         }
+    }
+
+    private function replyPayload(string $message, string $source, string $prefix = '', ?int $maxLength = null): array
+    {
+        $content = $prefix.$this->redactOutput($message);
+        if ($maxLength !== null) {
+            $content = mb_substr($content, 0, $maxLength);
+        }
+
+        return [
+            'message' => $content,
+            'source' => $source,
+        ];
+    }
+
+    private function isOutputPhoneNumber(string $candidate): bool
+    {
+        $digits = preg_replace('/\D/', '', $candidate) ?? '';
+        $digitCount = strlen($digits);
+
+        if ($digitCount < 7 || $digitCount > 15) {
+            return false;
+        }
+
+        if ($this->isProtectedOutputNumber($candidate)) {
+            return false;
+        }
+
+        $hasInternationalPrefix = str_starts_with($candidate, '+') || str_starts_with($candidate, '00');
+        if ($hasInternationalPrefix) {
+            return true;
+        }
+
+        $separatorCount = preg_match_all('/[\s().\-\/]/', $candidate);
+        if ($separatorCount < 2) {
+            return false;
+        }
+
+        $groups = preg_split('/[\s().\-\/]+/', trim($candidate));
+        $finalGroup = is_array($groups) ? end($groups) : null;
+
+        return is_string($finalGroup) && preg_match('/^\d{2,4}$/', $finalGroup) === 1;
+    }
+
+    private function isProtectedOutputNumber(string $candidate): bool
+    {
+        $isIsoDate = preg_match('/^\d{4}-\d{2}-\d{2}$/', $candidate) === 1;
+        $isGroupedPrice = preg_match('/^[1-9]\d{0,2}(?: \d{3})+(?:[.,]\d{1,2})?$/', $candidate) === 1;
+        $isNumericOrderId = preg_match('/^\d{4}[-\s]\d{1,4}[-\s]\d{1,4}$/', $candidate) === 1;
+
+        return $isIsoDate || $isGroupedPrice || $isNumericOrderId;
     }
 
     private function fallbackReply(string $message): string
@@ -182,15 +256,10 @@ class ChatbotService
     {
         $chunk = collect($contextChunks)->first();
         if (! $chunk) {
-            return $this->handoffMessage();
+            return '';
         }
 
-        $excerpt = trim(mb_substr($chunk->content, 0, 350));
-        if ($excerpt === '') {
-            return $this->handoffMessage();
-        }
-
-        return 'Here is what I found on our site: '.$excerpt;
+        return trim((string) $chunk->content);
     }
 
     private function handoffMessage(): string

@@ -45,8 +45,17 @@
         let pollDelay = 4000;
         let reinitAttempted = false;
         let pollFailures = 0;
+        const seenMessageIds = new Set();
 
-        function appendMessage(text, role) {
+        function appendMessage(text, role, id, sources = []) {
+            if (id !== undefined && id !== null) {
+                const messageId = String(id);
+                if (seenMessageIds.has(messageId)) {
+                    return;
+                }
+                seenMessageIds.add(messageId);
+            }
+
             const div = document.createElement('div');
             div.dataset.role = role;
             div.textContent = text;
@@ -58,8 +67,43 @@
             } else {
                 div.className = 'bg-white border border-gray-200 text-gray-800 text-sm px-3 py-2 rounded-lg';
             }
+
+            if (role !== 'user') {
+                appendSources(div, sources);
+            }
+
             messages.appendChild(div);
             messages.scrollTop = messages.scrollHeight;
+        }
+
+        function appendSources(container, sources) {
+            if (!Array.isArray(sources) || sources.length === 0) {
+                return;
+            }
+
+            const list = document.createElement('ul');
+            list.className = 'mt-2 space-y-1 text-xs text-gray-500';
+
+            sources.forEach((source) => {
+                const item = document.createElement('li');
+                const excerpt = document.createElement('span');
+                const excerptText = String(source && source.excerpt ? source.excerpt : '').trim();
+                excerpt.textContent = excerptText.length > 120
+                    ? excerptText.slice(0, 120) + '...'
+                    : excerptText;
+                item.appendChild(excerpt);
+
+                if (source && source.document_id !== undefined && source.document_id !== null) {
+                    const documentLabel = document.createElement('span');
+                    documentLabel.className = 'ml-1 text-gray-400';
+                    documentLabel.textContent = 'Document ' + String(source.document_id);
+                    item.appendChild(documentLabel);
+                }
+
+                list.appendChild(item);
+            });
+
+            container.appendChild(list);
         }
 
         function setStatus(message) {
@@ -124,7 +168,7 @@
             });
 
             if (!response.ok) {
-                appendMessage('Hello! I am currently unavailable. Please try again shortly.', 'assistant');
+                appendMessage('Hello! I am currently unavailable. Please try again shortly.', 'assistant', undefined);
                 setError('Chat service unavailable.');
                 return false;
             }
@@ -139,7 +183,7 @@
             }
             updateHandoffUI();
             if (!hasGreeted) {
-                appendMessage(data.greeting, 'assistant');
+                appendMessage(data.greeting, 'assistant', undefined);
                 hasGreeted = true;
             }
 
@@ -148,6 +192,8 @@
 
         function resetSessionState() {
             sessionKey = null;
+            lastMessageId = 0;
+            seenMessageIds.clear();
             sessionStorage.removeItem('chatbot_session_key');
             sessionStorage.removeItem('chatbot_handoff_active');
             handoffActive = false;
@@ -187,7 +233,7 @@
                         lastMessageId = Math.max(lastMessageId, message.id);
                         return;
                     }
-                    appendMessage(message.content, role);
+                    appendMessage(message.content, role, message.id, message.sources || []);
                     if (role === 'agent') {
                         handoffActive = true;
                         setStatus('A human agent is on this chat. Responses may take a moment.');
@@ -237,7 +283,7 @@
                     if (event.role === 'user') {
                         return;
                     }
-                    appendMessage(event.content, event.role === 'agent' ? 'agent' : 'assistant');
+                    appendMessage(event.content, event.role === 'agent' ? 'agent' : 'assistant', event.id);
                     if (event.role === 'agent') {
                         handoffActive = true;
                         setStatus('A human agent is on this chat. Responses may take a moment.');
@@ -311,7 +357,7 @@
                 }
             }
 
-            appendMessage(message, 'user');
+            appendMessage(message, 'user', undefined);
             input.value = '';
             setPendingState(true);
             setError('');
@@ -344,14 +390,22 @@
             }
 
             if (!response.ok) {
-                appendMessage('Hello! I am currently unavailable. Please try again shortly.', 'assistant');
+                appendMessage('Hello! I am currently unavailable. Please try again shortly.', 'assistant', undefined);
                 setError('Unable to reach the support assistant.');
                 setPendingState(false);
                 return;
             }
 
             const data = await response.json();
-            appendMessage(data.message, data.source === 'handoff' ? 'agent' : 'assistant');
+            appendMessage(
+                data.message,
+                data.source === 'handoff' ? 'agent' : 'assistant',
+                data.message_id,
+                data.sources || []
+            );
+            if (data.message_id !== undefined && data.message_id !== null) {
+                lastMessageId = Math.max(lastMessageId, data.message_id);
+            }
             if (data.source === 'handoff') {
                 handoffActive = true;
                 setStatus('A human agent is on this chat. Responses may take a moment.');
@@ -400,14 +454,17 @@
             }
 
             if (!response.ok) {
-                appendMessage('Hello! I am currently unavailable. Please try again shortly.', 'assistant');
+                appendMessage('Hello! I am currently unavailable. Please try again shortly.', 'assistant', undefined);
                 setError('Unable to request a human agent right now.');
                 setPendingState(false);
                 return;
             }
 
             const data = await response.json();
-            appendMessage(data.message, 'agent');
+            appendMessage(data.message, 'agent', data.message_id);
+            if (data.message_id !== undefined && data.message_id !== null) {
+                lastMessageId = Math.max(lastMessageId, data.message_id);
+            }
             handoffActive = true;
             setStatus('A human agent is on this chat. Responses may take a moment.');
             updateHandoffUI();
